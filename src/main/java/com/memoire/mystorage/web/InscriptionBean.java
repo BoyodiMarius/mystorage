@@ -1,0 +1,770 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.memoire.mystorage.web;
+
+import com.memoire.mystorage.dao.InscriptionDaoBeanLocal;
+import com.memoire.mystorage.entities.Annee;
+import com.memoire.mystorage.entities.Inscription;
+import com.memoire.mystorage.entities.Paiement;
+import com.memoire.mystorage.entities.Particulier;
+import com.memoire.mystorage.entities.Profil;
+import com.memoire.mystorage.entities.Promotion;
+import com.memoire.mystorage.entities.Typemodule;
+import com.memoire.mystorage.services.AnneeServiceBeanLocal;
+import com.memoire.mystorage.services.InscriptionServiceBeanLocal;
+import com.memoire.mystorage.services.PaiementServiceBeanLocal;
+import com.memoire.mystorage.services.ParticulierServiceBeanLocal;
+import com.memoire.mystorage.services.ProfilServiceBeanLocal;
+import com.memoire.mystorage.services.PromotionServiceBeanLocal;
+import com.memoire.mystorage.services.TypemoduleServiceBeanLocal;
+import com.memoire.mystorage.transaction.TransactionManager;
+import com.memoire.mystorage.utils.constantes.Constante;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
+import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageOutputStream;
+import javax.inject.Named;
+import javax.servlet.ServletContext;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.shiro.crypto.hash.Sha256Hash;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultScheduleModel;
+import org.primefaces.model.LazyScheduleModel;
+import org.primefaces.model.ScheduleModel;
+
+/**
+ *
+ * @author Armel
+ */
+@Named(value = "InscriptionBean")
+@ViewScoped
+public class InscriptionBean implements Serializable {
+
+    /**
+     * Creates a new instance of UtilisateurBean
+     */
+    private Inscription inscription;
+    private Annee annee;
+    private Paiement paiement;
+    private Particulier particulier;
+    private Typemodule typemodule;
+    private Promotion promotion;
+    private List<Inscription> inscriptions;
+    private List<Annee> annees, annet;
+    private List<Paiement> paiements;
+    private List<Particulier> particuliers, controleList;
+    private List<Typemodule> typesmodules;
+    private List<Promotion> promotions, prom, proms;
+    private ScheduleModel eventModel;
+    private ScheduleModel lazyEventModel;
+    private List<Paiement> paies;
+    private List<Inscription> payers;
+    private List<Inscription> inscris;
+    private Profil collaborer;
+
+    @EJB
+    private InscriptionServiceBeanLocal isbl;
+    @EJB
+    private InscriptionDaoBeanLocal idbl;
+    @EJB
+    private ParticulierServiceBeanLocal psbl;
+    @EJB
+    private TypemoduleServiceBeanLocal tsbl;
+    @EJB
+    private PromotionServiceBeanLocal psbl1;
+    @EJB
+    private PaiementServiceBeanLocal psbl2;
+    @EJB
+    private ProfilServiceBeanLocal psbl3;
+    @EJB
+    private AnneeServiceBeanLocal asbl;
+
+    public InscriptionBean() {
+        this.inscription = new Inscription();
+        this.collaborer = new Profil();
+        this.particulier = new Particulier();
+        this.paiement = new Paiement();
+        this.typemodule = new Typemodule();
+        this.promotion = new Promotion();
+        this.annee = new Annee();
+        this.inscriptions = new ArrayList<>();
+        this.annees = new ArrayList<>();
+        this.controleList = new ArrayList<>();
+        this.paiements = new ArrayList<>();
+        this.prom = new ArrayList<>();
+        this.particuliers = new ArrayList<>();
+        this.typesmodules = new ArrayList<>();
+        this.promotions = new ArrayList<>();
+        this.paies = new ArrayList<>();
+        this.payers = new ArrayList<>();
+        this.inscris = new ArrayList<>();
+        this.proms = new ArrayList<>();
+        this.annet = new ArrayList<>();
+    }
+
+    public void nouveau(ActionEvent actionEvent) {
+        this.inscription = new Inscription();
+    }
+
+    @PostConstruct
+    public void init() {
+        eventModel = new DefaultScheduleModel();
+
+        lazyEventModel = new LazyScheduleModel() {
+
+        };
+    }
+
+    /**
+     * *
+     * EFFECTUER LE CONTROLE AVANT AJOUT
+     *
+     * @return
+     */
+    /**
+     * Controle de contact , renvoie true si le contact est correct et false au
+     * cas contraire
+     *
+     * @return
+     */
+    public boolean controleContact() {//true l'ajout peut etre effectué
+        String contact = particulier.getTelephone().trim();
+        char premierCarater;
+        boolean controle = false;
+        if ((contact.length() == 11) && contact.matches("\\d{2}\\-\\d{2}\\-\\d{2}\\-\\d{2}")) {
+            premierCarater = contact.charAt(0);
+            if ((String.valueOf(premierCarater)).equals("9") || (String.valueOf(premierCarater)).equals("2")) {
+                controle = true;
+            } else {
+                controle = false;
+                FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "entrer un contact valide svp", "");
+                FacesContext.getCurrentInstance().addMessage("", mf);
+            }
+        } else {
+            controle = false;
+            FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "entrer un contact valide svp", "");
+            FacesContext.getCurrentInstance().addMessage("", mf);
+        }
+        return controle;
+    }
+
+    /**
+     * Controle si tous les champs de l'interface sont remplis renvoie true si
+     * un champ n'est pas rempli et false si tous les champs sont remplis
+     *
+     * @return
+     */
+    /**
+     * renvoie true si le contact ou l email n existe pas
+     *
+     * @return
+     */
+    public boolean controleMailContact() {
+        boolean ajouter = true;
+        if (!particuliers.isEmpty()) {
+            for (Particulier u : particuliers) {
+                if (particulier.getTelephone().equals(u.getTelephone())) {
+                    ajouter = false;
+                    FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "ce contact appartient à quelqu'un", "");
+                    FacesContext.getCurrentInstance().addMessage("", mf);;
+                }
+                if (particulier.getEmail().equalsIgnoreCase(u.getEmail())) {
+                    ajouter = true;
+                    FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "ce email appartient déjà a quelqu'un", "");
+                    FacesContext.getCurrentInstance().addMessage("", mf);
+                }
+            }
+        }
+        return ajouter;
+    }
+
+    public boolean controleVide() {
+        System.out.println("je fais le controle du vide");
+        boolean vide = false; // false ce n'est pas vide
+        if (particulier.getNom().trim().equals("")) {
+            vide = true;
+            FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "le nom svp", "");
+            FacesContext.getCurrentInstance().addMessage("", mf);
+//            FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_FATAL,
+//                    "le nom de l'entreprise", "");
+//            FacesContext.getCurrentInstance().
+//                    addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "test error", ""));
+        }
+        if (particulier.getEmail().trim().equals("")) {
+            vide = true;
+            FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "l'email svp", "");
+            FacesContext.getCurrentInstance().addMessage("", mf);;
+        }
+        if (particulier.getTelephone().trim().equals("")) {
+            vide = true;
+            FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "le contact svp", "");
+            FacesContext.getCurrentInstance().addMessage("", mf);
+        }
+        if (particulier.getLogin().trim().equals("")) {
+            vide = true;
+            FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "l'identifiant svp", "");
+            FacesContext.getCurrentInstance().addMessage("", mf);
+        }
+        return vide;
+    }
+
+    /**
+     * **
+     * true le nom n' existe pas
+     *
+     */
+    private boolean controleExisteNom() {
+        boolean ajouter = true;
+        int i = 0;
+        this.controleList = this.psbl.getAll();
+        while (i < this.controleList.size()) {
+            System.out.println("nom1" + particulier.getNom().trim() + "nom2 " + controleList.get(i).getNom());
+            if (this.particulier.getNom().trim().toLowerCase().equals(controleList.get(i).getNom().trim().toLowerCase())) {
+                System.out.println("Ce nom existe déjà");
+//                Mtm.messageErrorPerso("Ce nom d'entreprise existe déjà dans la base");
+                ajouter = false;
+            }
+            i++;
+        }
+
+        if (ajouter == false) {
+            FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "ce nom existe déjà dans le système", "");
+            FacesContext.getCurrentInstance().addMessage("", mf);
+        }
+        return ajouter;
+    }
+
+    public Date max() {
+        Calendar ca = Calendar.getInstance();
+        ca.add(Calendar.YEAR, -15);
+        return ca.getTime();
+    }
+
+    public void save(ActionEvent actionEvent) throws Exception {
+        UserTransaction tx = TransactionManager.getUserTransaction();
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            tx.begin();
+//            collaborer = this.psbl3.getOneBy("nom", "collaborer");
+//            particulier.setProfil(collaborer);
+            this.psbl.saveOne(particulier);
+            System.out.println(this.particulier);
+            this.inscription.setTypemodule(typemodule);
+            this.inscription.setParticulier(particulier);
+            this.isbl.saveOne(inscription);
+//            String url = "par ce lien veuillez effectuez le paiement sécurisé" + " " + "/eformation/paiement.xhtml/";
+//            String test = "CAGECFI SA VOUS REMERCIE POUR VOTRE INSCRIPTION ET VOUS INVITE a VITE VOUS INSCRIRE" + url;
+//            SendMailByGlassfish.runTest(test, this.particulier.getEmail(), "MYSTORAGE", "Informations");
+            context.addMessage(null, new FacesMessage(Constante.ENREGISTREMENT_REUSSIT));
+            dossier(this.inscription.getParticulier().getNom());
+            this.particulier = new Particulier();
+            this.typemodule = new Typemodule();
+            this.inscription = new Inscription();
+            tx.commit();
+            this.inscription = new Inscription();
+            this.particulier = new Particulier();
+            this.typemodule = new Typemodule();
+
+        } catch (Exception e) {
+            e.getMessage();
+            context.addMessage(null, new FacesMessage(Constante.ENREGISTREMENT_ECHOUE));
+            try {
+                tx.rollback();
+            } catch (IllegalStateException ex) {
+                Logger.getLogger(InscriptionBean.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            } catch (SecurityException ex) {
+                Logger.getLogger(InscriptionBean.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            } catch (SystemException ex) {
+                Logger.getLogger(InscriptionBean.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        this.inscription = new Inscription();
+
+    }
+
+    public void cancel(ActionEvent actionEvent) {
+        this.inscription = new Inscription();
+    }
+
+    public void getObject(Integer id) {
+        this.inscription = this.isbl.find(id);
+        this.particulier = this.inscription.getParticulier();
+        this.typemodule = this.inscription.getTypemodule();
+        this.promotion = this.inscription.getPromotion();
+        System.out.println(id);
+    }
+
+    public List<Particulier> lib(long id) {
+        Particulier p = this.psbl.find(id);
+        this.particuliers = this.psbl.getBy("id", id);
+        return particuliers;
+
+    }
+
+    public List<Particulier> plus() {
+        this.particuliers = this.psbl.getAll();
+        return particuliers;
+    }
+
+    public void valider(Integer id) throws Exception {
+        UserTransaction tx = TransactionManager.getUserTransaction();
+        FacesContext context = FacesContext.getCurrentInstance();
+        this.inscription = this.isbl.find(id);
+        System.out.println(this.inscription);
+        this.inscription.getParticulier().setLogin(this.inscription.getParticulier().getEmail());
+        this.inscription.getParticulier().setPass(new Sha256Hash("admin").toHex());
+        this.inscription.setEtat(true);
+        this.inscription.getParticulier().setActif(true);
+        this.isbl.updateOne(inscription);
+        this.psbl.updateOne(this.inscription.getParticulier());
+        context.addMessage(null, new FacesMessage(Constante.MODIFICATION_REUSSIT));
+//        String log = "login" + "=" + "" + this.inscription.getParticulier().getEmail();
+//        String pass = "password" + "=" + "admin";
+//        String test = "CAGECFI SA VIENT DE VALIDER VOTRE INSCRIPTION.VOICI VOTRE" + " " + log + " " + "ET VOTRE" + pass + " " + "Cordialement";
+//        SendMailByGlassfish.runTest(test, this.inscription.getParticulier().getEmail(), "MYSTORAGE", "Informations");
+    }
+
+    public void Rejeter(Integer id) throws Exception {
+        UserTransaction tx = TransactionManager.getUserTransaction();
+        FacesContext context = FacesContext.getCurrentInstance();
+        this.inscription = this.isbl.find(id);
+        System.out.println(this.inscription);
+        this.psbl.updateOne(this.inscription.getParticulier());
+        context.addMessage(null, new FacesMessage(Constante.MODIFICATION_REUSSIT));
+//        String test = "CAGECFI SA VIENT DE REJETER VOTRE INSCRIPTION.VEUILLEZ VERIFIER VOS INFORMATIONS DE PAIEMENT.Cordialement";
+//        SendMailByGlassfish.runTest(test, this.inscription.getEtudiant().getEmail(), "CAGECFI SA", "Informations");
+    }
+
+    public boolean checkIntConnection() {
+        boolean status = false;
+        Socket sock = new Socket();
+        InetSocketAddress address = new InetSocketAddress("www.google.com", 80);
+        try {
+            sock.connect(address, 3000);
+            if (sock.isConnected()) {
+                status = true;
+            }
+        } catch (Exception e) {
+
+        } finally {
+            try {
+                sock.close();
+            } catch (Exception e) {
+
+            }
+        }
+
+        return status;
+    }
+
+    public void onAnneChange() {
+        if (annee != null && !annee.equals("")) {
+            proms.clear();
+            proms.addAll(this.psbl1.getVague(annee.getId()));
+        }
+    }
+
+    public void handleFileUpload(FileUploadEvent event) {
+        try {
+            System.out.println("pour la foto");
+            String image = String.valueOf((int) (Math.random() * 10000000));
+            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+            String newFileName = servletContext.getRealPath("") + File.separator + "resources" + File.separator + "image"
+                    + File.separator + image + event.getFile().getFileName();
+            InputStream inputStream = event.getFile().getInputstream();
+            particulier.setPhoto("/resources/image/" + image + event.getFile().getFileName());
+            ImageOutputStream out = new FileImageOutputStream(new File(newFileName));
+            int read = 0;
+            byte[] bytes = new byte[1024];
+            while ((read = inputStream.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            inputStream.close();
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void dossier(String nom) {
+
+        // get an ftpClient object    
+        FTPClient ftpClient = new FTPClient();
+
+        try {
+
+            // pass directory path on server to connect    
+//            ftpClient.connect("localhost");
+             ftpClient.connect("192.168.43.248");
+            // pass username and password, returned true if authentication is    
+            // successful    
+            boolean login = ftpClient.login("mystorage", "123456");
+
+            if (login) {
+
+                System.out.println("Connection established...");
+
+                boolean folderCreated = ftpClient.makeDirectory("/MYSTORAGEDOCUMENTS/" + nom);
+
+                boolean folderCreatedpr = ftpClient.makeDirectory("/MYSTORAGEDOCUMENTS/" + nom + "/PRIVE");
+
+                boolean folderCreatedpl = ftpClient.makeDirectory("/MYSTORAGEDOCUMENTS/" + nom + "/PUBLIC");
+
+                if (folderCreated) {
+
+                    System.out.println("Directory created successfully !");
+
+                } else {
+
+                    System.out.println("Error in creating directory !");
+
+                }
+
+                if (folderCreatedpr) {
+
+                    System.out.println("Directory private created successfully !");
+
+                } else {
+
+                    System.out.println("Error in creating directory private !");
+
+                }
+
+                if (folderCreatedpl) {
+
+                    System.out.println("Directory public created successfully !");
+
+                } else {
+
+                    System.out.println("Error in creating directory public !");
+
+                }
+
+                // logout the user, returned true if logout successfully    
+                boolean logout = ftpClient.logout();
+
+                if (logout) {
+
+                    System.out.println("Connection close...");
+
+                }
+
+            } else {
+
+                System.out.println("Connection fail...");
+
+            }
+
+        } catch (SocketException e) {
+
+            e.printStackTrace();
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+        } finally {
+
+            try {
+
+                ftpClient.disconnect();
+
+            } catch (IOException e) {
+
+                e.printStackTrace();
+
+            }
+
+        }
+
+    }
+
+    public Inscription getInscription() {
+        return inscription;
+    }
+
+    public void setInscription(Inscription inscription) {
+        this.inscription = inscription;
+    }
+
+    public Annee getAnnee() {
+        return annee;
+    }
+
+    public void setAnnee(Annee annee) {
+        this.annee = annee;
+    }
+
+    public Paiement getPaiement() {
+        return paiement;
+    }
+
+    public void setPaiement(Paiement paiement) {
+        this.paiement = paiement;
+    }
+
+    public Particulier getParticulier() {
+        return particulier;
+    }
+
+    public void setParticulier(Particulier particulier) {
+        this.particulier = particulier;
+    }
+
+    public Typemodule getTypemodule() {
+        return typemodule;
+    }
+
+    public void setTypemodule(Typemodule typemodule) {
+        this.typemodule = typemodule;
+    }
+
+    public Promotion getPromotion() {
+        return promotion;
+    }
+
+    public void setPromotion(Promotion promotion) {
+        this.promotion = promotion;
+    }
+
+    public List<Inscription> getInscriptions() {
+        this.inscriptions = this.isbl.getAll();
+        return inscriptions;
+    }
+
+    public void setInscriptions(List<Inscription> inscriptions) {
+        this.inscriptions = inscriptions;
+    }
+
+    public List<Annee> getAnnees() {
+        return annees;
+    }
+
+    public void setAnnees(List<Annee> annees) {
+        this.annees = annees;
+    }
+
+    public List<Annee> getAnnet() {
+        return annet;
+    }
+
+    public void setAnnet(List<Annee> annet) {
+        this.annet = annet;
+    }
+
+    public List<Paiement> getPaiements() {
+        return paiements;
+    }
+
+    public void setPaiements(List<Paiement> paiements) {
+        this.paiements = paiements;
+    }
+
+    public List<Particulier> getParticuliers() {
+        return particuliers;
+    }
+
+    public void setParticuliers(List<Particulier> particuliers) {
+        this.particuliers = particuliers;
+    }
+
+    public List<Particulier> getControleList() {
+        return controleList;
+    }
+
+    public void setControleList(List<Particulier> controleList) {
+        this.controleList = controleList;
+    }
+
+    public List<Typemodule> getTypesmodules() {
+        this.typesmodules = this.tsbl.getAll();
+        return typesmodules;
+    }
+
+    public void setTypesmodules(List<Typemodule> typesmodules) {
+        this.typesmodules = typesmodules;
+    }
+
+    public List<Promotion> getPromotions() {
+        return promotions;
+    }
+
+    public void setPromotions(List<Promotion> promotions) {
+        this.promotions = promotions;
+    }
+
+    public List<Promotion> getProm() {
+        return prom;
+    }
+
+    public void setProm(List<Promotion> prom) {
+        this.prom = prom;
+    }
+
+    public List<Promotion> getProms() {
+        return proms;
+    }
+
+    public void setProms(List<Promotion> proms) {
+        this.proms = proms;
+    }
+
+    public ScheduleModel getEventModel() {
+        return eventModel;
+    }
+
+    public void setEventModel(ScheduleModel eventModel) {
+        this.eventModel = eventModel;
+    }
+
+    public ScheduleModel getLazyEventModel() {
+        return lazyEventModel;
+    }
+
+    public void setLazyEventModel(ScheduleModel lazyEventModel) {
+        this.lazyEventModel = lazyEventModel;
+    }
+
+    public List<Paiement> getPaies() {
+        return paies;
+    }
+
+    public void setPaies(List<Paiement> paies) {
+        this.paies = paies;
+    }
+
+    public List<Inscription> getPayers() {
+        this.inscris = this.isbl.getAll();
+
+        for (Inscription inscription1 : inscris) {
+            if (inscription1.isEtat() == true) {
+                if (!this.payers.contains(inscription1)) {
+                    this.payers.add(inscription1);
+                }
+
+            }
+        }
+        return payers;
+
+    }
+
+    public void setPayers(List<Inscription> payers) {
+        this.payers = payers;
+    }
+
+    public List<Inscription> getInscris() {
+        return inscris;
+    }
+
+    public void setInscris(List<Inscription> inscris) {
+        this.inscris = inscris;
+    }
+
+    public Profil getCollaborer() {
+        return collaborer;
+    }
+
+    public void setCollaborer(Profil collaborer) {
+        this.collaborer = collaborer;
+    }
+
+    public InscriptionServiceBeanLocal getIsbl() {
+        return isbl;
+    }
+
+    public void setIsbl(InscriptionServiceBeanLocal isbl) {
+        this.isbl = isbl;
+    }
+
+    public InscriptionDaoBeanLocal getIdbl() {
+        return idbl;
+    }
+
+    public void setIdbl(InscriptionDaoBeanLocal idbl) {
+        this.idbl = idbl;
+    }
+
+    public ParticulierServiceBeanLocal getPsbl() {
+        return psbl;
+    }
+
+    public void setPsbl(ParticulierServiceBeanLocal psbl) {
+        this.psbl = psbl;
+    }
+
+    public TypemoduleServiceBeanLocal getTsbl() {
+        return tsbl;
+    }
+
+    public void setTsbl(TypemoduleServiceBeanLocal tsbl) {
+        this.tsbl = tsbl;
+    }
+
+    public PromotionServiceBeanLocal getPsbl1() {
+        return psbl1;
+    }
+
+    public void setPsbl1(PromotionServiceBeanLocal psbl1) {
+        this.psbl1 = psbl1;
+    }
+
+    public PaiementServiceBeanLocal getPsbl2() {
+        return psbl2;
+    }
+
+    public void setPsbl2(PaiementServiceBeanLocal psbl2) {
+        this.psbl2 = psbl2;
+    }
+
+    public ProfilServiceBeanLocal getPsbl3() {
+        return psbl3;
+    }
+
+    public void setPsbl3(ProfilServiceBeanLocal psbl3) {
+        this.psbl3 = psbl3;
+    }
+
+    public AnneeServiceBeanLocal getAsbl() {
+        return asbl;
+    }
+
+    public void setAsbl(AnneeServiceBeanLocal asbl) {
+        this.asbl = asbl;
+    }
+
+}

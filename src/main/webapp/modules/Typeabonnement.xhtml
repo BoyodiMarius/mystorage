@@ -1,0 +1,95 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <p:tab title="Typeformation" >
+        <h:form id="typeformation">
+            <center><h1></h1></center>
+            <br/>
+            <h:form id="ajoutTyp">
+                <p:commandButton   value="Nouveau libelle d'abonnement" onclick="PF('typeAjout').show();" process="@form" style="right: 0%; font-family: cursive;"
+                                         icon="fa fa-plus" iconPos="left"/> 
+                <p></p>
+                <p:dialog   widgetVar="typeAjout"  positionType="absolute" fitViewport="true" responsive="true" minimizable="true" maximizable="true"  dynamic="true" closable="true" resizable="true" showEffect="slide" hideEffect="clip" id="editP" modal="true" minHeight="150" minWidth="150" width="800" position="center">    
+                    <h:form id="form">
+                        <p:growl id="growl" showSummary="true" life="4000"/>
+                        <center>
+                            
+                                <p:fieldset legend="Ajout d'un abonnement" style=" margin-left:10px ; color:#C8D9E2; margin-bottom:10px" widgetVar="type2Ajout"  >
+                                    <h:panelGrid id="wi"  columns="2" columnClasses="label, value" style="background-color: #F3F5F7;border-radius:10px ; width:100% ; margin-bottom:3%;alignment-adjust: auto;padding-left:3%;padding-bottom:5%  ">     
+                                        <h:outputText/>
+                                        <h:inputHidden value="#{TypemoduleBean.typemodule.id}"/>
+                                        <p:outputLabel value="Libellé:" for="libelle" style="font-family: initial;font-size: large;font-style: inherit"/>
+                                        <p:inputText id="libelle" placeholder="Renseigner le Libelle de l'abonnement" required="true" requiredMessage="veuillez Renseignez le libelle de l'abonnement"  value="#{TypemoduleBean.typemodule.libelle}" style=" width:75%">
+                                        </p:inputText>
+                                        <p:outputLabel value="Prix:" for="prix" style="font-family: initial;font-size: large;font-style: inherit"/>
+                                        <p:inputText id="prix" placeholder="Renseigner le prix de l'abonnement" required="true" requiredMessage="veuillez Renseignez le prix de l'abonnement"  value="#{TypemoduleBean.typemodule.prixmodule}" style=" width:75%">
+                                         </p:inputText>
+                                         <p:outputLabel value="Duree:" for="duree" style="font-family: initial;font-size: large;font-style: inherit"/>
+                                        <p:inputText id="duree" placeholder="Renseigner la duree de l'abonnement" required="true" requiredMessage="veuillez Renseignez la duree de l'abonnement"  value="#{TypemoduleBean.typemodule.prixmodule}" style=" width:75%">
+                                         </p:inputText>
+                                      
+                                        <h:inputHidden id="pieces" value="#{TypemoduleBean.typemodule.photo}" />
+                                        <p:fileUpload mode="advanced" required="true" requiredMessage="veuillez choisir la photo" label="Choisir la photo" allowTypes="/(\.|\/)(gif|jpg|jpeg|gif|png|PNG|GIF|JPG|JPEG)$/"  oncomplete="PF('chargtof').hide()" auto="true" fileUploadListener="#{ModuleBean.handleFileUpload}" update="doc,val,pieces"/>
+                                        <h:outputText id="doc" value="#{TypemoduleBean.typemodule.photo}"/>
+                                        <h:outputText/>
+                                        <h:inputHidden id="val" value="#{TypemoduleBean.typemodule.photo}"/>
+
+                                        <h:outputText/>  
+                                        <h:outputText/>
+
+
+                                             
+                                    </h:panelGrid>  
+                                    <p:commandButton  class="Fs16 OrangeButton" icon="ui-icon-close fa fa-close Fs14 White" id="cancel" value="Annuler" actionListener="#{TypemoduleBean.cancel(actionEvent)}" process="@form" style="right: 10%" onclick="PF('typeAjout').hide();"/>
+                                    <p:commandButton class="Fs16 GreenButton"   update="formule:tabe:typeformation:afficheTabM:ajouTabM,growl" icon="ui-icon-check fa fa-check Fs14 White" id="ajouter" value="Ajouter" actionListener="#{TypemoduleBean.save(actionEvent)}" process="@form" style="left:15%" onclick="PF('typeAjout').hide();">
+
+                                               <p:confirm header="Confirmation" message="Voulez vous vraiment enrégistrer cet abonnement?" icon="ui-icon-alert" />
+                                                </p:commandButton>
+                                         
+                                            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                                                    <p:commandButton value="OUI" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                                    <p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                                </p:confirmDialog> 
+                                </p:fieldset>
+                           
+                        </center>
+                    </h:form>
+                </p:dialog>
+            </h:form>
+            <h:form id="afficheTabM">
+                <p:growl id="gwl" showSummary="true" life="4000"/>
+                    <p:contextMenu for="ajouTabM" >
+                        <p:menuitem  style="color: #00AEEF" value="modifier" process="@form" update=":formule:tabe:typeformation:ajoutTyp:form:wi" action="#{TypeformationBean.getObject(missione.id)}"  title="Editer" onclick="PF('typeAjout').show();" id="Editer"/>
+                    </p:contextMenu>
+                <p:dataTable  value="#{TypemoduleBean.typemodules}" var="missione" id="ajouTabM"
+                                  emptyMessage="profil non trouvé" paginator="true" rows="10"
+                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks}
+                                  {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                  rowsPerPageTemplate="2,5,10,15"
+                                  rowKey="#{missione.id}" selection="#{missione}" selectionMode="single" reflow="true" scrollable="true"
+                                  style="border-color: #00AEEF;width:80%;alignment-adjust:middle" >
+
+                        <f:facet name="header">
+                            <h:outputText value="LISTE DES TYPES D'ABONNEMENTS"/>
+                        </f:facet>
+
+                        <p:column headerText="Libelle" filterBy="#{missione.libelle}" filterMatchMode="contains">
+                            <h:outputText value="#{missione.libelle}"/>
+                        </p:column>
+                    <p:column headerText="Prix" filterBy="#{missione.prixmodule}" filterMatchMode="contains">
+                        <h:outputText value="#{missione.prixmodule}"/>
+                        </p:column>
+                    <p:column headerText="Duree" filterBy="#{missione.duree}" filterMatchMode="contains">
+                        <h:outputText value="#{missione.duree}"/>
+                        </p:column>
+                    </p:dataTable>
+           
+            </h:form>
+
+        </h:form>
+    </p:tab>
+
+</ui:composition>

@@ -1,0 +1,25 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+        <div class="Container100">
+            <div class="Card TexAlCenter">
+                <h3 class="BigTopic">GESTION DES ANNEES</h3>
+                 <h:form id="formule">
+                     <center>
+                     <p:tabView  dynamic="true" cache="true" scrollable="false" id="tabe" style="border-color: #00c9b6;width:80%">
+                            <ui:include src="/modules/Annee.xhtml"/>
+                            <ui:include src="/modules/AnneeVal.xhtml"/>
+                        </p:tabView>
+                     </center>
+                    </h:form>
+            </div>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

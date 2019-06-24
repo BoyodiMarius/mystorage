@@ -1,0 +1,548 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <p:tab title="Inscription"  >
+        <h:form id="inscription">
+            <h:form id="ajoutInscription">
+                <br/>
+                <h:form>
+                    <p:commandButton value="Imprimer liste des inscris" icon="fa fa-list-alt" iconPos="left" style="alignment-adjust:auto; font-family: cursive;" actionListener="#{afficherEtatManagedBean.inscri()}" oncomplete="PF('modal6').show()"/>
+                    <p:dialog  responsive="true"  positionType="absolute" fitViewport="true" minimizable="true" maximizable="true"  resizable="true"  header="INSCRIPTION" id="md5" showEffect="slide" hideEffect="clip" widgetVar="modal6" modal="true" width="900">
+                        <table width="100%">
+                            <tr>
+                                <td height="560px" width="100%">
+                                    <p:media id="imgpdf6" cache="false" value="/servlets/report/PDF" width="100%" height="600px" player="pdf"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </p:dialog> 
+                </h:form>
+
+                <p:commandButton    value="Recherche des inscris" onclick="PF('InscrisRecherche').show();" process="@form" style="alignment-adjust:auto; font-family: cursive;"
+                                    icon="fa fa-plus" iconPos="left"/> 
+                <p:commandButton value="Nouvelle inscription" onclick="PF('inscriptionAjouts').show();" action="#{InscriptionBean.nouveau(actionEvent)}" process="@this" style="alignment-adjust:auto; font-family: cursive;"
+                                 icon="fa fa-plus" iconPos="left" /> 
+                <p></p>
+                <p:dialog widgetVar="inscriptionAjouts"  positionType="absolute" fitViewport="true" responsive="true" minimizable="true" maximizable="true"  closable="true" resizable="true" dynamic="true" id="editP" modal="true" minHeight="150" minWidth="150" width="1000" position="center">
+                    <p:fieldset legend="Formulaire d'insciption" style=" margin-left:10px ; color:#C8D9E2; margin-bottom:10px">
+                        <h:form id="modalForm">
+                            <p:growl id="growl" showSummary="true" life="4000"/>
+                            <center>
+                                <h:panelGrid  columns="4" columnClasses="label, value" id="identitePanel" style="background-color: #F3F5F7;border-radius:10px ; width:100% ; margin-bottom:3%;alignment-adjust: auto;padding-left:3%;padding-bottom:5%">
+                                    <h:outputText/>   
+                                    <h:outputText/>
+                                    <h:outputText/>   
+                                    <h:outputText/>
+                                    <h:outputText/>   
+                                    <h:outputText/>
+                                    <h:outputText/>   
+                                    <h:outputText/>
+                                    <h:outputText/>
+                                    <h:outputText/>   
+                                    <h:outputText/>
+                                    <h:outputText/>   
+                                    <h:outputText/>
+                                    <h:outputText/>   
+                                    <h:outputText/>
+                                    <h:outputText/>   
+                                    <h:outputText/>
+                                    <h:outputText/>   
+                                    <h:outputText/>
+                                    <h:outputText/>   
+                                    <h:outputText/>
+                                    <h:outputText/>   
+                                    <h:outputText/>
+                                    <h:outputText/>   
+                                    <h:outputText/>
+                                    <h:inputHidden value="#{InscriptionBean.inscription.id}"/>
+                                    <h:outputText/>
+                                    <h:outputText/>
+                                    <p:outputLabel value="Nom:"  for="nom" style="font-family: initial;font-size: large;font-style: inherit" />
+                                    <p:inputText id="nom" required="true" value="#{InscriptionBean.particulier.nom}" style=" width: 85%"/>
+                                    
+                                   
+                                    <p:outputLabel value="Prénoms:" for="prenom" style="font-family: initial;font-size: large;font-style: inherit" />
+                                    <p:inputText id="prenom" required="true"  value="#{InscriptionBean.particulier.prenom}" style=" width: 85%"/>
+
+                                    <p:outputLabel for="datenaiss"  value="Date de naissance:"  />
+                                    <p:calendar id="datenaiss" mindate="4/1/14" maxdate="7/1/14" value="#{InscriptionBean.particulier.datenaiss}" size="31"/>
+                                    <p:outputLabel value="Lieu de naissance:" for="lieu_naiss" style="font-family: initial;font-size: large;font-style: inherit"/>
+                                    <p:inputText id="lieu_naiss" value="#{InscriptionBean.particulier.lieunaiss}" style=" width: 85%"/>
+                                    <p:outputLabel value="Sexe:" for="sexe" style="font-family: initial;font-size: large;font-style: inherit"/>
+                                    <p:selectOneRadio id="sexe" value="#{InscriptionBean.particulier.sexe}" style=" width: 85%">
+                                        <f:selectItem itemLabel="Masculin" itemValue="Masculin"/>
+                                        <f:selectItem itemLabel="Féminin" itemValue="Feminin"/>
+                                    </p:selectOneRadio> 
+                                    <p:outputLabel value="Email:" for="mail" style="font-family: initial;font-size: large;font-style: inherit"/>
+                                    <p:inputText id="mail" required="true" value="#{InscriptionBean.particulier.email}" style=" width: 85%">
+                                        <!--                                        <f:validator validatorId="custom.emailValidator"/>-->
+                                    </p:inputText>
+                                    <p:outputLabel value="Code Postal:" for="bp" style="font-family: initial;font-size: large;font-style: inherit"/>
+                                    <p:inputText id="bp" placeholder="Renseigner votre boite postale" value="#{InscriptionBean.particulier.codepostal}" style=" width: 88%"/>
+                                    <p:outputLabel value="Téléphone:" for="tel" style="font-family: initial;font-size: large;font-style: inherit" />
+                                    <p:inputMask mask="99 99 99 99 99" required="true"  id="tel" placeholder="Renseigner votre téléphone"  requiredMessage="saisir le numéro de téléphone" value="#{InscriptionBean.particulier.telephone}" style=" width: 85.5%"/>  
+
+                                    <p:outputLabel value="Ville:" for="quartier" style="font-family: initial;font-size: large;font-style: inherit"/>
+                                    <p:inputText id="quartier" value="#{InscriptionBean.particulier.ville}" style=" width: 88%"/>
+                                    <p:outputLabel value="Type d'abonnements:" for="typeforma"   style="font-family: initial;font-size: large;font-style: inherit"/>
+                                    <p:selectOneMenu  id="typeforma" value="#{InscriptionBean.typemodule}"
+                                                      filter="true" filterMatchMode="startsWith"
+                                                      converter="omnifaces.SelectItemsIndexConverter" required="true" requiredMessage="Renseignez le type d'abonnements " style="font-family: initial;font-size: large;font-style: inherit;width:85.5%">
+                                        <f:selectItem itemLabel="Choisir le type d'abonnements" noSelectionOption="true"/>
+                                        <f:selectItems value="#{InscriptionBean.typesmodules}" var="typ" itemLabel="#{typ.libelle}" itemValue="#{typ}"/>
+                                    </p:selectOneMenu>
+                                    <p:outputLabel value="Pays d'origine"  style="font-family: initial;font-size: large;font-style: inherit"  />
+                                    <p:selectOneMenu value="#{InscriptionBean.particulier.pays}" required="true" requiredMessage="Veuillez choisir votre pays d'origine" style="width:87%"   filter="true" filterMatchMode="startsWith">
+
+                                        <f:selectItem itemLabel="Choisir un pays" noSelectionOption="true"/>
+                                        <f:selectItem  itemValue="Afghanistan" itemLabel="Afghanistan"/>
+                                        <f:selectItem  itemValue="Afrique Centrale" itemLabel="Afrique Centrale"  />
+                                        <f:selectItem  itemValue="Afrique du_sud" itemLabel="Afrique du Sud"/>
+                                        <f:selectItem  itemValue="Albanie" itemLabel="Albanie" />
+                                        <f:selectItem  itemValue="Algerie" itemLabel="Algerie"  />
+                                        <f:selectItem  itemValue="Allemagne" itemLabel="Allemagne"  />
+                                        <f:selectItem  itemValue="Andorre" itemLabel="Andorre" />
+                                        <f:selectItem  itemValue="Angola" itemLabel="Angola" />
+                                        <f:selectItem  itemValue="Anguilla" itemLabel="Anguilla"  />
+                                        <f:selectItem  itemValue="Arabie_Saoudite" itemLabel="Arabie_Saoudite"/>
+                                        <f:selectItem  itemValue="Argentine" itemLabel="Argentine" />
+                                        <f:selectItem  itemValue="Armenie" itemLabel="Armenie" />
+                                        <f:selectItem  itemValue="Australie" itemLabel="Australie" />
+                                        <f:selectItem  itemValue="Autriche" itemLabel="Autriche" />
+                                        <f:selectItem  itemValue="Azerbaidjan" itemLabel="Azerbaidjan"  />
+
+                                        <f:selectItem  itemValue="Bahamas" itemLabel="Bahamas"  />
+                                        <f:selectItem  itemValue="Bangladesh" itemLabel="Bangladesh"  />
+                                        <f:selectItem  itemValue="Barbade" itemLabel="Barbade"  />
+                                        <f:selectItem  itemValue="Bahrein" itemLabel="Bahrein" />
+                                        <f:selectItem  itemValue="Belgique" itemLabel="Belgique" />
+                                        <f:selectItem  itemValue="Belize" itemLabel="Belize" />
+                                        <f:selectItem  itemValue="Benin" itemLabel="Benin"  />
+                                        <f:selectItem  itemValue="Bermudes" itemLabel="Bermudes" />
+                                        <f:selectItem  itemValue="Bielorussie" itemLabel="Bielorussie" />
+                                        <f:selectItem  itemValue="Bolivie" itemLabel="Bolivie"/>
+                                        <f:selectItem  itemValue="Botswana" itemLabel="Botswana"  />
+                                        <f:selectItem  itemValue="Bhoutan" itemLabel="Bhoutan" />
+                                        <f:selectItem  itemValue="Boznie Herzegovine" itemLabel="Boznie Herzegovine" />
+                                        <f:selectItem  itemValue="Bresil" itemLabel="Bresil"  />
+                                        <f:selectItem  itemValue="Brunei" itemLabel="Brunei" />
+                                        <f:selectItem  itemValue="Bulgarie" itemLabel="Bulgarie"  />
+                                        <f:selectItem  itemValue="Burkina Faso" itemLabel="Burkina Faso"  />
+                                        <f:selectItem  itemValue="Burundi" itemLabel="Burundi"  />
+
+                                        <f:selectItem  itemValue="Caiman" itemLabel="Caiman" />
+                                        <f:selectItem  itemValue="Cambodge" itemLabel="Cambodge" />
+                                        <f:selectItem  itemValue="Cameroun" itemLabel="Cameroun" />
+                                        <f:selectItem  itemValue="Canada" itemLabel="Canada"  />
+                                        <f:selectItem  itemValue="Canaries"  itemLabel="Canaries"  />
+                                        <f:selectItem  itemValue="Cap vert" itemLabel="Cap Vert"  />
+                                        <f:selectItem  itemValue="Chili" itemLabel="Chili" />
+                                        <f:selectItem  itemValue="Chine" itemLabel="Chine" />
+                                        <f:selectItem  itemValue="Chypre" itemLabel="Chypre"  />
+                                        <f:selectItem  itemValue="Colombie" itemLabel="Colombie"  />
+                                        <f:selectItem  itemValue="Comores" itemLabel="Comores" />
+                                        <f:selectItem  itemValue="Congo" itemLabel="Congo"  />
+                                        <f:selectItem  itemValue="Congo democratique" itemLabel="Congo democratique" />
+                                        <f:selectItem  itemValue="Cook" itemLabel="Cook" />
+                                        <f:selectItem  itemValue="Coree du Nord" itemLabel="Coree du Nord" />
+                                        <f:selectItem  itemValue="Coree du Sud" itemLabel="Coree du Sud" />
+                                        <f:selectItem  itemValue="Cote d'Ivoire" itemLabel="CÃ´te d'Ivoire" />
+                                        <f:selectItem  itemValue="Croatie" itemLabel="Croatie" />
+                                        <f:selectItem  itemValue="Cuba" itemLabel="Cuba" />
+
+                                        <f:selectItem  itemValue="Danemark" itemLabel="Danemark" />
+                                        <f:selectItem  itemValue="Djibouti" itemLabel="Djibouti" />
+                                        <f:selectItem  itemValue="Dominique" itemLabel="Dominique"  />
+
+                                        <f:selectItem  itemValue="Egypte" itemLabel="Egypte" />
+                                        <f:selectItem  itemValue="Emirats Arabes Unis" itemLabel="Emirats Arabes Unis" />
+                                        <f:selectItem  itemValue="Equateur" itemLabel="Equateur" />
+                                        <f:selectItem  itemValue="Erythree" itemLabel="Erythree" />
+                                        <f:selectItem  itemValue="Espagne" itemLabel="Espagne" />
+                                        <f:selectItem  itemValue="Estonie" itemLabel="Estonie" />
+                                        <f:selectItem  itemValue="Etats Unis" itemLabel="Etats Unis" />
+                                        <f:selectItem  itemValue="Ethiopie" itemLabel="Ethiopie" />
+
+                                        <f:selectItem  itemValue="Falkland" itemLabel="Falkland" />
+                                        <f:selectItem  itemValue="Feroe" itemLabel="Feroe" />
+                                        <f:selectItem  itemValue="Fidji" itemLabel="Fidji" />
+                                        <f:selectItem  itemValue="Finlande" itemLabel="Finlande" />
+                                        <f:selectItem  itemValue="France"  itemLabel="France" />
+
+                                        <f:selectItem  itemValue="Gabon" itemLabel="Gabon" />
+                                        <f:selectItem  itemValue="Gambie" itemLabel="Gambie" />
+                                        <f:selectItem  itemValue="Georgie" itemLabel="Georgie" />
+                                        <f:selectItem  itemValue="Ghana" itemLabel="Ghana" />
+                                        <f:selectItem  itemValue="Gibraltar" itemLabel="Gibraltar" />
+                                        <f:selectItem  itemValue="Grece" itemLabel="Grece" />
+                                        <f:selectItem  itemValue="Grenade" itemLabel="Grenade" />
+                                        <f:selectItem  itemValue="Groenland" itemLabel="Groenland" />
+                                        <f:selectItem  itemValue="Guadeloupe" itemLabel="Guadeloupe" />
+                                        <f:selectItem  itemValue="Guam" itemLabel="Guam" />
+                                        <f:selectItem  itemValue="Guatemala" itemLabel="Guatemala" />
+                                        <f:selectItem  itemValue="Guernesey" itemLabel="Guernesey" />
+                                        <f:selectItem  itemValue="Guinee" itemLabel="Guinee" />
+                                        <f:selectItem  itemValue="Guinee Bissau" itemLabel="Guinee Bissau" />
+                                        <f:selectItem  itemValue="Guinee equatoriale" itemLabel="Guinee Equatoriale" />
+                                        <f:selectItem  itemValue="Guyana" itemLabel="Guyana"/> 
+                                        <f:selectItem  itemValue="Guyane Francaise " itemLabel="Guyane Francaise" />
+
+                                        <f:selectItem  itemValue="Haiti" itemLabel="Haiti" />
+                                        <f:selectItem  itemValue="Hawaii" itemLabel="Hawaii" />
+                                        <f:selectItem  itemValue="Honduras" itemLabel="Honduras" />
+                                        <f:selectItem  itemValue="Hong Kong" itemLabel="Hong Kong" />
+                                        <f:selectItem  itemValue="Hongrie" itemLabel="Hongrie" />
+
+                                        <f:selectItem  itemValue="Inde" itemLabel="Inde" />
+                                        <f:selectItem  itemValue="Indonesie" itemLabel="Indonesie" />
+                                        <f:selectItem  itemValue="Iran" itemLabel="Iran" />
+                                        <f:selectItem  itemValue="Iraq" itemLabel="Iraq" />
+                                        <f:selectItem  itemValue="Irlande" itemLabel="Irlande" />
+                                        <f:selectItem  itemValue="Islande" itemLabel="Islande" />
+                                        <f:selectItem  itemValue="Israel" itemLabel="Israel" />
+                                        <f:selectItem  itemValue="Italie" itemLabel="italie" />
+
+                                        <f:selectItem  itemValue="Jamaique" itemLabel="Jamaique" />
+                                        <f:selectItem  itemValue="Jan Mayen" itemLabel="Jan Mayen" />
+                                        <f:selectItem  itemValue="Japon" itemLabel="Japon" />
+                                        <f:selectItem  itemValue="Jersey" itemLabel="Jersey"/>
+                                        <f:selectItem  itemValue="Jordanie" itemLabel="Jordanie" />
+
+                                        <f:selectItem  itemValue="Kazakhstan" itemLabel="Kazakhstan" />
+                                        <f:selectItem  itemValue="Kenya" itemLabel="Kenya" />
+                                        <f:selectItem  itemValue="Kirghizstan" itemLabel="Kirghizistan" />
+                                        <f:selectItem  itemValue="Kiribati" itemLabel="Kiribati"/>
+                                        <f:selectItem  itemValue="Koweit" itemLabel="Koweit"/>
+
+                                        <f:selectItem  itemValue="Laos" itemLabel="Laos" />
+                                        <f:selectItem  itemValue="Lesotho" itemLabel="Lesotho" />
+                                        <f:selectItem  itemValue="Lettonie" itemLabel="Lettonie" />
+                                        <f:selectItem  itemValue="Liban" itemLabel="Liban" />
+                                        <f:selectItem  itemValue="Liberia" itemLabel="Liberia" />
+                                        <f:selectItem  itemValue="Liechtenstein" itemLabel="Liechtenstein" />
+                                        <f:selectItem  itemValue="Lituanie" itemLabel="Lituanie" />
+                                        <f:selectItem  itemValue="Luxembourg" itemLabel="Luxembourg" />
+                                        <f:selectItem  itemValue="Lybie" itemLabel="Lybie"/>
+
+                                        <f:selectItem  itemValue="Macao" itemLabel="Macao" />
+                                        <f:selectItem  itemValue="Macedoine" itemLabel="Macedoine" />
+                                        <f:selectItem  itemValue="Madagascar" itemLabel="Madagascar" />
+                                        <f:selectItem  itemValue="MadÃ¨re" itemLabel="MadÃ¨re" />
+                                        <f:selectItem  itemValue="Malaisie" itemLabel="Malaisie" />
+                                        <f:selectItem  itemValue="Malawi" itemLabel="Malawi" />
+                                        <f:selectItem  itemValue="Maldives" itemLabel="Maldives" />
+                                        <f:selectItem  itemValue="Mali" itemLabel="Mali" />
+                                        <f:selectItem  itemValue="Malte" itemLabel="Malte" />
+                                        <f:selectItem  itemValue="Man" itemLabel="Man"/>
+                                        <f:selectItem  itemValue="Mariannes du Nord" itemLabel="Mariannes du Nord"/>
+                                        <f:selectItem  itemValue="Maroc" itemLabel="Maroc" />
+                                        <f:selectItem  itemValue="Marshall" itemLabel="Marshall"/>
+                                        <f:selectItem  itemValue="Martinique" itemLabel="Martinique" />
+                                        <f:selectItem  itemValue="Maurice" itemLabel="Maurice" />
+                                        <f:selectItem  itemValue="Mauritanie" itemLabel="Mauritanie" />
+                                        <f:selectItem  itemValue="Mayotte" itemLabel="Mayotte" />
+                                        <f:selectItem  itemValue="Mexique" itemLabel="Mexique"/>
+                                        <f:selectItem  itemValue="Micronesie" itemLabel="Micronesie" />
+                                        <f:selectItem  itemValue="Midway" itemLabel="Midway"/>
+                                        <f:selectItem  itemValue="Moldavie" itemLabel="Moldavie"/>
+                                        <f:selectItem  itemValue="Monaco" itemLabel="Monaco" />
+                                        <f:selectItem  itemValue="Mongolie" itemLabel="Mongolie"/>
+                                        <f:selectItem  itemValue="Montserrat" itemLabel="Montserrat" />
+                                        <f:selectItem  itemValue="Mozambique" itemLabel="Mozambique" />
+
+                                        <f:selectItem  itemValue="Namibie" itemLabel="Namibie"/>
+                                        <f:selectItem  itemValue="Nauru" itemLabel="Nauru"/>
+                                        <f:selectItem  itemValue="Nepal" itemLabel="Nepal"/>
+                                        <f:selectItem  itemValue="Nicaragua" itemLabel="Nicaragua"/>
+                                        <f:selectItem  itemValue="Niger" itemLabel="Niger"/>
+                                        <f:selectItem  itemValue="Nigeria" itemLabel="Nigeria"/>
+                                        <f:selectItem  itemValue="Niue" itemLabel="Niue"/>
+                                        <f:selectItem  itemValue="Norfolk" itemLabel="Norfolk" />
+                                        <f:selectItem  itemValue="Norvege" itemLabel="Norvege"/>
+                                        <f:selectItem  itemValue="Nouvelle Caledonie" itemLabel="Nouvelle Caledonie"/>
+                                        <f:selectItem  itemValue="Nouvelle Zelande" itemLabel="Nouvelle Zelande"/>
+
+                                        <f:selectItem  itemValue="Oman" itemLabel="Oman"/>
+                                        <f:selectItem  itemValue="Ouganda" itemLabel="Ouganda"/> 
+                                        <f:selectItem  itemValue="Ouzbekistan" itemLabel="Ouzbekistan"  />
+                                        <f:selectItem  itemValue="Pakistan" itemLabel="Pakistan" />
+                                        <f:selectItem  itemValue="Palau" itemLabel="Palau" />
+                                        <f:selectItem  itemValue="Palestine" itemLabel="Palestine" />
+                                        <f:selectItem  itemValue="Panama" itemLabel="Panama"/>
+                                        <f:selectItem  itemValue="Papouasie Nouvelle Guinee" itemLabel="Papouasie Nouvelle Guinee" />
+                                        <f:selectItem  itemValue="Paraguay" itemLabel="Paraguay" />
+                                        <f:selectItem  itemValue="Pays Bas" itemLabel="Pays Bas" />
+                                        <f:selectItem  itemValue="Perou" itemLabel="Perou" />
+                                        <f:selectItem  itemValue="Philippines" itemLabel="Philippines" />
+                                        <f:selectItem  itemValue="Pologne" itemLabel="Pologne" />
+                                        <f:selectItem  itemValue="Polynesie" itemLabel="Polynesie" />
+                                        <f:selectItem  itemValue="Porto Rico" itemLabel="Porto Rico"/>
+                                        <f:selectItem  itemValue="Portugal" itemLabel="Portugal" />
+
+                                        <f:selectItem  itemValue="Qatar" itemLabel="Qatar" />
+
+                                        <f:selectItem  itemValue="Republique Dominicaine" itemLabel="Republique Dominicaine"/> 
+                                        <f:selectItem  itemValue="Republique Tcheque" itemLabel="Republique Tcheque"/>
+                                        <f:selectItem  itemValue="Reunion" itemLabel="Reunion"  />
+                                        <f:selectItem  itemValue="Roumanie" itemLabel="Roumanie" />
+                                        <f:selectItem  itemValue="Royaume Uni" itemLabel="Royaume Uni" />
+                                        <f:selectItem  itemValue="Russie" itemLabel="Russie"/>
+                                        <f:selectItem  itemValue="Rwanda" itemLabel="Rwanda" />
+
+                                        <f:selectItem  itemValue="Sahara Occidental" itemLabel="Sahara Occidental" />
+                                        <f:selectItem  itemValue="Sainte Lucie" itemLabel="Sainte Lucie"/>
+                                        <f:selectItem  itemValue="Saint Marin" itemLabel="Saint Marin" />
+                                        <f:selectItem  itemValue="Salomon" itemLabel="Salomon" />
+                                        <f:selectItem  itemValue="Salvador" itemLabel="Salvador" />
+                                        <f:selectItem  itemValue="Samoa Occidentales" itemLabel="Samoa Occidentales" />
+                                        <f:selectItem  itemValue="Samoa Americaine" itemLabel="Samoa Americaine" />
+                                        <f:selectItem  itemValue="Sao Tome et Principe" itemLabel="Sao Tome et Principe"/>
+                                        <f:selectItem  itemValue="Senegal" itemLabel="Senegal" />
+                                        <f:selectItem  itemValue="Seychelles" itemLabel="Seychelles"  />
+                                        <f:selectItem  itemValue="Sierra Leone" itemLabel="Sierra Leone"  />
+                                        <f:selectItem  itemValue="Singapour" itemLabel="Singapour"/>
+                                        <f:selectItem  itemValue="Slovaquie" itemLabel="Slovaquie" />
+                                        <f:selectItem  itemValue="Slovenie" itemLabel="Slovenie"/>
+                                        <f:selectItem  itemValue="Somalie" itemLabel="Somalie"/>
+                                        <f:selectItem  itemValue="Soudan" itemLabel="Soudan" />
+                                        <f:selectItem  itemValue="Sri Lanka" itemLabel="Sri Lanka" />
+                                        <f:selectItem  itemValue="Suede" itemLabel="Suede" />
+                                        <f:selectItem  itemValue="Suisse"  itemLabel="Suisse" />
+                                        <f:selectItem  itemValue="Surinam" itemLabel="Surinam" />
+                                        <f:selectItem  itemValue="Swaziland" itemLabel="Swaziland" />
+                                        <f:selectItem  itemValue="Syrie" itemLabel="Syrie"/>
+
+                                        <f:selectItem  itemValue="Tadjikistan" itemLabel="Tadjikistan"/>
+                                        <f:selectItem  itemValue="Taiwan" itemLabel="Taiwan"/>
+                                        <f:selectItem  itemValue="Togo" itemLabel="Tonga"  />
+                                        <f:selectItem  itemValue="Tanzanie" itemLabel="Tanzanie"  />
+                                        <f:selectItem  itemValue="Tchad" itemLabel="Tchad" />
+                                        <f:selectItem  itemValue="Thailande" itemLabel="Thailande" />
+                                        <f:selectItem  itemValue="Tibet" itemLabel="Tibet" />
+                                        <f:selectItem  itemValue="Timor Oriental" itemLabel="Timor Oriental"/>
+                                        <f:selectItem  itemValue="Togo" itemLabel="Togo"/>
+                                        <f:selectItem  itemValue="Trinite et Tobago" itemLabel="Trinite et Tobago" />
+                                        <f:selectItem  itemValue="Tristan da cunha" itemLabel="Tristan de cuncha" />
+                                        <f:selectItem  itemValue="Tunisie" itemLabel="Tunisie" />
+                                        <f:selectItem  itemValue="Turkmenistan" itemLabel="Turmenistan" />
+                                        <f:selectItem  itemValue="Turquie" itemLabel="Turquie" />
+
+                                        <f:selectItem  itemValue="Ukraine" itemLabel="Ukraine" />
+                                        <f:selectItem  itemValue="Uruguay" itemLabel="Uruguay" />
+
+                                        <f:selectItem  itemValue="Vanuatu" itemLabel="Vanuatu" />
+                                        <f:selectItem  itemValue="Vatican" itemLabel="Vatican" />
+                                        <f:selectItem  itemValue="Venezuela" itemLabel="Venezuela" />
+                                        <f:selectItem  itemValue="Vierges Americaines" itemLabel="Vierges Americaines" />
+                                        <f:selectItem  itemValue="Vierges_Britanniques" itemLabel="Vierges_Britanniques" />
+                                        <f:selectItem  itemValue="Vietnam" itemLabel="Vietnam" />
+
+                                        <f:selectItem  itemValue="Wake" itemLabel="Wake" />
+                                        <f:selectItem  itemValue="Wallis et Futuma" itemLabel="Wallis et Futuma" />
+
+                                        <f:selectItem  itemValue="Yemen" itemLabel="Yemen"/>
+                                        <f:selectItem  itemValue="Yougoslavie" itemLabel="Yougoslavie"/>
+
+                                        <f:selectItem  itemValue="Zambie" itemLabel="Zambie" />
+                                        <f:selectItem  itemValue="Zimbabwe" itemLabel="Zimbabwe" />
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Situation matrimoniale:" for="sit" style="font-family: initial;font-size: large;font-style: inherit" />
+                                    <p:selectOneMenu id="sit" value="#{InscriptionBean.particulier.situationmatrimoniale}" 
+                                                     filter="true" filterMatchMode="startsWith"
+                                                     converter="omnifaces.SelectItemsIndexConverter"  style=" width:85%">  
+                                        <f:selectItem itemLabel="Choisissez votre situation" noSelectionOption="true"/>
+                                        <f:selectItem itemLabel="Célibataire" itemValue="Célibataire" />
+                                        <f:selectItem itemLabel="Marié(e)" itemValue="Marié(e)" />
+                                        <f:selectItem itemLabel="veuf(ve)" itemValue="veuf(ve)" />
+                                    </p:selectOneMenu>
+
+
+                                </h:panelGrid>
+
+                                <p:commandButton  class="Fs16 OrangeButton" icon="ui-icon-close fa fa-close Fs14 White" id="cancel" value="Annuler" actionListener="#{InscriptionBean.cancel(actionEvent)}" process="@this" style="display:inline-block;margin-top:5px;right:1%" onclick="PF('inscriptionAjouts').hide();"/>
+                                <p:commandButton class="Fs16 GreenButton" icon="ui-icon-check fa fa-check Fs14 White"  update=":formule:tabe:inscription:afficheTab:ajouTab,growl" id="ajouter" value="Valider"  process="@form" actionListener="#{InscriptionBean.save(actionEvent)}" style="display:inline-block;margin-top:1px;left:1%" onclick="PF('inscriptionAjouts').hide();">
+                                       <p:confirm header="Confirmation" message="Voulez vous vraiment effectuez cette inscription?"  class="Aqua"  icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                 
+                                    <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                                            <p:commandButton value="OUI" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check fa fa-check Fs14 White"  />
+                                            <p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close fa fa-close Fs14 White" />
+                                        </p:confirmDialog> 
+
+                            </center>
+                        </h:form>
+                    </p:fieldset>
+                </p:dialog>
+                <h:form id="Professeurrech">
+
+                    <p:dialog  responsive="true" fitViewport="true" positionType="absolute" minimizable="true" maximizable="true"  widgetVar="InscrisRecherche" closable="true" dynamic="true" showEffect="slide" hideEffect="clip" resizable="true" id="editP" modal="true" minHeight="150" minWidth="150" width="800" position="center">    
+                        <h:form id="form">
+                            <p:growl id="growl1" showSummary="true" life="4000"/>
+                            <p:fieldset legend="Recherche des inscris" style=" margin-left:10px ; color:#C8D9E2; margin-bottom:10px" widgetVar="professeur2Ajout"  >
+                                <br></br>
+                                <h:panelGrid id="wi"  columns="2" columnClasses="label, value" style="background-color: #F3F5F7;border-radius:10px ; width:100% ; margin-bottom:3%;alignment-adjust: auto;padding-left:3%;padding-bottom:5%  ">     
+
+                                    <p:outputLabel value="Annee" for="ann" style="font-family: initial;font-size: large;font-style: inherit" />
+                                    <p:selectOneMenu id="ann" value="#{InscriptionBean.annee}"  
+                                                     filter="true"  converter="omnifaces.SelectItemsIndexConverter" filterMatchMode="startsWith"
+                                                     required="true" requiredMessage="Veuillez choisir une année" style="width: 90%">
+                                        <p:ajax listener="#{InscriptionBean.onAnneChange()}" update="tab" />
+                                        <f:selectItem itemLabel="Année" noSelectionOption="true"  />
+                                        <f:selectItems value="#{InscriptionBean.annet}" var="prod" itemLabel="#{prod.libelle}" itemValue="#{prod}" />
+                                    </p:selectOneMenu>
+
+                                    <h:outputText/>
+                                    <p:dataTable id="tab" value="#{InscriptionBean.proms}" var="types" style="width:100%">
+
+                                        <p:column headerText="Promotion" >
+                                            <h:outputText value="#{types.libelle}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <p:commandButton class="Fs16 GreenButton" process="@this"  value="Voir Etat" actionListener="#{afficherEtatManagedBean.RechInscris(types)}" style="left:1%" oncomplete="PF('modal2').show()" />
+                                        </p:column>
+
+                                    </p:dataTable>
+
+                                </h:panelGrid>
+                            </p:fieldset>
+
+                        </h:form>
+                    </p:dialog>
+                    <p:dialog responsive="true"  resizable="true" fitViewport="true" positionType="absolute"     header="INSCRIPTION" id="md4" showEffect="slide" hideEffect="clip" widgetVar="modal2" modal="true" width="900">
+
+                        <table width="100%">
+                            <tr>
+                                <td height="560px" width="100%">
+                                    <p:media id="imgpdf4" cache="false" value="/servlets/report/PDF" width="100%" height="600px" player="pdf"/>
+                                </td>
+                            </tr>
+
+                        </table>
+
+                    </p:dialog>    
+
+                </h:form>
+            </h:form>
+            <h:form id="afficheTab">
+                <p:growl id="gwl" showSummary="true" life="4000"/>
+                <!--                <p:outputLabel value="Promotion:" for="prom" style="font-family: initial;font-size: large;font-style: inherit" />
+                                                                        <p:selectOneMenu  id="prom" value="#{InscriptionBean.promotion}"
+                                                                                          filter="true" filterMatchMode="startsWith"
+                                                                                          converter="omnifaces.SelectItemsIndexConverter" style="font-family: initial;font-size: large;font-style: inherit;width:40%">
+                                                                            <f:selectItem itemLabel="Choisir la vague" noSelectionOption="true"/>
+                                                                            <f:selectItems value="#{InscriptionBean.prom}" var="typ" itemLabel="#{typ.libelle}" itemValue="#{typ}"/>
+                                                                        </p:selectOneMenu>-->
+
+                <p:dataTable  value="#{InscriptionBean.inscriptions}" var="formation" id="ajouTab"
+                              class="TexAlLeft Container100 Red" emptyMessage="Inscription non trouvé" 
+                              rows="5"  paginator="true" paginatorPosition="top" 
+                              styleClass="classTypeFiche"
+                              rowsPerPageTemplate="2,5,10,15"  reflow="true"
+                              style="border-color: #00AEEF" >
+                    <f:facet name="header">
+                        <h:outputText value="LISTE DES INSCRIPTIONS EN ATTENTE"/>
+                    </f:facet>
+                    <p:column id="usagerNom" headerText="Nom" filterBy="#{formation.particulier.nom}" filterMatchMode="contains">
+                        <h:outputText value="#{formation.particulier.nom}"/>
+                    </p:column>
+                    <p:column id="usagerPrenom" headerText="Prénoms" filterBy="#{formation.particulier.prenom}" filterMatchMode="contains">
+                        <h:outputText value="#{formation.particulier.prenom}"/>
+                    </p:column>
+                    <p:column id="datenaiss" headerText="Type d'abonnements" filterBy="#{formation.typemodule.libelle}" filterMatchMode="contains">
+                        <h:outputText value="#{formation.typemodule.libelle}"/>
+                    </p:column>
+                    <p:column id="mail" headerText="Email" filterBy="#{formation.particulier.email}" filterMatchMode="contains">
+                        <h:outputText value="#{formation.particulier.email}"/>
+                    </p:column>
+                    <p:column  id="accepter" >
+                        <p:commandButton process="@form" icon="ui-icon-check fa fa-check Fs14 White" value="Valider"  update="ajouTab" actionListener="#{InscriptionBean.valider(formation.id)}"  />
+                    </p:column>
+
+                    <p:column id="refus" >
+                        <p:commandButton process="@form" value="Rejeter" actionListener="#{InscriptionBean.Rejeter(formation.id)}" update="ajouTab"  />
+                    </p:column>
+
+
+                </p:dataTable>
+
+            </h:form>
+            <h:form>
+
+                <p:dataTable  value="#{InscriptionBean.payers}" var="forme" id="ajouTab"
+                              emptyMessage="Inscription non trouvé" 
+                              rows="5" scrollable="true"  paginator="true" paginatorPosition="top" 
+                              styleClass="classTypeFiche"
+                              rowsPerPageTemplate="2,5,10,15" reflow="true" 
+                              style="border-color: #00AEEF">
+                    <f:facet name="header">
+                        <h:outputText value="LISTE DES INSCRIPTIONS VALIDEES"/>
+                    </f:facet>
+                    <p:column id="usagerNom" headerText="Nom" filterBy="#{forme.particulier.nom}" filterMatchMode="exact">
+                        <h:outputText value="#{forme.particulier.nom}"/>
+                    </p:column>
+                    <p:column id="usagerPrenom" headerText="Prénoms" filterBy="#{forme.particulier.prenom}" filterMatchMode="exact">
+                        <h:outputText value="#{forme.particulier.prenom}"/>
+                    </p:column>
+                    <p:column id="datenaiss" headerText="Type d'abonnements" filterBy="#{forme.typemodule.libelle}" filterMatchMode="exact">
+                        <h:outputText value="#{forme.typemodule.libelle}"/>
+                    </p:column>
+                    <p:column id="mail" headerText="Email" filterBy="#{forme.particulier.email}" filterMatchMode="exact">
+                        <h:outputText value="#{forme.particulier.email}"/>
+                    </p:column>
+                    <p:column id="refus1"  >
+                        <p:commandButton  id="carDialog1"  value="voir Plus" action="#{InscriptionBean.lib(forme.id)}"     />
+
+                        <p:overlayPanel  id="carDialog"   for="carDialog1" dynamic="true" showEffect="fade"  hideEffect="fade" style="width:80%;left:1%">
+
+                            <p:dataTable value="#{InscriptionBean.particuliers}" var="item" scrollable="true" draggableColumns="true" draggableRows="true" 
+                                         style="border-color: #00AEEF">
+                                <f:facet name="header">
+                                    <h:outputText value="DETAILS DES PARTICULIERS INSCRIS"/>
+                                </f:facet>
+                                <p:column headerText="Nom et prénoms">
+
+                                    <h:outputText value="#{item.nom}#{EvaluerBean.espace}#{item.prenom}"/>
+                                </p:column>
+                                <p:column headerText="Ville:">
+
+                                    <h:outputText value="#{item.ville}"/>
+                                </p:column>
+
+
+                                <p:column  headerText="Code Postal:">
+                                    <h:outputText value="#{item.codepostal}"/>
+                                </p:column>
+                                <p:column  headerText="Pays:">
+                                    <h:outputText value="#{item.pays}"/>
+                                </p:column>
+                                <p:column  headerText="Situation:">
+                                    <h:outputText value="#{item.situationmatrimoniale}"/>
+                                </p:column>
+                                <p:column  headerText="Téléphone">
+                                    <h:outputText value="#{item.telephone}"/>
+                                </p:column>
+                                <p:column  headerText="Lieu de naissance">
+                                    <h:outputText value="#{item.lieunaiss}"/>
+                                </p:column>
+                                <p:column  headerText="Date de naissance:">
+                                    <h:outputText value="#{item.datenaiss}">
+                                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                                    </h:outputText>
+                                </p:column>
+                            </p:dataTable>
+                        </p:overlayPanel>
+                    </p:column>
+
+                </p:dataTable>
+
+
+
+            </h:form>
+        </h:form>
+    </p:tab>
+
+</ui:composition>

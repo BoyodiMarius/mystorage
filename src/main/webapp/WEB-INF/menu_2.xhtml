@@ -1,0 +1,18 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+   xmlns:pu="http://primefaces.org/avalon">
+
+
+    <h:form id="menuform">
+        <pu:menu widgetVar="me">
+            <p:menuitem id="om_paie" value="Mes Fichiers" icon="icon-bookmark" outcome="/mesfichiers.xhtml" />
+            <p:menuitem id="om_contacts1" value="Mes Paiements" icon="icon-bookmark" outcome="/mespaiements.xhtml" />
+
+        </pu:menu>
+    </h:form>
+
+
+</ui:composition>

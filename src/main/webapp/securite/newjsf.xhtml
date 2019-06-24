@@ -1,0 +1,29 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <p:tab title="Activer compte">
+        <h:form id="afficheTabP">
+            <p:growl id="growl" showSummary="true" life="4000"/>
+            <p:contextMenu for="ajouTabP" style="width:8%">
+                <p:menuitem style="color: #00AEEF" update=":formule:tabe:afficheTabP1:ajouTabP1,:formule:tabe:afficheTabP:ajouTabP,growl"  actionListener="#{personnelBean.activerPersonnel(personne.id)}" process="@form"  title="Editer" id="EditerPersonnel" value="Activer" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+            </p:contextMenu>
+            <p:dataTable  value="#{UtilisateurBean.utilisateurInactif()}" var="personne" id="ajouTabP" widgetVar="PersonnelTable"
+                          emptyMessage="Personnel non trouvé" paginator="true" rows="5"
+                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks}
+                          {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                          rowsPerPageTemplate="2,5,10,15" style="border-color: #00AEEF"
+                          rowKey="#{personne.id}" selection="#{personne}" selectionMode="single">
+                <p:column id="cabinetNom" headerText="Nom" filterBy="#{personne.nom}" filterMatchMode="exact" footerText="exacte">
+                    <h:outputText value="#{personne.nom}"/>
+                </p:column>
+                <p:column id="cabinetPrenom" headerText="Prenom" filterBy="#{personne.prenom}" filterMatchMode="startsWith" footerText="commence par">
+                    <h:outputText value="#{personne.prenom}"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </p:tab>
+
+
+</ui:composition>
