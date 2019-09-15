@@ -11,63 +11,12 @@
             <div class="nano">
                 <div class="nano-content menu-scroll-content">
                     <ui:fragment rendered="#{guestPreferences.profileMode == 'inline' and guestPreferences.menuLayout != 'menu-layout-static menu-layout-horizontal'}">
-                        <!--                        <div class="profile">
-                                                    <a id="profile-options" href="#">
-                                                        <p:graphicImage name="images/avatar.png" library="avalon-layout" styleClass="profile-image" style="border: 0 none"/>
-                                                        <span class="profile-name">Isabel Oliviera</span>
-                                                        <i class="fa fa-fw fa-caret-down"></i>
-                                                        <span class="profile-role">Marketing</span>
-                                                    </a>
-                                                </div>
-                        
-                                                <ul id="profile-menu" class="layout-menu">
-                                                    <li role="menuitem">
-                                                        <a href="#">
-                                                            <i class="fa fa-fw fa-user"></i>
-                                                            <span>Profile</span>
-                                                        </a>
-                                                        <div class="layout-menu-tooltip">
-                                                            <div class="layout-menu-tooltip-arrow"></div>
-                                                            <div class="layout-menu-tooltip-text">Profile</div>
-                                                        </div>
-                                                    </li>
-                                                    <li role="menuitem">
-                                                        <a href="#">
-                                                            <i class="fa fa-fw fa-user-secret"></i>
-                                                            <span>Privacy</span>
-                                                        </a>
-                                                        <div class="layout-menu-tooltip">
-                                                            <div class="layout-menu-tooltip-arrow"></div>
-                                                            <div class="layout-menu-tooltip-text">Privacy</div>
-                                                        </div>
-                                                    </li>
-                                                    <li role="menuitem">
-                                                        <a href="#">
-                                                            <i class="fa fa-fw fa-cog"></i>
-                                                            <span>Settings</span>
-                                                        </a>
-                                                        <div class="layout-menu-tooltip">
-                                                            <div class="layout-menu-tooltip-arrow"></div>
-                                                            <div class="layout-menu-tooltip-text">Settings</div>
-                                                        </div>
-                                                    </li>
-                                                    <li role="menuitem">
-                                                        <a href="#">
-                                                            <i class="fa fa-fw fa-sign-out"></i>
-                                                            <span>Logout</span>
-                                                        </a>
-                                                        <div class="layout-menu-tooltip">
-                                                            <div class="layout-menu-tooltip-arrow"></div>
-                                                            <div class="layout-menu-tooltip-text">Logout</div>
-                                                        </div>
-                                                    </li>
-                                                </ul>-->
                     </ui:fragment>
 
                     <pu:menu widgetVar="me">
-                        <p:submenu id="om_dashboards" icon="fa fa-fw fa-dashboard" label="Tableau de Bord">
-                            <p:menuitem id="om_dashboard" value="Statistiques" icon="fa fa-fw fa-home" outcome="/stat"/>
-                        </p:submenu>
+                      
+                            <p:menuitem id="om_dashboard" value="Tableau de bord" icon="fa fa-fw fa-dashboard" outcome="/stat.xhtmls"/>
+                     
 
                         <p:submenu id="om_hierarch" label="ADMINISTRATION" icon="fa fa-fw  fa-th-list">
                             <p:menuitem id="om_inscription" value="Inscription" icon="fa-jewel" outcome="/inscription.xhtml" />
@@ -93,17 +42,12 @@
                             <p:menuitem id="om_etat" value="Aspect Sécuritaire"   outcome="/securite.xhtml" icon="fa fa-fw fa-square"  />
                             <p:menuitem id="om_db_pm2" value="Utilisateur"  outcome="/utilisateur.xhtml" icon="fa fa-fw fa-user"/>
                         </p:submenu>
-                        <p:submenu id="om_default" label="Pages Systemes" icon="fa fa-fw fa-life-saver">
-                            <p:menuitem id="om_empty" value="Empty Page" icon="fa fa-fw fa-square-o" outcome="/empty" target="_blank" />
-                            <p:menuitem id="om_error" value="Error Page" icon="fa fa-fw fa-exclamation-circle" outcome="/error" target="_blank"/>
-                            <p:menuitem id="om_404" value="404 Page" icon="fa fa-fw fa-times" outcome="/404" target="_blank"/>
-                        </p:submenu>
                           <p:submenu id="am_customization" label="Adaptation de Menu" icon="fa fa-fw fa-bars">
                             <f:attribute name="badge" value="2" />
                             <p:menuitem id="custom1" value="Menu Statique" icon="fa fa-fw fa-bars" actionListener="#{guestPreferences.setMenuLayout('static')}" ajax="false"/>
                             <p:menuitem id="custom2" value="Overlay Menu" icon="fa fa-fw fa-bars" actionListener="#{guestPreferences.setMenuLayout('overlay')}" ajax="false"/>
                         </p:submenu>
-                        <p:submenu id="am_layout" label="Layout Colors" icon="fa fa-fw fa-fire">
+                        <p:submenu id="am_layout" label="Personnalisation du Menu" icon="fa fa-fw fa-fire">
                             <p:submenu id="am_layout_flat" label="Flat" icon="fa fa-fw fa-square-o">
                                 <p:menuitem id="am_layout_flat_1" value="Bleu" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setLayout('blue', false)}" ajax="false"/>
                                 <p:menuitem id="am_layout_flat_13" value="Light Blue" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setLayout('lightblue', false)}" ajax="false"/>

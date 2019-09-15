@@ -21,18 +21,18 @@
                                     <h:panelGrid id="wi"  columns="2" columnClasses="label, value" style="background-color: #F3F5F7;border-radius:10px ; width:100% ; margin-bottom:3%;alignment-adjust: auto;padding-left:3%;padding-bottom:5%  ">     
                                         <h:outputText/>
                                         <h:inputHidden value="#{TypemoduleBean.typemodule.id}"/>
-                                        <p:outputLabel value="Libellé:" for="libelle" style="font-family: initial;font-size: large;font-style: inherit"/>
+                                        <p:outputLabel value="Libellé:" for="libelle" style="font-family: initial;font-size: large;font-style: inherit; color: black"/>
                                         <p:inputText id="libelle" placeholder="Renseigner le Libelle de l'abonnement" required="true" requiredMessage="veuillez Renseignez le libelle de l'abonnement"  value="#{TypemoduleBean.typemodule.libelle}" style=" width:75%">
                                         </p:inputText>
-                                        <p:outputLabel value="Prix:" for="prix" style="font-family: initial;font-size: large;font-style: inherit"/>
+                                        <p:outputLabel value="Prix (euros):" for="prix" style="font-family: initial;font-size: large;font-style: inherit; color: black"/>
                                         <p:inputText id="prix" placeholder="Renseigner le prix de l'abonnement" required="true" requiredMessage="veuillez Renseignez le prix de l'abonnement"  value="#{TypemoduleBean.typemodule.prixmodule}" style=" width:75%">
                                          </p:inputText>
-                                         <p:outputLabel value="Duree:" for="duree" style="font-family: initial;font-size: large;font-style: inherit"/>
-                                        <p:inputText id="duree" placeholder="Renseigner la duree de l'abonnement" required="true" requiredMessage="veuillez Renseignez la duree de l'abonnement"  value="#{TypemoduleBean.typemodule.prixmodule}" style=" width:75%">
+                                         <p:outputLabel value="Durée (mois):" for="duree" style="font-family: initial;font-size: large;font-style: inherit; color: black"/>
+                                        <p:inputText id="duree" placeholder="Renseigner la duree de l'abonnement" required="true" requiredMessage="veuillez Renseignez la duree de l'abonnement"  value="#{TypemoduleBean.typemodule.duree}" style=" width:75%">
                                          </p:inputText>
                                       
                                         <h:inputHidden id="pieces" value="#{TypemoduleBean.typemodule.photo}" />
-                                        <p:fileUpload mode="advanced" required="true" requiredMessage="veuillez choisir la photo" label="Choisir la photo" allowTypes="/(\.|\/)(gif|jpg|jpeg|gif|png|PNG|GIF|JPG|JPEG)$/"  oncomplete="PF('chargtof').hide()" auto="true" fileUploadListener="#{ModuleBean.handleFileUpload}" update="doc,val,pieces"/>
+                                        <p:fileUpload mode="advanced" required="true" requiredMessage="veuillez choisir la photo" label="Choisir la photo" allowTypes="/(\.|\/)(gif|jpg|jpeg|gif|png|PNG|GIF|JPG|JPEG)$/"  oncomplete="PF('chargtof').hide()" auto="true" fileUploadListener="#{TypemoduleBean.handleFileUpload}" update="doc,val,pieces"/>
                                         <h:outputText id="doc" value="#{TypemoduleBean.typemodule.photo}"/>
                                         <h:outputText/>
                                         <h:inputHidden id="val" value="#{TypemoduleBean.typemodule.photo}"/>
@@ -76,13 +76,13 @@
                             <h:outputText value="LISTE DES TYPES D'ABONNEMENTS"/>
                         </f:facet>
 
-                        <p:column headerText="Libelle" filterBy="#{missione.libelle}" filterMatchMode="contains">
+                        <p:column headerText="Libellé" filterBy="#{missione.libelle}" filterMatchMode="contains">
                             <h:outputText value="#{missione.libelle}"/>
                         </p:column>
-                    <p:column headerText="Prix" filterBy="#{missione.prixmodule}" filterMatchMode="contains">
+                    <p:column headerText="Prix(euros)" filterBy="#{missione.prixmodule}" filterMatchMode="contains">
                         <h:outputText value="#{missione.prixmodule}"/>
                         </p:column>
-                    <p:column headerText="Duree" filterBy="#{missione.duree}" filterMatchMode="contains">
+                    <p:column headerText="Durée(mois)" filterBy="#{missione.duree}" filterMatchMode="contains">
                         <h:outputText value="#{missione.duree}"/>
                         </p:column>
                     </p:dataTable>

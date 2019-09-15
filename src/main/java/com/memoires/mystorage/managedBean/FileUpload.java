@@ -244,13 +244,17 @@ public class FileUpload implements Serializable {
                 FTPFile[] files1 = ftpClient.listFiles("/MYSTORAGEDOCUMENTS");
                 //long size = 0;
                 for (int i = 0; i < files1.length; i++) {
-                    System.out.println(files1[i].getName());
-                    fic = new FichierInformation();
-                    fic.setNom(files1[i].getName());
-                    fic.setSize(files1[i].getSize());
-//                    fic.setDateCreation("11/01/1996");
-                    fic.setDateCreation(dateToString(files1[i].getTimestamp().getTime()));
-                    liste.add(fic);
+                    if (files1[i].isDirectory()){
+                        System.out.println("Folder");
+                    } else{
+                        System.out.println(files1[i].getName());
+                        fic = new FichierInformation();
+                        fic.setNom(files1[i].getName());
+                        fic.setSize(files1[i].getSize());
+                        fic.setDateCreation(dateToString(files1[i].getTimestamp().getTime()));
+                        liste.add(fic);
+                    }
+                   
                     //String n= files1[i].getName();
                     //listeDossier.add(n);
                 }

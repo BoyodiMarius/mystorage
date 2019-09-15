@@ -12,13 +12,13 @@
         </f:facet>
         <title>MyStorage</title>
         <h:outputScript name="js/layout.js" library="avalon-layout" />
-                   <center>
-                       <p:graphicImage name="images/logomystorage1.png" library="avalon-layout" style="margin-top:0%"/></center>
-             
+        <center>
+            <p:graphicImage name="images/logomystorage1.png" library="avalon-layout" style="margin-top:0%"/></center>
+
     </h:head>
     <h:body styleClass="login-body">
         <h:form id="login">
-               
+
             <p:growl id="message" life="4000" showSummary="true" />
             <div class="card login-panel ui-fluid">
                 <div class="login-panel-content" >
@@ -34,7 +34,7 @@
                             <h:panelGroup>
                                 <label class="login-label">Nom d'utilisateur</label>
                                 <div class="login-input">
-                                    <p:inputText id="username" value="#{loginManagedBean.username}" placeholder="Votre Login"/>                        
+                                    <p:inputText id="username" value="#{loginBean.username}" placeholder="Votre Login"/>                        
                                 </div>
                             </h:panelGroup>
                         </div>
@@ -42,27 +42,101 @@
                             <h:panelGroup>
                                 <label class="login-label">Mot de Passe</label>
                                 <div class="login-input">
-                                    <p:password id="password" value="#{loginManagedBean.pass}" placeholder="Mot de passe"/>
+                                    <p:password id="password" value="#{loginBean.password}" placeholder="Mot de passe"/>
                                 </div>
                             </h:panelGroup>
                         </div>
                         <div class="ui-g-12 ui-sm-6 ui-md-6">
-                            <p:commandButton update="message" process="@form"  actionListener="#{loginManagedBean.login()}" value="Se connecter" icon="fa fa-user" iconPos="left" />
+                            <p:commandButton  process="@form"  actionListener="#{loginBean.login()}" value="Se connecter" icon="fa fa-user" iconPos="left" />
                         </div>
                         <div class="ui-g-12 ui-sm-6 ui-md-6">
                             <p:commandButton update="message" process="@this" action="/pagevisiteuroff.xhtml"  value="Inscription" styleClass="GreenButton" icon="fa fa-pencil" iconPos="left"   />
                         </div>
-                         <div class="ui-g-12 ui-sm-6 ui-md-6">
+                        <div class="ui-g-12 ui-sm-6 ui-md-6">
                             <p:commandButton update="message"  value="Authentification RSA" styleClass="GreenButton" icon="fa fa-pencil" iconPos="left"   />
                         </div>
 
-                        <div class="ui-g-12 ui-sm-6 ui-md-6" style="padding:12px;">
-                            <a href="#" class="forget-password">Mot de Passe Oublie?</a>
-                        </div>
+                        <p:commandLink value="Mot de passe oublié" process="@form" onclick="PF('dialogOublie').show()"  /><br></br>
                     </div>
                 </div>
             </div>
+
         </h:form>
+        <p:dialog widgetVar="dialogpasse" position="top" header="PREMIERE CONNEXION" style="margin-top:5%;" >
+            <h:form>
+                <p:growl id="grow2" life="4000" showSummary="true" />
+                <h2>Modifiez votre mot de passe</h2>
+
+                <br/>
+                <h:panelGrid  columns="2" columnClasses="label, value" id="identitePanelmp" style="background-color: #F3F5F7">
+                <p:outputLabel value="Nouveau Mot de Passe :" for="newPasse" style="font-family: cursive"/>
+                <p:password id="newPasse" required="true" value="#{loginBean.newPass}" promptLabel="Veuillez entrer votre nouveau mot de passe"  weakLabel="Facile"
+                            goodLabel="Moyen" strongLabel="Difficile" inline="true" feedback="true" style="width:90%;font-family: cursive"/>
+                <p:watermark for="newPasse" value="Nouveau"  />
+                <br/>
+                <p:outputLabel value="Confirmer Mot de Passe :" for="newSasie" style="font-family: cursive"/>
+                <p:password id="newSasie" required="true" value="#{loginBean.retapPass}"  weakLabel="Facile"
+                            goodLabel="Moyen" strongLabel="Difficile" inline="true" promptLabel="Veuillez confirmez votre nouveau mot de passe" feedback="true" style="width:90%;font-family: cursive"/>
+                <p:watermark for="newSasie" value="Confirmer"  />
+                <br/>
+                <p:outputLabel value="Entrer la question Secrète:" for="question" style="font-family: cursive"/>
+                <p:inputText id="question" required="true" value="#{loginBean.question}" style="width:90%;font-family: cursive"/>
+                <p:watermark for="question" value="votre question"/>
+                <br/>
+                <p:outputLabel value="Entrer la réponse à la question:" for="reponse" style="font-family: cursive"/>
+                <p:inputText id="reponse" required="true" value="#{loginBean.reponse}" style="width:90%;font-family: cursive"/>
+                <p:watermark for="reponse" value="répondez à votre question"/>
+                <br/>
+                </h:panelGrid>
+                <p:commandButton  value="Modifier" style="padding: 5px;left:20%;width:40%" update="grow2"
+                                  action="#{loginBean.modifierPasse()}"
+                                  process="@form" onsuccess="PF('dialogpasse').hide()" />
+                
+                <br/>
+                
+            </h:form>
+        </p:dialog>
+        <p:dialog widgetVar="dialogOublie" position="top" width="500" style="margin-top:1%; background-repeat:no-repeat; background-position:center; background-size:cover;">
+            <h:form>
+                <p:growl id="grow2" life="4000" showSummary="true" />
+                <center><h2>Vérification du login</h2></center>
+                <p:outputPanel id="ver" autoUpdate="true">
+                    <div class="Container90 Fnone MarAuto TexAlCenter">
+                        <h:graphicImage  library="avalon-layout"  style="height:80px;" styleClass="MarAuto MarTop20 MarBot10"/>
+                        <div class="EmptyBox20"></div>
+                        <p:inputText id="username" requiredMessage="saisissez le login" required="true" value="#{loginBean.per}" style="width:50%"/>
+                        <p:watermark for="username" value="Veuillez saisir votre login"/>
+                        <div class="EmptyBox30"></div>
+                        <p:commandButton  value="Vérifier"  style="width:50%;height:2% !important" icon="fa fa-pencil" iconPos="left"  update="grow2,ver"
+                                          action="#{loginBean.recupererQuestion()}"
+                                          process="@form"/>
+                        <div class="EmptyBox10"></div>
+                    </div>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+        <p:dialog widgetVar="dialogRecup" position="top" width="500" style="margin-top:1%; background-repeat:no-repeat; background-position:center; background-size:cover;">
+            <h:form id="rec">
+                <p:growl id="grow2" life="4000" showSummary="true" />
+                <center><h2>Vérification de la réponse et </h2>
+                    <h2>réinitialisation du mot de passe</h2></center>
+                <p:outputPanel autoUpdate="true">
+                    <div class="Container90 Fnone MarAuto TexAlCenter">
+                        <h:graphicImage  library="avalon-layout" style="height:80px;" styleClass="MarAuto MarTop20 MarBot10"/>
+                        <div class="EmptyBox20"></div>
+                        <h:outputText id="question" value="#{loginBean.recupererQuestion()}"/>
+                        <div class="EmptyBox30"></div>
+                        <p:inputText id="reponse" required="true" value="#{loginBean.reponse}"/>
+                        <p:watermark for="reponse" value="Saisissez la reponse"/>
+                        <div class="EmptyBox30"></div>
+                        <p:commandButton  value="Valider" style="width:50%;height:20% !important" icon="fa fa-pencil" iconPos="left" update="grow2"
+                                          action="#{loginBean.reinitialiserPasse()}"
+                                          process="@form"/>
+                        <div class="EmptyBox10"></div>
+                    </div>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
         <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="avalon-layout" />
     </h:body>
 

@@ -49,6 +49,9 @@ public abstract class Constante implements Serializable {
     public static final String DESACTIVATION_ECHOUE = "Erreur d'arret de la publication";
     public static final String PUBLICATION_REUSSIT = "Publication réussi";
     public static final String PUBLICATION_ECHOUE = "Publication échoué";
+    public static final String INSCRIPTION_REUSSIT = "Inscription effectuée";
+    public static final String INSCRIPTION_ECHOUE = "Inscription échoué";
+    
 
     public Constante() {
     }

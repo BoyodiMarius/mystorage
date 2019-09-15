@@ -33,8 +33,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -44,6 +46,13 @@ import javax.faces.view.ViewScoped;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 import javax.inject.Named;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletContext;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
@@ -83,6 +92,7 @@ public class InscriptionBean implements Serializable {
     private List<Inscription> payers;
     private List<Inscription> inscris;
     private Profil collaborer;
+    private Date dateNaiss;
 
     @EJB
     private InscriptionServiceBeanLocal isbl;
@@ -100,6 +110,10 @@ public class InscriptionBean implements Serializable {
     private ProfilServiceBeanLocal psbl3;
     @EJB
     private AnneeServiceBeanLocal asbl;
+    
+    private String username="mystorageefficom@gmail.com";
+    private String password="mystorage@2019";
+    private String newPass="";
 
     public InscriptionBean() {
         this.inscription = new Inscription();
@@ -132,8 +146,8 @@ public class InscriptionBean implements Serializable {
     public void init() {
         eventModel = new DefaultScheduleModel();
 
-        lazyEventModel = new LazyScheduleModel() {
-
+        lazyEventModel = new LazyScheduleModel() {  
+          
         };
     }
 
@@ -190,17 +204,48 @@ public class InscriptionBean implements Serializable {
                 if (particulier.getTelephone().equals(u.getTelephone())) {
                     ajouter = false;
                     FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                            "ce contact appartient à quelqu'un", "");
+                            "ce contact est lié à un compte", "");
                     FacesContext.getCurrentInstance().addMessage("", mf);;
                 }
                 if (particulier.getEmail().equalsIgnoreCase(u.getEmail())) {
                     ajouter = true;
                     FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                            "ce email appartient déjà a quelqu'un", "");
+                            "ce email est lié à un compte", "");
                     FacesContext.getCurrentInstance().addMessage("", mf);
                 }
             }
         }
+        return ajouter;
+    }
+    
+    public boolean controleMailEtContact() {
+        boolean ajouter = false;
+        this.particuliers = this.psbl.getAll();
+        Pattern rfc2822 = Pattern.compile("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
+        if (rfc2822.matcher(particulier.getEmail().trim()).matches()){
+            if (!particuliers.isEmpty()) {
+                for (Particulier u : particuliers) {
+                    if (particulier.getTelephone().equals(u.getTelephone())) {
+                        ajouter = true;
+                        FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                                "Ce contact est lié à un compte", "");
+                        FacesContext.getCurrentInstance().addMessage("", mf);;
+                    } else
+                    if (particulier.getEmail().equalsIgnoreCase(u.getEmail())) {
+                        ajouter = true;
+                        FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                                "Cet email est lié à un compte", "");
+                        FacesContext.getCurrentInstance().addMessage("", mf);
+                    }
+                }
+            }
+        } else {
+            ajouter = true;
+            FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "Cet email n'est pas valide", "");
+            FacesContext.getCurrentInstance().addMessage("", mf);
+        }
+        
         return ajouter;
     }
 
@@ -271,14 +316,19 @@ public class InscriptionBean implements Serializable {
         return ca.getTime();
     }
 
-    public void save(ActionEvent actionEvent) throws Exception {
+    public void save() {
+        if (controleMailEtContact()==true){
+            System.out.println("existence");
+        } else {
+            
         UserTransaction tx = TransactionManager.getUserTransaction();
         FacesContext context = FacesContext.getCurrentInstance();
         try {
             tx.begin();
-//            collaborer = this.psbl3.getOneBy("nom", "collaborer");
-//            particulier.setProfil(collaborer);
+            collaborer = this.psbl3.getOneBy("nom", "collaborer");
+            particulier.setProfil(collaborer);
             this.psbl.saveOne(particulier);
+            this.particulier.setProfil(collaborer);
             System.out.println(this.particulier);
             this.inscription.setTypemodule(typemodule);
             this.inscription.setParticulier(particulier);
@@ -286,19 +336,18 @@ public class InscriptionBean implements Serializable {
 //            String url = "par ce lien veuillez effectuez le paiement sécurisé" + " " + "/eformation/paiement.xhtml/";
 //            String test = "CAGECFI SA VOUS REMERCIE POUR VOTRE INSCRIPTION ET VOUS INVITE a VITE VOUS INSCRIRE" + url;
 //            SendMailByGlassfish.runTest(test, this.particulier.getEmail(), "MYSTORAGE", "Informations");
-            context.addMessage(null, new FacesMessage(Constante.ENREGISTREMENT_REUSSIT));
-            dossier(this.inscription.getParticulier().getNom());
-            this.particulier = new Particulier();
-            this.typemodule = new Typemodule();
-            this.inscription = new Inscription();
+            
+            //dossier(this.inscription.getParticulier().getNom());
+            context.addMessage(null, new FacesMessage(Constante.INSCRIPTION_REUSSIT));
             tx.commit();
             this.inscription = new Inscription();
             this.particulier = new Particulier();
             this.typemodule = new Typemodule();
+            
 
         } catch (Exception e) {
             e.getMessage();
-            context.addMessage(null, new FacesMessage(Constante.ENREGISTREMENT_ECHOUE));
+            context.addMessage(null, new FacesMessage(Constante.INSCRIPTION_ECHOUE));
             try {
                 tx.rollback();
             } catch (IllegalStateException ex) {
@@ -312,10 +361,69 @@ public class InscriptionBean implements Serializable {
                         .getName()).log(Level.SEVERE, null, ex);
             }
         }
-        this.inscription = new Inscription();
-
+      
+            this.inscription = new Inscription();
+            this.particulier = new Particulier();
+            this.typemodule = new Typemodule();
+            }
     }
 
+    public void saveAcceuil() {
+        if (controleMailEtContact()==true){
+            System.out.println("existence");
+        } else {
+        UserTransaction tx = TransactionManager.getUserTransaction();
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            tx.begin();
+            collaborer = this.psbl3.getOneBy("nom", "collaborer");
+            particulier.setProfil(collaborer);
+            this.psbl.saveOne(particulier);
+            this.particulier.setProfil(collaborer);
+            System.out.println(this.particulier);
+            this.inscription.setTypemodule(typemodule);
+            this.inscription.setParticulier(particulier);
+            this.isbl.saveOne(inscription);
+//            String url = "par ce lien veuillez effectuez le paiement sécurisé" + " " + "/eformation/paiement.xhtml/";
+//            String test = "CAGECFI SA VOUS REMERCIE POUR VOTRE INSCRIPTION ET VOUS INVITE a VITE VOUS INSCRIRE" + url;
+//            SendMailByGlassfish.runTest(test, this.particulier.getEmail(), "MYSTORAGE", "Informations");
+            
+            //dossier(this.inscription.getParticulier().getNom());
+            envoyer(this.inscription.getParticulier().getEmail(), "Bonjour Monsieur/Madame "
+                +this.inscription.getParticulier().getNom()+
+                " , Votre inscription à été pris en compte."
+                        + "Cordialement, ");
+            envoyer("mystorageefficom@gmail.com", "Nouvelle inscription à valider ");
+            context.addMessage(null, new FacesMessage(Constante.INSCRIPTION_REUSSIT));
+            tx.commit();
+            this.inscription = new Inscription();
+            this.particulier = new Particulier();
+            this.typemodule = new Typemodule();
+            
+
+        } catch (Exception e) {
+            e.getMessage();
+            context.addMessage(null, new FacesMessage(Constante.INSCRIPTION_ECHOUE));
+            try {
+                tx.rollback();
+            } catch (IllegalStateException ex) {
+                Logger.getLogger(InscriptionBean.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            } catch (SecurityException ex) {
+                Logger.getLogger(InscriptionBean.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            } catch (SystemException ex) {
+                Logger.getLogger(InscriptionBean.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+      
+            this.inscription = new Inscription();
+            this.particulier = new Particulier();
+            this.typemodule = new Typemodule();
+         }
+    }
+    
     public void cancel(ActionEvent actionEvent) {
         this.inscription = new Inscription();
     }
@@ -352,6 +460,12 @@ public class InscriptionBean implements Serializable {
         this.isbl.updateOne(inscription);
         this.psbl.updateOne(this.inscription.getParticulier());
         context.addMessage(null, new FacesMessage(Constante.MODIFICATION_REUSSIT));
+        newPass = "Bonjour Monsieur/Madame "
+                +this.inscription.getParticulier().getNom()+
+                " , Votre compte à été valider. Voici vos paramètres de connexions :  Login : "
+                +this.inscription.getParticulier().getEmail()+ " Mot de passe: admin";
+        envoyer(this.inscription.getParticulier().getEmail(), newPass);
+        dossier(this.inscription.getParticulier().getEmail());
 //        String log = "login" + "=" + "" + this.inscription.getParticulier().getEmail();
 //        String pass = "password" + "=" + "admin";
 //        String test = "CAGECFI SA VIENT DE VALIDER VOTRE INSCRIPTION.VOICI VOTRE" + " " + log + " " + "ET VOTRE" + pass + " " + "Cordialement";
@@ -420,6 +534,42 @@ public class InscriptionBean implements Serializable {
             e.printStackTrace();
         }
     }
+    
+    
+     public void envoyer(String email, String monMessage){
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+        
+        Session session = Session.getInstance(props, 
+                new javax.mail.Authenticator(){
+                 @Override
+                 protected PasswordAuthentication getPasswordAuthentication(){
+                     return new PasswordAuthentication("mystorageefficom@gmail.com", "mystorage@2019");
+                 }   
+                }
+        );
+        
+        try{
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("mystorageefficom@gmail.com"));
+            message.setRecipients(Message.RecipientType.TO,
+                    InternetAddress.parse(email));
+            message.setSubject("No Reply");
+            message.setText(monMessage);
+            
+            Transport.send(message);
+            System.out.println("message envoyer");
+            
+        } catch (MessagingException e){
+            throw new RuntimeException(e);
+        }
+        
+    }
+
+     
 
     public void dossier(String nom) {
 
@@ -429,8 +579,8 @@ public class InscriptionBean implements Serializable {
         try {
 
             // pass directory path on server to connect    
-//            ftpClient.connect("localhost");
-             ftpClient.connect("192.168.43.248");
+           ftpClient.connect("localhost");
+            // ftpClient.connect("192.168.43.248");
             // pass username and password, returned true if authentication is    
             // successful    
             boolean login = ftpClient.login("mystorage", "123456");
@@ -563,7 +713,17 @@ public class InscriptionBean implements Serializable {
     }
 
     public List<Inscription> getInscriptions() {
-        this.inscriptions = this.isbl.getAll();
+        this.inscris = this.isbl.getAll();
+        
+          for (Inscription inscription1 : inscris) {
+            if (inscription1.isEtat() == false) {
+                if (!this.inscriptions.contains(inscription1)) {
+                    this.inscriptions.add(inscription1);
+                }
+
+            }
+        }
+        
         return inscriptions;
     }
 
@@ -767,4 +927,38 @@ public class InscriptionBean implements Serializable {
         this.asbl = asbl;
     }
 
+    public Date getDateNaiss() {
+        return dateNaiss;
+    }
+
+    public void setDateNaiss(Date dateNaiss) {
+        this.dateNaiss = dateNaiss;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getNewPass() {
+        return newPass;
+    }
+
+    public void setNewPass(String newPass) {
+        this.newPass = newPass;
+    }
+
+    
+    
 }

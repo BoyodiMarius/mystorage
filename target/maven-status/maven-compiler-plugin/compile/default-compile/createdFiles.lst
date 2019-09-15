@@ -71,6 +71,7 @@ com\memoire\mystorage\services\impl\InscriptionServiceBean.class
 org\primefaces\avalon\view\data\datatable\PaginatorView.class
 org\primefaces\avalon\service\ThemeService.class
 com\memoire\mystorage\web\ProfilBean.class
+com\memoire\mystorage\web\InscriptionBean$2.class
 org\primefaces\avalon\convert\ThemeConverter.class
 org\primefaces\avalon\view\data\datatable\GroupView.class
 org\primefaces\avalon\view\menu\MegaMenuView.class

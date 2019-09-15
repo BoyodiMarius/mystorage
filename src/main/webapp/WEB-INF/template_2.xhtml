@@ -22,12 +22,11 @@
         
         <div class="layout-wrapper #{guestPreferences.menuLayout}">
           <div class="layout-wrapper #{guestPreferences.menuLayout}">
-            <ui:include src="./topbar.xhtml" />
+            <ui:include src="./topbar_1.xhtml" />
             <ui:include src="./menu_2.xhtml" />
             <div class="layout-main">
                 <ui:insert name="content"/>
             </div>
-            e
             <ui:include src="./footer.xhtml" />
         </div>
         
@@ -40,7 +39,7 @@
                <h:outputText value="" />
            </f:facet>
        </p:ajaxStatus>
-
+        </div>
         <h:outputStylesheet name="css/nanoscroller.css" library="avalon-layout" />
         <h:outputStylesheet name="css/animate.css" library="avalon-layout" />
         <h:outputStylesheet name="css/layout-#{guestPreferences.layout}.css" library="avalon-layout" />

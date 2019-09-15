@@ -24,8 +24,8 @@
                     <li class="profile-item">
                         <a href="#">                            
                             <p:graphicImage name="images/login/icon-login.svg" library="avalon-layout" styleClass="profile-image" style="border: 0 none"/>
-                            <span class="topbar-item-name">#{loginManagedBean.identite()}</span>
-                            <span class="topbar-item-role">#{loginManagedBean.profilUtilisateur()}</span>
+                            <span class="topbar-item-name">#{loginBean.identite()}</span>
+                            <span class="topbar-item-role">#{loginBean.profilUtilisateur()}</span>
                         </a>
 
                         <ul class="layout-menu animated">
@@ -50,7 +50,7 @@
                             <li role="menuitem">
                                 <span>
                                     <h:form>
-                                        <p:commandLink action="#{loginManagedBean.logout()}" process="@this">
+                                        <p:commandLink action="#{loginBean.logout()}" process="@this">
                                             <i class="fa fa-fw fa-sign-out"></i>Déconnexion
                                         </p:commandLink>    
                                     </h:form>                              

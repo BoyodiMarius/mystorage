@@ -8,16 +8,13 @@ package com.memoire.mystorage.web;
 import com.memoire.mystorage.entities.Profil;
 import com.memoire.mystorage.entities.ProfilRole;
 import com.memoire.mystorage.entities.Role;
-import com.memoire.mystorage.entities.Typemodule;
 import com.memoire.mystorage.entities.Utilisateur;
 import com.memoire.mystorage.services.ProfilRoleServiceBeanLocal;
 import com.memoire.mystorage.services.ProfilServiceBeanLocal;
 import com.memoire.mystorage.services.RoleServiceBeanLocal;
-import com.memoire.mystorage.services.TypemoduleServiceBeanLocal;
 import com.memoire.mystorage.services.UtilisateurServiceBeanLocal;
 import com.memoire.mystorage.shiro.EntityRealm;
 import com.memoire.mystorage.transaction.TransactionManager;
-import com.memoire.mystorage.utils.constantes.Constante;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
@@ -31,10 +28,6 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import org.apache.log4j.Level;
@@ -47,12 +40,13 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.util.SavedRequest;
 import org.apache.shiro.web.util.WebUtils;
 import org.omnifaces.util.Faces;
+import org.primefaces.context.RequestContext;
 
 /**
  *
  * @author Brendev
  */
-@Named(value = "loginManagedBean")
+@Named(value = "loginBean")
 @SessionScoped
 public class LoginBean implements Serializable {
 
@@ -60,7 +54,6 @@ public class LoginBean implements Serializable {
     private Utilisateur perse;
     private static Utilisateur curentUsers;
     private List<Profil> profils, profilUtilisateurs;
-    private List<Typemodule> moduleses;
     private List<Utilisateur> us;
     @EJB
     private RoleServiceBeanLocal rsbl;
@@ -70,8 +63,7 @@ public class LoginBean implements Serializable {
     private UtilisateurServiceBeanLocal usbl;
     @EJB
     private ProfilRoleServiceBeanLocal prsbl;
-    @EJB
-    private TypemoduleServiceBeanLocal msbl;
+
 
     private Date date = new Date();
     private String curentUser;
@@ -107,9 +99,7 @@ public class LoginBean implements Serializable {
     public LoginBean() {
         pers = new Utilisateur();
         perse = new Utilisateur();
-
         this.profilUtilisateurs = new ArrayList<>();
-        this.moduleses = new ArrayList<>();
 
     }
 
@@ -125,86 +115,64 @@ public class LoginBean implements Serializable {
             context.addMessage(null, new FacesMessage("Connexion internet non disponible"));
         }
 
-        List<Role> roles = rsbl.getAll();
-        List<Profil> profiles = this.psbl.getAll();
-        if (profiles.isEmpty()) {
+        List<Role> all = rsbl.getAll();
+        if (all.isEmpty()) {
+            
+            this.rsbl.saveOne(new Role("Créer utilisateur"));
+            this.rsbl.saveOne(new Role("Modifier utilisateur"));         
+            this.rsbl.saveOne(new Role("Créer profil"));
+            this.rsbl.saveOne(new Role("Modifier profil"));
+            this.rsbl.saveOne(new Role("Creer securite"));
+            this.rsbl.saveOne(new Role("Associer profil"));
+            this.rsbl.saveOne(new Role("Associer role"));
+            this.rsbl.saveOne(new Role("Activer compte"));
+            this.rsbl.saveOne(new Role("Désactiver compte"));
+            this.rsbl.saveOne(new Role("Modifier securite"));
+        }
+        List<Profil> alle = psbl.getAll();
+        if (alle.isEmpty()) {
+            this.psbl.saveOne(new Profil("administrer"));
+            this.psbl.saveOne(new Profil("Gerer"));
+            this.psbl.saveOne(new Profil("auditer"));
+            this.psbl.saveOne(new Profil("collaborer"));
+        }
+
+        List<Profil> profils = psbl.getBy("nom", "Armel");
+        if (profils.isEmpty()) {
             try {
                 tx.begin();
-                if (roles.isEmpty()) {
-                    this.rsbl.saveOne(new Role("Créer inscription"));
-                    this.rsbl.saveOne(new Role("Modifier inscription"));
-                    this.rsbl.saveOne(new Role("Créer professeur"));
-                    this.rsbl.saveOne(new Role("Modifier professeur"));
-                    this.rsbl.saveOne(new Role("Créer utilisateur"));
-                    this.rsbl.saveOne(new Role("Modifier utilisateur"));
-                    this.rsbl.saveOne(new Role("Créer matiere"));
-                    this.rsbl.saveOne(new Role("Modifier matiere"));
-                    this.rsbl.saveOne(new Role("Créer evaluation"));
-                    this.rsbl.saveOne(new Role("Modifier evaluation"));
-                    this.rsbl.saveOne(new Role("Créer Planning"));
-                    this.rsbl.saveOne(new Role("Modifier Planning"));
-                    this.rsbl.saveOne(new Role("Créer promotion"));
-                    this.rsbl.saveOne(new Role("Modifier promotion"));
-                    this.rsbl.saveOne(new Role("Créer module"));
-                    this.rsbl.saveOne(new Role("Modifier module"));
-                    this.rsbl.saveOne(new Role("Créer paiement"));
-                    this.rsbl.saveOne(new Role("Modifier paiement"));
-                    this.rsbl.saveOne(new Role("voir statistiques"));
-                    this.rsbl.saveOne(new Role("Créer Affectation"));
-                    this.rsbl.saveOne(new Role("Modifier Affectation"));
-                    this.rsbl.saveOne(new Role("Créer Note"));
-                    this.rsbl.saveOne(new Role("Modifier Note"));
-                    this.rsbl.saveOne(new Role("Affecter membre"));
-                    this.rsbl.saveOne(new Role("Valider membre"));
-                    this.rsbl.saveOne(new Role("Créer Année"));
-                    this.rsbl.saveOne(new Role("Modifier Année"));
-                    this.rsbl.saveOne(new Role("Rechercher planning"));
-                    this.rsbl.saveOne(new Role("Rechercher inscription"));
-                    this.rsbl.saveOne(new Role("Créer Type Formation"));
-                    this.rsbl.saveOne(new Role("Modifier Type Formation"));
-                    this.rsbl.saveOne(new Role("Rechercher professeur"));
-                    this.rsbl.saveOne(new Role("Rechercher note"));
-                    this.rsbl.saveOne(new Role("Créer profil"));
-                    this.rsbl.saveOne(new Role("Modifier profil"));
-                    this.rsbl.saveOne(new Role("Creer securite"));
-                    this.rsbl.saveOne(new Role("Associer profil"));
-                    this.rsbl.saveOne(new Role("Associer role"));
-                    this.rsbl.saveOne(new Role("Activer compte"));
-                    this.rsbl.saveOne(new Role("Désactiver compte"));
-                    this.rsbl.saveOne(new Role("Modifier securite"));
-                }
-                this.psbl.saveOne(new Profil("administrer"));
-                List<Role> rolees = this.rsbl.getAll();
-                for (Role role : rolees) {
+                this.psbl.saveOne(new Profil("Armel"));
+                List<Role> roles = this.rsbl.getAll();
+                for (Role role : roles) {
                     ProfilRole pr = new ProfilRole();
                     pr.setRole(role);
-                    pr.setProfil(psbl.getOneBy("nom", "administrer"));
+                    pr.setProfil(psbl.getOneBy("nom", "Armel"));
                     prsbl.saveOne(pr);
                 }
 
                 Utilisateur p = new Utilisateur();
                 p.setLogin("Armel");
                 p.setPass(new Sha256Hash("@frica").toHex());
-                p.setProfil(psbl.getOneBy("nom", "administrer"));
+                p.setProfil(psbl.getOneBy("nom", "Armel"));
                 p.setActif(true);
+
                 usbl.saveOne(p);
                 tx.commit();
             } catch (Exception e) {
                 try {
                     tx.rollback();
                 } catch (IllegalStateException ex) {
-                    java.util.logging.Logger.getLogger(UtilisateurBean.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                    Logger.getLogger(UtilisateurBean.class.getName()).log(Level.ERROR, null, ex);
                 } catch (SecurityException ex) {
-                    java.util.logging.Logger.getLogger(UtilisateurBean.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                    Logger.getLogger(UtilisateurBean.class.getName()).log(Level.ERROR, null, ex);
                 } catch (SystemException ex) {
-                    java.util.logging.Logger.getLogger(UtilisateurBean.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                    Logger.getLogger(UtilisateurBean.class.getName()).log(Level.ERROR, null, ex);
                 } catch (AuthenticationException ex) {
                     ex.printStackTrace();
 
                 }
             }
         }
-
     }
 
     public static List<Utilisateur> us() {
@@ -279,269 +247,110 @@ public class LoginBean implements Serializable {
         return LoginBean.subject;
     }
 
-    public void login() throws IOException, Exception {
+    public void login() throws IOException {
         try {
             pers = usbl.getOneBy("login", username);
             if (pers != null) {
                 if (pers.isActif() == false) {
-                    Faces.redirect("error.xhtml");
+                    RequestContext context = RequestContext.getCurrentInstance();
+                    context.execute("PF('test').show();");
                     username = "";
                     return;
                 }
             }
 
             if (pers != null) {
-                if (pers.isFirstconnect() == true) {
-                    Faces.redirect("firstConnect.xhtml");
+                boolean test = new Sha256Hash("admin").toHex().equals(pers.getPass());
+                if (test && pers.isActif() == true) {
+
+                    RequestContext context = RequestContext.getCurrentInstance();
+                    context.execute("PF('dialogpasse').show();");
                     return;
                 }
-            }
+                     if ("collaborer".equals(pers.getProfil().getNom())) {
+                    SavedRequest savedRequest = WebUtils.getAndClearSavedRequest(Faces.getRequest());
+                    Faces.redirect(savedRequest != null ? savedRequest.getRequestUrl() : "file_1.xhtml");
 
-            UsernamePasswordToken token = new UsernamePasswordToken(username.trim(), pass.trim());
+                }
+            }
+         
+            UsernamePasswordToken token = new UsernamePasswordToken(username.trim(), password.trim());
+            //”Remember Me” built-in, just do this:
             token.setRememberMe(false);
+
             SecurityUtils.getSubject().login(token);
+
+            Subject subjects = EntityRealm.getSubject();
 
             if (!username.equalsIgnoreCase("admin")) {
 
-                if (currentSubject().hasRole("Créer personnel") || currentSubject().hasRole("Modifier personnel")
-                        || currentSubject().hasRole("Créer paiement") || currentSubject().hasRole("Modifier paiement")
-                        || currentSubject().hasRole("Créer inscription") || currentSubject().hasRole("Modifier inscription")
-                        || currentSubject().hasRole("Créer typemodule") || currentSubject().hasRole("Modifier Typemodule")
-                        || currentSubject().hasRole("Créer particulier") || currentSubject().hasRole("Modifier particulier")
-                        || currentSubject().hasRole("Créer promotion") || currentSubject().hasRole("Modifier promotion")
-                        || currentSubject().hasRole("Créer utilisateur") || currentSubject().hasRole("Modifier utilisateur")
-                        || currentSubject().hasRole("Créer Année") || currentSubject().hasRole("Modifier Année") || currentSubject().hasRole("voir statistiques")) {
-                    this.administration = "true";
-                } else {
-                    this.administration = "false";
-                }
-
-                //connexion();
-                if (currentSubject().hasRole("Créer promotion")
-                        || currentSubject().hasRole("Modifier promotion") || currentSubject().hasRole("Créer Année")
-                        || currentSubject().hasRole("Modifier Année")) {
-                    this.vague = "true";
-                } else {
-                    this.vague = "false";
-                }
-
-                if (currentSubject().hasRole("Créer promotion") || currentSubject().hasRole("Modifier promotion")
-                        || currentSubject().hasRole("Créer module") || currentSubject().hasRole("Modifier module")
-                        || currentSubject().hasRole("Rechercher planning") || currentSubject().hasRole("Rechercher professeur")
-                        || currentSubject().hasRole("Rechercher inscription") || currentSubject().hasRole("Rechercher note")) {
-                    this.rapport = "true";
-                } else {
-                    this.rapport = "false";
-                }
-
-                if (currentSubject().hasRole("Créer profil") || currentSubject().hasRole("Modifier profil")
-                        || currentSubject().hasRole("Associer profil")
-                        || currentSubject().hasRole("Associer role") || currentSubject().hasRole("Activer compte")
-                        || currentSubject().hasRole("Désactiver compte")) {
+                if (subjects.hasRole("Créer profil") || subjects.hasRole("Modifier profil")
+                        || subjects.hasRole("Associer profil")
+                        || subjects.hasRole("Associer role") || subjects.hasRole("Activer compte")
+                        || subjects.hasRole("Désactiver compte")) {
                     this.securite = "true";
                 } else {
                     this.securite = "false";
                 }
 
-                if (currentSubject().hasRole("Créer inscription")) {
-                    this.creerInscription = "true";
-                } else {
-                    this.creerInscription = "false";
-                }
-
-                if (currentSubject().hasRole("Modifier inscription")) {
-                    this.modifierInscription = "true";
-                    this.inscription = "true";
-                } else {
-                    this.modifierInscription = "false";
-                    this.inscription = "false";
-                }
-
-                if (currentSubject().hasRole("Créer personnel") || currentSubject().hasRole("Modifier personnel")) {
-                    this.personnel = "true";
-                } else {
-                    this.personnel = "false";
-                }
-
-                if (currentSubject().hasRole("Créer Année") || currentSubject().hasRole("Modifier Année")) {
-                    this.annee = "true";
-                } else {
-                    this.annee = "false";
-                }
-                if (currentSubject().hasRole("Créer Année")) {
-                    this.creerannee = "true";
-                } else {
-                    this.creerannee = "false";
-                }
-
-                if (currentSubject().hasRole("Modifier Année")) {
-                    this.modifierannee = "true";
-                } else {
-                    this.modifierannee = "false";
-                }
-
-                if (currentSubject().hasRole("créer utilisateur")) {
+                if (subjects.hasRole("Créer utilisateur") || subjects.hasRole("Modifier utilisateur")) {
                     this.utilisateur = "true";
                 } else {
                     this.utilisateur = "false";
                 }
 
-                if (currentSubject().hasRole("Créer promotion") || currentSubject().hasRole("Modifier promotion")) {
-                    this.promotion = "true";
-                } else {
-                    this.promotion = "false";
-                }
-
-                if (currentSubject().hasRole("Créer promotion")) {
-                    this.creerPromotion = "true";
-                } else {
-                    this.creerPromotion = "false";
-                }
-
-                if (currentSubject().hasRole("Modifier promotion")) {
-                    this.modifierPromotion = "true";
-                } else {
-                    this.modifierPromotion = "false";
-                }
-
-                if (currentSubject().hasRole("Créer module") || currentSubject().hasRole("Modifier module")) {
-                    this.Typemodule = "true";
-                } else {
-                    this.Typemodule = "false";
-                }
-
-                if (currentSubject().hasRole("Créer module")) {
-                    this.creerTypemodule = "true";
-                } else {
-                    this.creerTypemodule = "false";
-                }
-
-                if (currentSubject().hasRole("Modifier module")) {
-                    this.modifierTypemodule = "true";
-                } else {
-                    this.modifierTypemodule = "false";
-                }
-
-                if (currentSubject().hasRole("Créer paiement") || currentSubject().hasRole("Modifier paiement")) {
-                    this.paiement = "true";
-                } else {
-                    this.paiement = "false";
-                }
-
-                if (currentSubject().hasRole("Créer paiement")) {
-                    this.creerPaiement = "true";
-                } else {
-                    this.creerPaiement = "false";
-                }
-
-                if (currentSubject().hasRole("Modifier paiement")) {
-                    this.modifierPaiement = "true";
-                } else {
-                    this.modifierPaiement = "false";
-                }
-                if (currentSubject().hasRole("Créer utilisateur") || currentSubject().hasRole("Modifier utilisateur")) {
-                    this.utilisateur = "true";
-                } else {
-                    this.utilisateur = "false";
-                }
-
-                if (currentSubject().hasRole("Créer utilisateur")) {
+                if (subjects.hasRole("Créer utilisateur")) {
                     this.creerutilisateur = "true";
                 } else {
                     this.creerutilisateur = "false";
                 }
 
-                if (currentSubject().hasRole("Modifier Type Formation")) {
-                    this.modifierutilisateur = "true";
-                } else {
-                    this.modifierutilisateur = "false";
-                }
-                if (currentSubject().hasRole("Créer Année")) {
-                    this.creerannee = "true";
-                } else {
-                    this.creerannee = "false";
-                }
-
-                if (currentSubject().hasRole("Modifier Année")) {
-                    this.modifierannee = "true";
-                } else {
-                    this.modifierannee = "false";
-                }
-
-                if (currentSubject().hasRole("Affecter membre")) {
-                    this.affecterMembre = "true";
-                } else {
-                    this.affecterMembre = "false";
-                }
-
-                if (currentSubject().hasRole("Valider membre")) {
-                    this.validerMembre = "true";
-                } else {
-                    this.validerMembre = "false";
-                }
-
-                if (currentSubject().hasRole("Créer promotion") || currentSubject().hasRole("Modifier promotion")) {
-                    this.promotion = "true";
-                } else {
-                    this.promotion = "false";
-                }
-
-                if (currentSubject().hasRole("Créer promotion")) {
-                    this.creerPromotion = "true";
-                } else {
-                    this.creerPromotion = "false";
-                }
-
-                if (currentSubject().hasRole("Modifier promotion")) {
-                    this.modifierPromotion = "true";
-                } else {
-                    this.modifierPromotion = "false";
-                }
-                if (currentSubject().hasRole("Créer profil") || currentSubject().hasRole("Modifier profil")) {
+                if (subjects.hasRole("Créer profil") || subjects.hasRole("Modifier profil")) {
                     this.profil = "true";
                 } else {
                     this.profil = "false";
                 }
 
-                if (currentSubject().hasRole("Créer profil")) {
+                if (subjects.hasRole("Créer profil")) {
                     this.creerProfil = "true";
                 } else {
                     this.creerProfil = "false";
                 }
 
-                if (currentSubject().hasRole("Associer profil")) {
+                if (subjects.hasRole("Associer profil")) {
                     this.associerProfil = "true";
                 } else {
                     this.associerProfil = "false";
                 }
 
-                if (currentSubject().hasRole("Associer role")) {
+                if (subjects.hasRole("Associer role")) {
                     this.associerRole = "true";
                 } else {
                     this.associerRole = "false";
                 }
 
-                if (currentSubject().hasRole("Activer compte")) {
+                if (subjects.hasRole("Activer compte")) {
                     this.activerCompte = "true";
                 } else {
                     this.activerCompte = "false";
                 }
 
-                if (currentSubject().hasRole("Désactiver compte")) {
+                if (subjects.hasRole("Désactiver compte")) {
                     this.desactiverCompte = "true";
                 } else {
                     this.desactiverCompte = "false";
                 }
-                if (currentSubject().hasRole("voir statistiques")) {
+                if (subjects.hasRole("voir statistiques")) {
                     this.stats = "true";
                 } else {
                     this.stats = "false";
                 }
 
             }
-            username = "";
+
             SavedRequest savedRequest = WebUtils.getAndClearSavedRequest(Faces.getRequest());
             Faces.redirect(savedRequest != null ? savedRequest.getRequestUrl() : "stat.xhtml");
+
         } catch (AuthenticationException e) {
             e.getMessage();
             FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -556,33 +365,19 @@ public class LoginBean implements Serializable {
     }
 
     public void logout() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        UserTransaction tx = TransactionManager.getUserTransaction();
         try {
-            tx.begin();
+            EntityRealm.getSubject().logout();
             Faces.redirect("login.xhtml");
-            currentSubject().logout();
-            this.pers = new Utilisateur();
-            this.perse = new Utilisateur();
             username = "";
-            password = "";
-            username = "";
-            tx.commit();
-        } catch (IOException | IllegalStateException | SecurityException | HeuristicMixedException | HeuristicRollbackException | NotSupportedException | RollbackException | SystemException e) {
-            e.getMessage();
-            context.addMessage(null, new FacesMessage(Constante.DEMANDE_ECHOU));
-            try {
-                tx.rollback();
-            } catch (IllegalStateException | SecurityException | SystemException ex) {
-                Logger.getLogger(LoginBean.class.getName()).log(Level.FATAL, null, ex);
-            }
+        } catch (IOException ex) {
         }
+
     }
 
     public void modifierPasse() {
         try {
-            if (new Sha256Hash(lastPass.trim()).toHex().equals(pers.getPass())) {
-                if (!newPass.equals(lastPass)) {
+            if (new Sha256Hash(password.trim()).toHex().equals(pers.getPass())) {
+                if (!newPass.equals(password)) {
                     if (newPass.trim().equals(retapPass.trim())) {
                         pers.setPass(new Sha256Hash(newPass.trim()).toHex());
                         pers.setFirstconnect(false);
@@ -642,6 +437,43 @@ public class LoginBean implements Serializable {
             }
         } catch (Exception e) {
         }
+    }
+
+    public String recupererQuestion() {
+        if (!per.equals("")) {
+            Utilisateur pe = this.usbl.getOneBy("login", per);
+            String quest = "";
+            if (pe != null) {
+                if (!pe.getPass().equals(new Sha256Hash("admin").toHex())) {
+                    if (pe.isActif() == true) {
+                        quest = pe.getQuestion();
+                        RequestContext context = RequestContext.getCurrentInstance();
+                        context.execute("PF('dialogRecup').show();");
+                        context.execute("PF('dialogOublie').hide();");
+                        return quest;
+                    } else {
+                        per = "";
+                        RequestContext context = RequestContext.getCurrentInstance();
+                        context.execute("PF('dialogOublie').hide();");
+                        FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_FATAL,
+                                "Votre compte est inactif,contactez l'administrateur", "");
+                        FacesContext.getCurrentInstance().addMessage("erreur_login", mf);
+                    }
+                } else {
+                    RequestContext context = RequestContext.getCurrentInstance();
+                    context.execute("PF('dialogOublie').hide();");
+                    FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "Connectez vous à votre compte pour changer votre mot de passe", "");
+                    FacesContext.getCurrentInstance().addMessage("erreur_login", mf);
+                }
+            } else {
+                per = "";
+                FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_FATAL,
+                        "le login saisi est inconnu", "");
+                FacesContext.getCurrentInstance().addMessage("erreur_login", mf);
+            }
+        }
+        return "";
     }
 
     public void reinitialiserPasse() throws IOException {
@@ -713,14 +545,6 @@ public class LoginBean implements Serializable {
         this.profilUtilisateurs = profilUtilisateurs;
     }
 
-    public List<Typemodule> getModuleses() {
-        return moduleses;
-    }
-
-    public void setModuleses(List<Typemodule> moduleses) {
-        this.moduleses = moduleses;
-    }
-
     public List<Utilisateur> getUs() {
         return us;
     }
@@ -759,14 +583,6 @@ public class LoginBean implements Serializable {
 
     public void setPrsbl(ProfilRoleServiceBeanLocal prsbl) {
         this.prsbl = prsbl;
-    }
-
-    public TypemoduleServiceBeanLocal getMsbl() {
-        return msbl;
-    }
-
-    public void setMsbl(TypemoduleServiceBeanLocal msbl) {
-        this.msbl = msbl;
     }
 
     public Date getDate() {

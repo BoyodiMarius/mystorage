@@ -10,6 +10,9 @@ import com.memoire.mystorage.entities.Typemodule;
 import com.memoire.mystorage.services.TypemoduleServiceBeanLocal;
 import com.memoire.mystorage.transaction.TransactionManager;
 import com.memoire.mystorage.utils.constantes.Constante;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +21,12 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.view.ViewScoped;
+import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageOutputStream;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 import javax.transaction.UserTransaction;
+import org.primefaces.event.FileUploadEvent;
 
 /**
  *
@@ -62,6 +69,28 @@ public class TypemoduleBean implements Serializable {
             context.addMessage(null, new FacesMessage(Constante.ENREGISTREMENT_ECHOUE));
         }
         this.typemodule = new Typemodule();
+    }
+    
+      public void handleFileUpload(FileUploadEvent event) {
+        try {
+            System.out.println("pour la photo");
+            String image = String.valueOf((int) (Math.random() * 10000000));
+            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+            String newFileName = servletContext.getRealPath("") + File.separator + "resources" + File.separator + "images"+ File.separator + image + event.getFile().getFileName();
+            InputStream inputStream = event.getFile().getInputstream();
+           typemodule.setPhoto("/resources/images/" + image + event.getFile().getFileName());
+            ImageOutputStream out = new FileImageOutputStream(new File(newFileName));
+            int read = 0;
+            byte[] bytes = new byte[1024];
+            while ((read = inputStream.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            inputStream.close();
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void cancel(ActionEvent actionEvent) {

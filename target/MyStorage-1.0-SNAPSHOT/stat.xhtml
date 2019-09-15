@@ -282,33 +282,18 @@
                         <div class="SeparatorFull"></div>
                         <h:form>
 
-                            <p:panel  style="height: 370px;background-color: black;border-radius: 1em; ">
+                            <p:panel  style="height:100%;background-color: whitesmoke;border-radius: 1em; color: black ">
                                 <div class="Container100" >
-                                    <div class="Card">
-                                        <div class="CardBigTopic TexAlCenter">Stats Des Inscriptions Par Promotion</div>
-                                        <p:chart id="pie" type="pie" model="#{chartDemoView.pieModel1}"/>
+                                    <div class="CardBigTopic TexAlCenter">Statistique des inscriptions </div>
+                                        <p:chart style="width:1600px;height:700px" id="pie" type="pie" model="#{chartDemoView.pieModel1}"/>
                                     </div>
-                                </div>
                             </p:panel>
 
                          
                         </h:form>
                     </div>
 
-                    <div class="Container50 Responsive50">
-                        <div class="SeparatorFull"></div>
-                        <h:form>
-                              <p:panel  style="height: 370px;background-color: black;border-radius: 1em; ">
-                                <div class="Container100">
-                                    <div class="Card">
-                                        <div class="CardBigTopic TexAlCenter">Donut Chart</div>
-                                        <p:chart id="donut" type="donut" model="#{chartDemoView.donutModel1}"/>
-                                    </div>
-                                </div>
-                            </p:panel>
-                              
-                        </h:form>
-                    </div>
+                    
                 </div>
             </div>
         </div>
