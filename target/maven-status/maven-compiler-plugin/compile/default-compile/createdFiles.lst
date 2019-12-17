@@ -152,6 +152,7 @@ org\primefaces\avalon\view\panel\DashboardView.class
 com\memoire\mystorage\shiro\FacesAjaxAwareUserFilter.class
 org\primefaces\avalon\view\data\treetable\EventsView.class
 com\memoire\mystorage\dao\impl\PromotionDaoBean.class
+com\memoires\mystorage\managedBean\FileUpload$1.class
 com\memoire\mystorage\entities\Particulier.class
 com\memoire\mystorage\dao\PromotionDaoBeanLocal.class
 org\primefaces\avalon\filter\CharacterEncodingFilter.class

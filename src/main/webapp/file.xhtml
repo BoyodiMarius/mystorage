@@ -293,14 +293,15 @@
             <div class="ui-g">
                 <div class="ui-g-12">
                     
-                        <h:form>
+                        <h:form id="file">
                             <div class="ui-g-12 ui-lg-6">
                                 <div class="card">
                                     <h1 class="centerText">Taille de Stockage</h1>
                                     <p:chart id="pie" type="pie" model="#{fileUpload.pieModel1}" responsive="true" />
                                 </div>
                             </div>
-                            <div class="ui-g-12 ui-lg-6">
+                           
+                            <div class="ui-g-12 ui-lg-12">
                                 <div class="card">
                                     <h1 class="centerText">Dépots de Fichiers</h1>
                                     <p:fileUpload fileUploadListener="#{fileUpload.handleFileUpload}" mode="advanced" dragDropSupport="true"
@@ -312,16 +313,35 @@
                             
                             <div class="ui-g-12">
                                 <div class="card card-w-title">
-                                    
-                                    <p:dataTable var="car" value="#{fileUpload.liste}" selectionMode="single" reflow="true"
+                                    <p:tabView scrollable="true" id="tabe">
+                                    <p:tab title=" Mes Fichiers">
+                                        <p:treeTable value="#{fileUpload.listesFichier}" var="fichier">
+                                            <p:column headerText="Nom" filterBy="#{fichier.nom}" sortBy="#{fichier.nom}">
+                                                <h:outputText value="#{fichier.nom}" />
+                                            </p:column>
+                                            <p:column headerText="Taille (Ko)">
+                                                <h:outputText value="#{fichier.size}" />
+                                            </p:column>
+                                            <p:column headerText="Date d'ajout">
+                                                <h:outputText value="#{fichier.dateCreation}" />
+                                            </p:column>
+                                           <p:column >
+                                                <p:commandButton value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" actionListener="#{testMBean.download(fichier.nom)}" icon="pi pi-arrow-down">
+                                                    <p:fileDownload value="#{testMBean.file}" />
+                                                </p:commandButton>
+                                            </p:column>
+                                        </p:treeTable>
+                                    </p:tab>
+                                    <p:tab title="Recherches de fichier">
+                                        <p:dataTable var="car" value="#{fileUpload.liste}" selectionMode="single" reflow="true"
                                                  selection="#{dtSelectionView.selectedCar}" rowKey="#{car.nom}" paginator="true" rows="10">
-                                        <f:facet name="header">
-                                            Liste des fichiers
-                                        </f:facet>
-                                        
-
-                                        <p:column headerText="Nom" sortBy="#{car.nom}">
-                                            <h:outputText value="#{car.nom}" />
+                                      
+                                        <p:column headerText="Nom" filterBy="#{car.nom}" sortBy="#{car.nom}">
+                                            <f:facet name="header"> <h:outputText value=" Nom "/> </f:facet>
+                                            <center>
+                                                <h:outputText value="#{car.nom}" />
+                                            </center>
+                                            
                                         </p:column>
 
                                         <p:column headerText="Taille" sortBy="#{car.size}">
@@ -337,6 +357,8 @@
                                             </p:commandButton>
                                         </p:column>
                                     </p:dataTable>
+                                    </p:tab>
+                                    </p:tabView>
                                 </div>
                             </div>
                              

@@ -1,0 +1,258 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+                    
+     <head>
+        <meta charset="utf-8"/>
+        <title>MyStorage</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="description" content=""/>
+        <meta
+        name="author" content=""/>
+        <!-- styles -->
+        <link href="assets/css/bootstrap.css" rel="stylesheet"/>
+        <link href="assets/css/bootstrap-responsive.css" rel="stylesheet"/>
+        <link href="assets/css/prettyPhoto.css" rel="stylesheet"/>
+        <link href="assets/css/animate.css" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Roboto+Condensed:400,300,700" rel="stylesheet"/>
+
+        <link href="assets/css/style.css" rel="stylesheet"/>
+        <link href="assets/color/default.css" rel="stylesheet"/>
+
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png"/>
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png"/>
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png"/>
+        <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png"/>
+        <link rel="shortcut icon" href="ico/favicon.ico"/>
+
+<!-- =======================================================
+    Theme Name: Vesperr
+    Theme URL: https://bootstrapmade.com/vesperr-free-bootstrap-template/
+    Author: BootstrapMade.com
+    Author URL: https://bootstrapmade.com
+======================================================= -->
+
+       <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+        </f:facet>
+        <h:outputScript name="js/layout.js" library="avalon-layout" />
+    </head>
+    <h:body styleClass="login-body">
+    <body>
+        <header>
+            <!-- start top -->
+            <div id="topnav" class="navbar navbar-fixed-top default">
+                <div class="navbar-inner">
+                    <div class="container">
+                        <div class="logo">
+                            <a href="Bienvenue.xhtml"><img src="assets/img/logotete.png" style="width:60%;margin-left: 0px" alt=""/></a>
+                        </div>
+                        <div class="navigation">
+                            <nav>
+                                <ul class="nav pull-right">
+                                    <li class="current">
+                                        <a href="#intro">Acceuil</a>
+                                    </li>
+
+                                    <li>
+                                        <p:link href="/pagevisiteuroff.xhtml" >Types d'abonnements</p:link>
+                                    </li>
+                                    <li>
+                                        <a href="#inscription ">Inscription</a>
+                                    </li>
+                                    <li>
+                                        <a href="#contact">Nous Contacter</a>
+                                    </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <!--/.nav-collapse -->
+                </div>
+            </div>
+            </div>
+        </header>  
+   
+    <!-- end top --><!-- section intro -->
+    <section id="intro">
+        <div class="slogan" > <!-- <div class="icon">
+        <i class="icon-beaker icon-10x"></i> </div> -->
+        <div class="logo">
+            <center>
+            <table>
+                <tr>
+                    <td>
+                        <a href="index.html">
+                            <img src="assets/img/logoOff.png" style="width:30%" alt=""/>
+                             <h1><span style="color:#879ca7">Bienvenue sur </span>
+                             <br></br><span>MyStorage</span></h1><h2><span style="color:#879ca7">Comme si vos donnees.....</span></h2>
+                        </a>
+                    </td>
+                    <td>
+                        <h:form id="login">
+                            <p:fieldset >
+                        <p:growl id="message" life="4000" showSummary="true" />
+                            <div class="card login-panel ui-fluid">
+                                <div class="login-panel-content" >
+                                    <div class="ui-g">
+                                        <div class="ui-g-12 ui-sm-6 ui-md-6" style="text-align:left;">
+                                            <h:panelGrid columns="2" >
+                                                <p:graphicImage name="images/login/icon-login.svg" library="avalon-layout" />
+                                                <span class="guest-sign-in" style="color: #00AEEF;" >Connectez-vous a votre compte</span>
+                                            </h:panelGrid>                                            
+                                        </div>                                       
+                                        <div class="ui-g-12" style="text-align:left;">
+                                        <h:panelGroup>
+                                            <label class="login-label" style="color: #000;" >Login</label>
+                                            <div class="login-input">
+                                                <p:inputText id="username" value="#{loginBean.username}" placeholder="Votre Login"/>                        
+                                            </div>
+                                        </h:panelGroup>
+                                    </div>
+                                    <div class="ui-g-12" style="text-align:left;">
+                                        <h:panelGroup>
+                                            <label class="login-label" style="color: #000;">Mot de Passe</label>
+                                            <div class="login-input">
+                                                <p:password id="password" value="#{loginBean.password}" placeholder="Mot de passe"/>
+                                            </div>
+                                        </h:panelGroup>
+                                    </div>
+                                    <div class="ui-g-12 ui-sm-6 ui-md-6">
+                                        <h:panelGrid columns="2" >
+                                             <p:commandButton  process="@form"  actionListener="#{loginBean.login()}" value="Se connecter" icon="fa fa-user" iconPos="left"  />
+                                             <p:commandButton update="message"  value="Authentification RSA" styleClass="GreenButton" icon="fa fa-pencil" iconPos="left"   />
+                                        </h:panelGrid>                                       
+                                    </div>             
+                                    <p:commandLink value="Mot de passe oublié" process="@form" onclick="PF('dialogOublie').show()"  /><br></br>
+                                </div>
+                            </div>
+                        </div>
+                        </p:fieldset>
+                    </h:form>
+                  </td>
+                </tr>
+            </table>
+            </center>
+        </div>
+           
+        </div>
+    </section>
+    <center>
+    <section id="services" class="section parallax dark">
+        <div class="containerTypeAbo">
+            <div class="row">
+                <div class="span12">
+                    <div class="heading">
+                        <h3>
+                            <span>Type d'abonnements</span>
+                        </h3>
+                    </div>
+                    <h:form id="form" enctype="multipart/form-data">
+                        <p:carousel value="#{TypemoduleBean.typemodules}" headerText="Responsive" var="typeAbo" itemStyle="text-align:center" responsive="true">
+                            <p:panelGrid columns="2" style="width:100%;margin:10px 0px" columnClasses="label,value" layout="grid" styleClass="ui-panelgrid-blank">
+                                <f:facet name="header">
+                                    <p:graphicImage value="#{typeAbo.photo}"  style="width:20%;height:80%" /> 
+                                </f:facet>
+
+                                <h:outputText value="Nom : " />
+                                <h:outputText value="#{typeAbo.libelle}" />
+
+                                <h:outputText value="Durée : " />
+                                <h:outputText value="#{typeAbo.duree}" />
+
+                                <h:outputText value="Prix" />
+                                <h:outputText value="€#{typeAbo.prixmodule}" />
+                            </p:panelGrid>
+                        </p:carousel>
+                    </h:form>
+                </div>
+            </div>
+            <div class="row">
+                
+            </div>
+        </div>
+    </section>
+    </center>
+        <!-- section works --><!-- section contact -->
+        <section id="inscription" class="section">
+            <div class="containerTypeAbo">
+                <div class="row">
+                 
+                                 
+                 </div>
+        </div>
+   
+</section>
+            <section id="contact" class="section"><div class="container"><div class="row">
+            <div class="span6">
+<h4>
+    <i class="icon-suitcase"></i>
+    <strong>Nos Contacts</strong>
+</h4>
+<p>
+    Feel free to ask if you have any question regarding our services or if you just want to say Hello, we would love to hear from you.
+</p>
+<div class="dotted_line"></div>
+<p>
+    <strong>MyStorage Labs Inc</strong>
+</p>
+<p>
+    X123 Street, palm 05 ave Peterongan Semarang, Indonesia 50242
+</p>
+<p>
+    <span>
+        <i class="icon-phone"></i>
+        <strong>Phone:</strong>
+        +6221 999 888 77 or +6221 999 888 66</span>
+</p>
+<p>
+    <span>
+        <i class="icon-comment"></i>
+        <strong>Skype:</strong>
+        mystorage.contact</span>
+</p>
+<p>
+    <span>
+        <i class="icon-envelope-alt"></i>
+        <strong>Email:</strong>
+        info@yourdomainname.com</span>
+</p>
+<div class="dotted_line"></div>
+
+<div>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d22864.11283411948!2d-73.96468908098944!3d40.630720240038435!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew+York%2C+NY%2C+USA!5e0!3m2!1sen!2sbg!4v1540447494452" width="100%" height="350" frameborder="0" style="border:0" allowfullscreen='10'></iframe>
+</div></div></div></div></section><!-- end section contact --><footer><div class="verybottom"><div class="container"><div class="row">
+
+<div class="span12">
+    <div class="aligncenter">
+        <div
+            class="logo">
+            <!-- <a class="brand" href="index.html"><img src="assets/img/logo.png " style="width:25%" alt=""/></a>
+                                                                                                                                                                                </div> -->
+            <p>
+                 Mystorage labs Inc - All right reserved
+            </p>
+            <div
+                class="credits">
+                <!--
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              All the links in the footer should remain intact.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              You can delete the links only if you purchased the pro version.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              Licensing information: https://bootstrapmade.com/license/
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=Vesperr
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            -->
+                Created by
+                <a href="https://bootstrapmade.com/">MyStorageTeam.com</a>
+            </div>
+        </div>
+    </div>
+</div></div></div></div></footer><a href="#" class="scrollup"><i class="icon-chevron-up icon-square icon-48 active"></i></a>
+<!-- Javascript Library Files -->
+    </body>
+        <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="avalon-layout" />
+    </h:body>
+
+</ui:composition>

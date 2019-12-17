@@ -25,7 +25,10 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.TreeNode;
 import org.primefaces.model.UploadedFile;
+import org.primefaces.model.chart.MeterGaugeChartModel;
 import org.primefaces.model.chart.PieChartModel;
 
 /**
@@ -42,6 +45,10 @@ public class FileUpload implements Serializable {
     private List<FichierInformation> liste;
     private FichierInformation fic;
     private PieChartModel pieModel1;
+    private TreeNode listesFichier;
+    private String nomSplit="";
+    private long tailleDocument, tailleImage, tailleMV, tailleAutre;
+    private MeterGaugeChartModel meterGaugeModel2; 
 
     public FileUpload() {
 
@@ -53,6 +60,55 @@ public class FileUpload implements Serializable {
         this.liste = new ArrayList();
         listeFile();
         createPieModel1();
+        //createMeterGaugeModels();
+        tailleAutre=0;
+        tailleDocument=0;
+        tailleImage=0;
+        tailleMV = 0;
+        if (!this.liste.isEmpty()){
+            for(int i=0;i<liste.size();i++){
+                nomSplit  = liste.get(i).getNom();
+                if(nomSplit.contains(".jpg")  || nomSplit.contains(".png")){  
+                    tailleImage = tailleImage+liste.get(i).getSize();
+                } 
+                else if(nomSplit.contains(".pdf")  || nomSplit.contains(".docx")){
+                     tailleDocument = tailleDocument+liste.get(i).getSize();
+                }
+                else if(nomSplit.contains(".mp3")  || nomSplit.contains(".mp4")){
+                     tailleMV = tailleMV+liste.get(i).getSize();                   
+                } else {
+                    tailleAutre = tailleAutre+liste.get(i).getSize();                    
+                }                
+            }
+        }
+        
+        this.listesFichier = new DefaultTreeNode(new FichierInformation("Files", "-", 0), null);
+        TreeNode documents = new DefaultTreeNode(new FichierInformation("Documents", "-", tailleDocument), listesFichier);
+        TreeNode pictures = new DefaultTreeNode(new FichierInformation("Images", "-",tailleImage), listesFichier);
+        TreeNode movies = new DefaultTreeNode(new FichierInformation("Musiques et Vidèos", "-", tailleMV), listesFichier); 
+        TreeNode autres = new DefaultTreeNode(new FichierInformation("Autres", "-", tailleAutre), listesFichier);
+        
+        if (!this.liste.isEmpty()){
+          
+            for(int i=0;i<liste.size();i++){
+                nomSplit  = liste.get(i).getNom();                
+                if(nomSplit.contains(".jpg")  || nomSplit.contains(".png")){                      
+                    TreeNode image = new DefaultTreeNode("image", liste.get(i), pictures);
+                } 
+                else if(nomSplit.contains(".pdf")  || nomSplit.contains(".docx")){
+                    TreeNode document = new DefaultTreeNode("document", liste.get(i), documents);
+                }
+                else if(nomSplit.contains(".mp3")  || nomSplit.contains(".mp4")){
+                    TreeNode movie = new DefaultTreeNode("movie", liste.get(i), movies);
+                } else {
+                     TreeNode autre = new DefaultTreeNode("autre", liste.get(i), autres);
+                }
+                
+            }
+        }
+        
+
+
     }
 
     public void handleFileUpload(FileUploadEvent fileUploadEvent) throws IOException {
@@ -244,10 +300,7 @@ public class FileUpload implements Serializable {
                 FTPFile[] files1 = ftpClient.listFiles("/MYSTORAGEDOCUMENTS");
                 //long size = 0;
                 for (int i = 0; i < files1.length; i++) {
-                    if (files1[i].isDirectory()){
-                        System.out.println("Folder");
-                    } else{
-                        System.out.println(files1[i].getName());
+                    if (!files1[i].isDirectory()){
                         fic = new FichierInformation();
                         fic.setNom(files1[i].getName());
                         fic.setSize(files1[i].getSize());
@@ -319,6 +372,31 @@ public class FileUpload implements Serializable {
         pieModel1.setLegendPosition("w");
         pieModel1.setExtender("skinPie");
     }
+    
+    private MeterGaugeChartModel initMeterGaugeModel() {
+        List<Number> intervals = new ArrayList<Number>() {
+            {
+                add(50);
+                add(80);
+                add(100);
+                
+            }
+        };
+ 
+        return new MeterGaugeChartModel(140, intervals);
+    }
+ 
+    private void createMeterGaugeModels() {
+      
+        meterGaugeModel2 = initMeterGaugeModel();
+        meterGaugeModel2.setTitle("Custom Options");
+        meterGaugeModel2.setSeriesColors("93b75f,E7E658,cc6666");
+        meterGaugeModel2.setGaugeLabel("ko");
+        meterGaugeModel2.setGaugeLabelPosition("bottom");
+        meterGaugeModel2.setShowTickLabels(false);
+        meterGaugeModel2.setLabelHeightAdjust(110);
+        meterGaugeModel2.setIntervalOuterRadius(100);
+    }
 
     public String getSource() {
         return source;
@@ -376,4 +454,22 @@ public class FileUpload implements Serializable {
         this.pieModel1 = pieModel1;
     }
 
+    public TreeNode getListesFichier() {
+        return listesFichier;
+    }
+
+    public void setListesFichier(TreeNode listesFichier) {
+        this.listesFichier = listesFichier;
+    }
+
+    public MeterGaugeChartModel getMeterGaugeModel2() {
+        return meterGaugeModel2;
+    }
+
+    public void setMeterGaugeModel2(MeterGaugeChartModel meterGaugeModel2) {
+        this.meterGaugeModel2 = meterGaugeModel2;
+    }
+
+    
+    
 }
