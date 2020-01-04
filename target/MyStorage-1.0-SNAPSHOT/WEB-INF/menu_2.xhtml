@@ -16,24 +16,12 @@
             <p:submenu id="om_components" label="MON CLOUD" icon="fa fa-fw fa-cloud">
                             <p:menuitem id="om_file" value="Fichier" icon="fa fa-fw fa-file" outcome="/file_1.xhtml" />
                             <p:menuitem id="om_share" value="Partage" icon="fa fa-fw fa-share-alt"  />
-
-
             </p:submenu>
-            <p:submenu id="am_customization" label="Adaptation de Menu" icon="fa fa-fw fa-bars">
-                            <f:attribute name="badge" value="2" />
-                            <p:menuitem id="custom1" value="Menu Statique" icon="fa fa-fw fa-bars" actionListener="#{guestPreferences.setMenuLayout('static')}" ajax="false"/>
-                            <p:menuitem id="custom2" value="Overlay Menu" icon="fa fa-fw fa-bars" actionListener="#{guestPreferences.setMenuLayout('overlay')}" ajax="false"/>
-                        </p:submenu>
-                        <p:submenu id="am_layout" label="Personnalisation du Menu" icon="fa fa-fw fa-fire">
-                            <p:submenu id="am_layout_flat" label="Flat" icon="fa fa-fw fa-square-o">
-                                <p:menuitem id="am_layout_flat_1" value="Bleu" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setLayout('blue', false)}" ajax="false"/>
-                                <p:menuitem id="am_layout_flat_13" value="Light Blue" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setLayout('lightblue', false)}" ajax="false"/>
-                                <p:menuitem id="am_layout_flat_14" value="Light Green" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setLayout('lightgreen', false)}" ajax="false"/>
-                                <p:menuitem id="am_layout_flat_15" value="Dark Grey" icon="fa fa-fw fa-paint-brush" actionListener="#{guestPreferences.setLayout('darkgrey', false)}" ajax="false"/>
-                            </p:submenu>
-                            <p:submenu id="am_layout_special" label="Special" icon="fa fa-fw fa-square">
-                            </p:submenu>
-                        </p:submenu>
+            <p:submenu id="om_components" label="Parametres" icon="fa fa-fw fa-cloud">
+                            <p:menuitem id="om_file" value="Informations stockage" icon="fa fa-fw fa-file" outcome="/file_1.xhtml" />
+                            <p:menuitem id="om_share" value="Securite" icon="fa fa-fw fa-share-alt"  />
+            </p:submenu>
+           
 
         </pu:menu>
                 </div>

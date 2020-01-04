@@ -367,7 +367,7 @@ public class LoginBean implements Serializable {
     public void logout() {
         try {
             EntityRealm.getSubject().logout();
-            Faces.redirect("login.xhtml");
+            Faces.redirect("Bienvenue.xhtml");
             username = "";
         } catch (IOException ex) {
         }
