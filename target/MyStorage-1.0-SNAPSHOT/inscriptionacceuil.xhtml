@@ -94,7 +94,7 @@
                         <p:inputText id="quartier" placeholder="Renseigner la ville" value="#{InscriptionBean.particulier.ville}" style=" width: 50%"/>
                         
                         <p:outputLabel value="Nationalité:"  style="font-family: initial;font-size: large;font-style: inherit"  />
-                        <p:selectOneMenu value="#{InscriptionBean.particulier.pays}" required="true" requiredMessage="Veuillez choisir votre nationalité" style="width:50%"   filter="true" filterMatchMode="startsWith">
+                        <p:selectOneMenu value="#{InscriptionBean.particulier.pays}"   style="width:50%"   filter="true" filterMatchMode="startsWith">
 
                             <f:selectItem itemLabel="Choisir un pays" noSelectionOption="true"/>
                             <f:selectItem  itemValue="Afghanistan" itemLabel="Afghanistan"/>

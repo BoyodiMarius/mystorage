@@ -380,9 +380,9 @@ public class InscriptionBean implements Serializable {
             particulier.setProfil(collaborer);
             this.psbl.saveOne(particulier);
             this.particulier.setProfil(collaborer);
-            System.out.println(this.particulier);
             this.inscription.setTypemodule(typemodule);
             this.inscription.setParticulier(particulier);
+            System.out.println(this.particulier);
             this.isbl.saveOne(inscription);
 //            String url = "par ce lien veuillez effectuez le paiement sécurisé" + " " + "/eformation/paiement.xhtml/";
 //            String test = "CAGECFI SA VOUS REMERCIE POUR VOTRE INSCRIPTION ET VOUS INVITE a VITE VOUS INSCRIRE" + url;

@@ -4,7 +4,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui">
 
-    <head>
+    <h:head>
 
         <meta charset="utf-8"/>
         <title>MyStorage</title>
@@ -28,6 +28,7 @@
         <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png"/>
         <link rel="shortcut icon" href="ico/favicon.ico"/> 
 
+        
         <!-- =======================================================
             Theme Name: Vesperr
             Theme URL: https://bootstrapmade.com/vesperr-free-bootstrap-template/
@@ -42,9 +43,9 @@
             <meta name="apple-mobile-web-app-capable" content="yes" />
         </f:facet>
         <h:outputScript name="js/layout.js" library="avalon-layout" />
-    </head>
+   </h:head>
     <h:body styleClass="login-body">
-        <body>
+        <h:form id="Bienvenue">
             <header>
                 <!-- start top -->
                 <div id="topnav" class="navbar navbar-fixed-top default">
@@ -57,7 +58,7 @@
                                 <nav>
                                     <ul class="nav pull-right">
                                         <li class="current">
-                                            <a href="#intro">Acceuil</a>
+                                            <a href="#connexion">Acceuil</a>
                                         </li>
 
                                         <li>
@@ -79,21 +80,23 @@
             </header>  
 
             <!-- end top --><!-- section intro -->
-            <section id="intro">
-                <div class="slogan" > <!-- <div class="icon">
-                <i class="icon-beaker icon-10x"></i> </div> -->
-                    <div class="logo">
-                        <center>
-                            <table>
+            
+            <center>
+                <section id="connexion" >
+                    <center>
+                            <table style="width:100%">
                                 <tr>
-                                    <td>
+                                    <td style="width:50%">
+                                        <center>
                                         <a href="index.html">
                                             <img src="assets/img/logoOff.png" style="width:30%" alt=""/>
                                             <h1><span style="color:#879ca7">Bienvenue sur </span>
-                                                <br></br><span>MyStorage</span></h1><h2><span style="color:#879ca7">Comme si vos donnees.....</span></h2>
+                                                <br></br><span  style="color: #00AEEF">MyStorage</span></h1><h2><span style="color:#879ca7">Comme si vos donnees.....</span></h2>
                                         </a>
+                                        </center>
                                     </td>
-                                    <td>
+                                    <td style="width:50%">
+                                        <center>
                                         <h:form id="login">
                                             <p:fieldset >
                                                 <p:growl id="message" life="4000" showSummary="true" />
@@ -134,38 +137,107 @@
                                                 </div>
                                             </p:fieldset>
                                         </h:form>
+                                         </center>
                                     </td>
                                 </tr>
                             </table>
                         </center>
-                    </div>
-
-                </div>
-            </section>
-            <center>
+                </section>
                 <section id="services" >
-                    <h:form id="form" enctype="multipart/form-data">
-                            <p:carousel value="#{TypemoduleBean.typemodules}" headerText="Nos modules d'abonnements" style="background-color: #F7F7F5" var="car" responsive="true">
-                                 
-                                <p:panelGrid columns="2" style="width:100%;margin:10px 0px" columnClasses="label,value" layout="grid" styleClass="ui-panelgrid-blank">
-                                    <h:outputText value="Bonjour"/>
-                                </p:panelGrid>
-                                     <f:facet name="footer">
-                                             <p:commandButton class="Fs16 AquaButton" icon="fa fa-edit" iconPos="left" value="S'INSCRIRE"  action="/inscriptionacceuil.xhtml"  process="@form" style="left:23%;width:50%"/>
-                                     </f:facet>
-                            </p:carousel>
+                    <h:form id="typeAbonnement" enctype="multipart/form-data">
+                            <p:carousel value="#{TypemoduleBean.typemodules}" headerText="Nos modules d'abonnements"  var="car" responsive="true" >
+                            <center> 
+                                
+                                 <p:panelGrid columns="1" >
+                                <f:facet name="header">
+                                    <p:graphicImage value="#{car.photo}" width="100" height="100" /> 
+                                </f:facet>     
+                            
+                                <h:outputText style="text-decoration:underline; font-size: xx-large; color: #000"  value="#{EvaluerBean.espace}#{car.libelle}"  />
+                                <h:outputText  style="font-size: x-large; color: #000" value="Durée du de l'abonnement  :  #{EvaluerBean.espace}#{car.duree}#{EvaluerBean.espace}  mois" />
+                                <h:outputText style="font-size: x-large; color: #000" value="Prix de l'abonnement :  #{EvaluerBean.espace}#{car.prixmodule}#{EvaluerBean.espace}  Euros" />                       
+                               
+                                    
+                                    
+                                        </p:panelGrid>
+                                 </center>
+                             
+                                </p:carousel>
+                       <h:outputText/>
+                      <h:outputText/>
+                        
+
                     </h:form>
+
+
                 </section>
             </center>
             <!-- section works --><!-- section contact -->
             <section id="inscription" class="section">
-                <div class="containerTypeAbo">
-                    <div class="row">
+                <center>
+                <p:fieldset legend="Inscription"
+                    toggleable="true" styleClass="formulaire1"  >
+                    <h:form  id="demandeForm" enctype="multipart/form-data">   
+                         <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                        <center>
+                          
+                            
+                            <table style="width: 100%">
+                                <td style="width: 50%">
+                                    <center>
+                                        <h:panelGrid  columns="2"  >
+                                            <p:outputLabel value="Type d'abonnements:" for="typeforma"   style="font-family: initial;font-size: large;font-style: inherit; color: #000"/>
+                                            <p:selectOneMenu  id="typeforma" value="#{InscriptionBean.typemodule}"
+                                                              filter="true" filterMatchMode="startsWith"
+                                                              converter="omnifaces.SelectItemsIndexConverter" required="true" requiredMessage="Renseignez le type d'abonnements " 
+                                                              style="font-family: initial;font-size: large;font-style: inherit; color: #000" >
+                                                <f:selectItem itemLabel="Choisir le type d'abonnement" noSelectionOption="true"  />
+                                                <f:selectItems value="#{InscriptionBean.typesmodules}" var="typ" itemLabel="#{typ.libelle}" itemValue="#{typ}" />
+                                            </p:selectOneMenu>
+                                            <p:outputLabel value="Civilité :" for="sexe" style="font-family: initial;font-size: large;font-style: inherit; color: #000;"/>
+                                            <p:selectOneMenu id="sexe" required="true" value="#{InscriptionBean.particulier.sexe}" requiredMessage="Veuillez choisir votre civilité" style="color: #000" >
 
+                                                <f:selectItem itemLabel="Choisir la civilité" noSelectionOption="true"/>
+                                                <f:selectItem itemLabel="Monsieur" itemValue="Monsieur" />
+                                                <f:selectItem itemLabel="Madame" itemValue="Madame"/>
+                                            </p:selectOneMenu>
 
-                    </div>
-                </div>
+                                            <p:outputLabel value="Nom:"   for="nom" style="font-family: initial;font-size: large;font-style: inherit; color: #000" />
+                                            <p:inputText id="nom" required="true" value="#{InscriptionBean.particulier.nom}" placeholder="Renseigner le nom" />
 
+                                            <p:outputLabel value="Prénoms:" for="prenom"  style="font-family: initial;font-size: large;font-style: inherit; color: #000" />
+                                            <p:inputText id="prenom" required="true"  value="#{InscriptionBean.particulier.prenom}" placeholder="Renseigner le prénom" />
+                                        </h:panelGrid>
+                                    </center>
+                                </td >
+                                <td style="width: 50%">
+                                    
+                                         <h:panelGrid  columns="2"  >
+                                            <p:outputLabel value="Date de naissance:" for="date_naissance" style="font-family: initial;font-size: large;font-style: inherit; color: #000" />
+                                            <p:calendar id="date_naissance" maxdate="#{PersonnelBean.max()}" navigator="true" required="true" requiredMessage="Choisir une Date valide" pattern="dd/MM/yyyy"
+                                                        placeholder="Renseigner la date de naissance"  title="date_naissance" value="#{InscriptionBean.particulier.datenaiss}"  >
+                                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                                            </p:calendar>
+
+                                            <p:outputLabel value="Email:" for="mail" style="font-family: initial;font-size: large;font-style: inherit; color: #000"/>
+                                            <p:inputText id="mail" required="true" placeholder="Renseigner l'email" value="#{InscriptionBean.particulier.email}" />
+
+                                            <p:outputLabel value="Téléphone:" for="tel" style="font-family: initial;font-size: large;font-style: inherit; color: #000" />
+                                            <p:inputMask mask="99 99 99 99 99" required="true"  id="tel" placeholder="Renseigner le numéro de téléphone"
+                                                         requiredMessage="saisir le numéro de téléphone" value="#{InscriptionBean.particulier.telephone}" />
+                                        </h:panelGrid>
+                                    
+                                </td>
+                            </table>
+                            <h:panelGrid  columns="2"  >
+                                <p:commandButton class="Fs16 GreenButton" update="@(.formulaire1)"  icon="ui-icon-check fa fa-check Fs14 White"  id="ajouter" value="Valider"   process="@form" actionListener="#{InscriptionBean.saveAcceuil()}" style="display:inline-block;margin-top:1px;right:7%"/>
+                                <p:commandButton  class="Fs16 OrangeButton" update="@(.formulaire1)" icon="ui-icon-close fa fa-close Fs14 White" id="cancel" value="Annuler" actionListener="#{InscriptionBean.cancel(actionEvent)}" process="@form" style="display:inline-block;margin-top:5px;left:7%" />
+                                            
+                            </h:panelGrid>
+                        </center>
+                    </h:form>
+                </p:fieldset>
+                 </center>
             </section>
             <section id="contact" class="section"><div class="container"><div class="row">
                         <div class="span6">
@@ -231,8 +303,55 @@
                                 </div>
                             </div></div></div></div></footer><a href="#" class="scrollup"><i class="icon-chevron-up icon-square icon-48 active"></i></a>
             <!-- Javascript Library Files -->
-        </body>
-        <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="avalon-layout" />
+            </h:form>
+            
+                          <p:dialog   widgetVar="typeAjout"  positionType="absolute" fitViewport="true" responsive="true" minimizable="true" maximizable="true"  dynamic="true" closable="true" resizable="true" showEffect="slide" hideEffect="clip" id="editP" modal="true" minHeight="150" minWidth="150" width="800" position="center">    
+                    <h:form id="form">
+                        <p:growl id="growl" showSummary="true" life="4000"/>
+                        <center>
+                            
+                                <p:fieldset legend="Ajout d'un abonnement" style=" margin-left:10px ; color:#C8D9E2; margin-bottom:10px" widgetVar="type2Ajout"  >
+                                    <h:panelGrid id="wi"  columns="2" columnClasses="label, value" style="background-color: #F3F5F7;border-radius:10px ; width:100% ; margin-bottom:3%;alignment-adjust: auto;padding-left:3%;padding-bottom:5%  ">     
+                                        <h:outputText/>
+                                        <h:inputHidden value="#{TypemoduleBean.typemodule.id}"/>
+                                        <p:outputLabel value="Libellé:" for="libelle" style="font-family: initial;font-size: large;font-style: inherit; color: black"/>
+                                        <p:inputText id="libelle" placeholder="Renseigner le Libelle de l'abonnement" required="true" requiredMessage="veuillez Renseignez le libelle de l'abonnement"  value="#{TypemoduleBean.typemodule.libelle}" style=" width:75%">
+                                        </p:inputText>
+                                        <p:outputLabel value="Prix (euros):" for="prix" style="font-family: initial;font-size: large;font-style: inherit; color: black"/>
+                                        <p:inputText id="prix" placeholder="Renseigner le prix de l'abonnement" required="true" requiredMessage="veuillez Renseignez le prix de l'abonnement"  value="#{TypemoduleBean.typemodule.prixmodule}" style=" width:75%">
+                                         </p:inputText>
+                                         <p:outputLabel value="Durée (mois):" for="duree" style="font-family: initial;font-size: large;font-style: inherit; color: black"/>
+                                        <p:inputText id="duree" placeholder="Renseigner la duree de l'abonnement" required="true" requiredMessage="veuillez Renseignez la duree de l'abonnement"  value="#{TypemoduleBean.typemodule.duree}" style=" width:75%">
+                                         </p:inputText>
+                                      
+                                        <h:inputHidden id="pieces" value="#{TypemoduleBean.typemodule.photo}" />
+                                        <p:fileUpload mode="advanced" required="true" requiredMessage="veuillez choisir la photo" label="Choisir la photo" allowTypes="/(\.|\/)(gif|jpg|jpeg|gif|png|PNG|GIF|JPG|JPEG)$/"  oncomplete="PF('chargtof').hide()" auto="true" fileUploadListener="#{TypemoduleBean.handleFileUpload}" update="doc,val,pieces"/>
+                                        <h:outputText id="doc" value="#{TypemoduleBean.typemodule.photo}"/>
+                                        <h:outputText/>
+                                        <h:inputHidden id="val" value="#{TypemoduleBean.typemodule.photo}"/>
+
+                                        <h:outputText/>  
+                                        <h:outputText/>
+
+
+                                             
+                                    </h:panelGrid>  
+                                    <p:commandButton  class="Fs16 OrangeButton" icon="ui-icon-close fa fa-close Fs14 White" id="cancel" value="Annuler" actionListener="#{TypemoduleBean.cancel(actionEvent)}" process="@form" style="right: 10%" onclick="PF('typeAjout').hide();"/>
+                                    <p:commandButton class="Fs16 GreenButton"   update="formule:tabe:typeformation:afficheTabM:ajouTabM,growl" icon="ui-icon-check fa fa-check Fs14 White" id="ajouter" value="Ajouter" actionListener="#{TypemoduleBean.save(actionEvent)}" process="@form" style="left:15%" onclick="PF('typeAjout').hide();">
+
+                                               <p:confirm header="Confirmation" message="Voulez vous vraiment enrégistrer cet abonnement?" icon="ui-icon-alert" />
+                                                </p:commandButton>
+                                         
+                                            <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                                                    <p:commandButton value="OUI" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                                    <p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                                </p:confirmDialog> 
+                                </p:fieldset>
+                           
+                        </center>
+                    </h:form>
+                </p:dialog>
+        
     </h:body>
 
 </ui:composition>
