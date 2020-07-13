@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -62,6 +63,7 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.LazyScheduleModel;
 import org.primefaces.model.ScheduleModel;
+import org.primefaces.util.DateUtils;
 
 /**
  *
@@ -93,6 +95,7 @@ public class InscriptionBean implements Serializable {
     private List<Inscription> inscris;
     private Profil collaborer;
     private Date dateNaiss;
+    private String dateNaissance;
 
     @EJB
     private InscriptionServiceBeanLocal isbl;
@@ -332,6 +335,9 @@ public class InscriptionBean implements Serializable {
             System.out.println(this.particulier);
             this.inscription.setTypemodule(typemodule);
             this.inscription.setParticulier(particulier);
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+            Date date = formatter.parse(dateNaissance);
+            this.particulier.setDatenaiss(date);
             this.isbl.saveOne(inscription);
 //            String url = "par ce lien veuillez effectuez le paiement sécurisé" + " " + "/eformation/paiement.xhtml/";
 //            String test = "CAGECFI SA VOUS REMERCIE POUR VOTRE INSCRIPTION ET VOUS INVITE a VITE VOUS INSCRIRE" + url;
@@ -380,6 +386,9 @@ public class InscriptionBean implements Serializable {
             particulier.setProfil(collaborer);
             this.psbl.saveOne(particulier);
             this.particulier.setProfil(collaborer);
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+            Date date = formatter.parse(dateNaissance);
+            this.particulier.setDatenaiss(date);
             this.inscription.setTypemodule(typemodule);
             this.inscription.setParticulier(particulier);
             System.out.println(this.particulier);
@@ -957,6 +966,14 @@ public class InscriptionBean implements Serializable {
 
     public void setNewPass(String newPass) {
         this.newPass = newPass;
+    }
+
+    public String getDateNaissance() {
+        return dateNaissance;
+    }
+
+    public void setDateNaissance(String dateNaissance) {
+        this.dateNaissance = dateNaissance;
     }
 
     
