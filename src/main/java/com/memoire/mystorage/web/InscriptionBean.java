@@ -154,18 +154,7 @@ public class InscriptionBean implements Serializable {
         };
     }
 
-    /**
-     * *
-     * EFFECTUER LE CONTROLE AVANT AJOUT
-     *
-     * @return
-     */
-    /**
-     * Controle de contact , renvoie true si le contact est correct et false au
-     * cas contraire
-     *
-     * @return
-     */
+   
     public boolean controleContact() {//true l'ajout peut etre effectué
         String contact = particulier.getTelephone().trim();
         char premierCarater;
@@ -332,12 +321,12 @@ public class InscriptionBean implements Serializable {
             particulier.setProfil(collaborer);
             this.psbl.saveOne(particulier);
             this.particulier.setProfil(collaborer);
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MMM/yyyy");
+            Date date = formatter.parse(dateNaissance);
+            this.particulier.setDatenaiss(date);
             System.out.println(this.particulier);
             this.inscription.setTypemodule(typemodule);
             this.inscription.setParticulier(particulier);
-            SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
-            Date date = formatter.parse(dateNaissance);
-            this.particulier.setDatenaiss(date);
             this.isbl.saveOne(inscription);
 //            String url = "par ce lien veuillez effectuez le paiement sécurisé" + " " + "/eformation/paiement.xhtml/";
 //            String test = "CAGECFI SA VOUS REMERCIE POUR VOTRE INSCRIPTION ET VOUS INVITE a VITE VOUS INSCRIRE" + url;
@@ -382,28 +371,27 @@ public class InscriptionBean implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         try {
             tx.begin();
-            collaborer = this.psbl3.getOneBy("nom", "collaborer");
+            collaborer = this.psbl3.getOneBy("nom", "utilisateur");
             particulier.setProfil(collaborer);
-            this.psbl.saveOne(particulier);
             this.particulier.setProfil(collaborer);
-            SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
             Date date = formatter.parse(dateNaissance);
             this.particulier.setDatenaiss(date);
             this.inscription.setTypemodule(typemodule);
             this.inscription.setParticulier(particulier);
-            System.out.println(this.particulier);
+            this.psbl.saveOne(particulier);
             this.isbl.saveOne(inscription);
 //            String url = "par ce lien veuillez effectuez le paiement sécurisé" + " " + "/eformation/paiement.xhtml/";
 //            String test = "CAGECFI SA VOUS REMERCIE POUR VOTRE INSCRIPTION ET VOUS INVITE a VITE VOUS INSCRIRE" + url;
 //            SendMailByGlassfish.runTest(test, this.particulier.getEmail(), "MYSTORAGE", "Informations");
             
             //dossier(this.inscription.getParticulier().getNom());
-            envoyer(this.inscription.getParticulier().getEmail(), "Bonjour Monsieur/Madame "
+            /*envoyer(this.inscription.getParticulier().getEmail(), "Bonjour Monsieur/Madame "
                 +this.inscription.getParticulier().getNom()+
                 " , Votre inscription à été pris en compte."
                         + "Cordialement, ");
             envoyer("mystorageefficom@gmail.com", "Nouvelle inscription à valider ");
-            context.addMessage(null, new FacesMessage(Constante.INSCRIPTION_REUSSIT));
+            context.addMessage(null, new FacesMessage(Constante.INSCRIPTION_REUSSIT));*/
             tx.commit();
             this.inscription = new Inscription();
             this.particulier = new Particulier();
@@ -473,7 +461,7 @@ public class InscriptionBean implements Serializable {
                 +this.inscription.getParticulier().getNom()+
                 " , Votre compte à été valider. Voici vos paramètres de connexions :  Login : "
                 +this.inscription.getParticulier().getEmail()+ " Mot de passe: admin";
-        envoyer(this.inscription.getParticulier().getEmail(), newPass);
+        //envoyer(this.inscription.getParticulier().getEmail(), newPass);
         dossier(this.inscription.getParticulier().getEmail());
 //        String log = "login" + "=" + "" + this.inscription.getParticulier().getEmail();
 //        String pass = "password" + "=" + "admin";

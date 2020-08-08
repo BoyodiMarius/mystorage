@@ -98,8 +98,8 @@
                                     <td style="width:50%">
                                         <center>
                                         <h:form id="login">
+                                            <p:growl id="message" showSummary="true" life="4000"/>
                                             <p:fieldset >
-                                                <p:growl id="message" life="4000" showSummary="true" />
                                                 <div class="card login-panel ui-fluid">
                                                     <div class="login-panel-content" >
                                                         <div class="ui-g">
@@ -195,7 +195,7 @@
                                             <p:inputText id="prenom" required="true"  value="#{InscriptionBean.particulier.prenom}" placeholder="Renseigner le prénom" style="border-radius: 90px" />
                                                
                                         <p:outputLabel value="Date de naissance:" for="date_naissance" style="font-family: initial;font-size: large;font-style: inherit; color: #000;border-radius: 50px" />
-                                        <p:inputMask id="date_naissance" mask="99/99/9999" required="true"  placeholder="         jj/mm/dddd   " value="#{InscriptionBean.dateNaissance}" style="border-radius: 50px" />
+                                        <p:inputMask id="date_naissance" mask="99/99/9999" required="true"  placeholder="jj/mm/dddd" value="#{InscriptionBean.dateNaissance}" style="border-radius: 50px" />
 
                                                                                    </h:panelGrid>
                                     </center>
@@ -221,12 +221,10 @@
                                             </p:selectOneMenu>
                                                                 
                                             <p:outputLabel value="Civilité :" for="sexe" style="font-family: initial;font-size: large;font-style: inherit; color: #000;"/>
-                                            <p:selectOneMenu id="sexe" required="true" value="#{InscriptionBean.particulier.sexe}" requiredMessage="Veuillez choisir votre civilité" style="color: #000;width:90%;border-radius: 30px">
-
-                                                <f:selectItem itemLabel="Choisir la civilité" noSelectionOption="true"/>
+                                            <p:selectOneButton id="sexe" required="true" value="#{InscriptionBean.particulier.sexe}" requiredMessage="Veuillez choisir votre civilité" style="color: #000;width:90%;border-radius: 30px">
                                                 <f:selectItem itemLabel="Monsieur" itemValue="Monsieur" />
                                                 <f:selectItem itemLabel="Madame" itemValue="Madame"/>
-                                            </p:selectOneMenu>
+                                            </p:selectOneButton>
                                          </h:panelGrid>
                                     
                                 </td>
@@ -236,8 +234,21 @@
                             <br></br>
                             <br></br>
                             <h:panelGrid  columns="2"  >
-                                <p:commandButton class="Fs16 GreenButton" update="@(.formulaire1)"  icon="ui-icon-check fa fa-check Fs14 White"  id="ajouter" value="Valider"   process="@form" actionListener="#{InscriptionBean.saveAcceuil()}" style="display:inline-block;margin-top:1px;right:7%"/>
-                                <p:commandButton  class="Fs16 OrangeButton" update="@(.formulaire1)" icon="ui-icon-close fa fa-close Fs14 White" id="cancel" value="Annuler" actionListener="#{InscriptionBean.cancel(actionEvent)}" process="@form" style="display:inline-block;margin-top:4px;left:7%" />
+                                <p:commandButton class="Fs16 GreenButton" 
+                                                 update="@(.formulaire1)" 
+                                                 icon="ui-icon-check fa fa-check Fs14 White" 
+                                                 id="ajouter" value="Valider"
+                                                 process="@form"
+                                                 actionListener="#{InscriptionBean.saveAcceuil()}" 
+                                                 style="display:inline-block;margin-top:1px;right:7%"/>
+                                
+                                <p:commandButton  class="Fs16 OrangeButton" 
+                                                  update="@(.formulaire1)" 
+                                                  icon="ui-icon-close fa fa-close Fs14 White" 
+                                                  id="cancel" value="Annuler" 
+                                                  actionListener="#{InscriptionBean.cancel(actionEvent)}" 
+                                                  process="@form" 
+                                                  style="display:inline-block;margin-top:4px;left:7%" />
                                             
                             </h:panelGrid>
                         </center>
@@ -311,7 +322,12 @@
             <!-- Javascript Library Files -->
             </h:form>
             
-                          <p:dialog   widgetVar="typeAjout"  positionType="absolute" fitViewport="true" responsive="true" minimizable="true" maximizable="true"  dynamic="true" closable="true" resizable="true" showEffect="slide" hideEffect="clip" id="editP" modal="true" minHeight="150" minWidth="150" width="800" position="center">    
+                          <p:dialog   widgetVar="typeAjout"  positionType="absolute" 
+                                      fitViewport="true" responsive="true" minimizable="true" 
+                                      maximizable="true"  dynamic="true" closable="true" 
+                                      resizable="true" showEffect="slide" hideEffect="clip"
+                                      id="editP" modal="true" minHeight="150"
+                                      minWidth="150" width="800" position="center">    
                     <h:form id="form">
                         <p:growl id="growl" showSummary="true" life="4000"/>
                         <center>

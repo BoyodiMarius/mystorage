@@ -15,6 +15,7 @@ import com.memoire.mystorage.services.RoleServiceBeanLocal;
 import com.memoire.mystorage.services.UtilisateurServiceBeanLocal;
 import com.memoire.mystorage.shiro.EntityRealm;
 import com.memoire.mystorage.transaction.TransactionManager;
+import com.memoire.mystorage.utils.constantes.Constante;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
@@ -105,7 +106,7 @@ public class LoginBean implements Serializable {
 
     @PostConstruct
     public void init() {
-
+        System.out.println("login");
         boolean test = this.checkIntConnection();
         FacesContext context = FacesContext.getCurrentInstance();
         UserTransaction tx = TransactionManager.getUserTransaction();
@@ -131,33 +132,35 @@ public class LoginBean implements Serializable {
         }
         List<Profil> alle = psbl.getAll();
         if (alle.isEmpty()) {
-            this.psbl.saveOne(new Profil("administrer"));
-            this.psbl.saveOne(new Profil("Gerer"));
-            this.psbl.saveOne(new Profil("auditer"));
-            this.psbl.saveOne(new Profil("collaborer"));
+            this.psbl.saveOne(new Profil("administrateur"));
+            //this.psbl.saveOne(new Profil("Gerer"));
+            //this.psbl.saveOne(new Profil("auditer"));
+            this.psbl.saveOne(new Profil("utilisateur"));
         }
 
-        List<Profil> profils = psbl.getBy("nom", "Armel");
-        if (profils.isEmpty()) {
+        List<Profil> profils = psbl.getBy("nom", "administrateur");
+        System.out.println("profil "+profils.size());
+        if (!profils.isEmpty()) {
             try {
                 tx.begin();
-                this.psbl.saveOne(new Profil("Armel"));
                 List<Role> roles = this.rsbl.getAll();
                 for (Role role : roles) {
                     ProfilRole pr = new ProfilRole();
                     pr.setRole(role);
-                    pr.setProfil(psbl.getOneBy("nom", "Armel"));
+                    pr.setProfil(psbl.getOneBy("nom", "administrateur"));
                     prsbl.saveOne(pr);
                 }
 
                 Utilisateur p = new Utilisateur();
-                p.setLogin("Armel");
+                System.out.println("creation de compte");
+                p.setLogin("Admin");
                 p.setPass(new Sha256Hash("@frica").toHex());
-                p.setProfil(psbl.getOneBy("nom", "Armel"));
+                p.setProfil(psbl.getOneBy("nom", "administrateur"));
                 p.setActif(true);
 
                 usbl.saveOne(p);
                 tx.commit();
+                System.out.println("Compte creer");
             } catch (Exception e) {
                 try {
                     tx.rollback();
@@ -260,18 +263,27 @@ public class LoginBean implements Serializable {
             }
 
             if (pers != null) {
-                boolean test = new Sha256Hash("admin").toHex().equals(pers.getPass());
-                if (test && pers.isActif() == true) {
-
+                boolean verifPass = new Sha256Hash(password).toHex().equals(pers.getPass());
+                System.out.println("pass "+verifPass);
+                if (verifPass && pers.isActif() == true && pers.getProfil().getNom().equalsIgnoreCase("utilisateur")) {
+              
                     RequestContext context = RequestContext.getCurrentInstance();
-                    context.execute("PF('dialogpasse').show();");
-                    return;
-                }
-                     if ("collaborer".equals(pers.getProfil().getNom())) {
                     SavedRequest savedRequest = WebUtils.getAndClearSavedRequest(Faces.getRequest());
                     Faces.redirect(savedRequest != null ? savedRequest.getRequestUrl() : "file_1.xhtml");
-
+                    //context.execute("PF('typeAjout').show();");
+                    //return;
+                } else if (verifPass && pers.isActif() == true && pers.getProfil().getNom().equalsIgnoreCase("administrateur")) {
+                    SavedRequest savedRequest = WebUtils.getAndClearSavedRequest(Faces.getRequest());
+                    Faces.redirect(savedRequest != null ? savedRequest.getRequestUrl() : "stat.xhtml");
+                } else {
+                    FacesContext context = FacesContext.getCurrentInstance();
+                    context.addMessage(null, new FacesMessage("Nom d'utlisateur ou mot de passe incorrect"));
+                    
                 }
+                
+            } else {
+                FacesContext context = FacesContext.getCurrentInstance();
+                context.addMessage(null, new FacesMessage("Nom d'utlisateur ou mot de passe incorrect"));
             }
          
             UsernamePasswordToken token = new UsernamePasswordToken(username.trim(), password.trim());
@@ -348,8 +360,7 @@ public class LoginBean implements Serializable {
 
             }
 
-            SavedRequest savedRequest = WebUtils.getAndClearSavedRequest(Faces.getRequest());
-            Faces.redirect(savedRequest != null ? savedRequest.getRequestUrl() : "stat.xhtml");
+            
 
         } catch (AuthenticationException e) {
             e.getMessage();
