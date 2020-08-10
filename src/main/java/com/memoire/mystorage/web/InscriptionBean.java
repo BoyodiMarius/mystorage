@@ -10,14 +10,14 @@ import com.memoire.mystorage.entities.Annee;
 import com.memoire.mystorage.entities.Inscription;
 import com.memoire.mystorage.entities.Paiement;
 import com.memoire.mystorage.entities.Particulier;
-import com.memoire.mystorage.api.entities.security.Profil;
+import com.memoire.mystorage.entities.Profil;
 import com.memoire.mystorage.entities.Promotion;
 import com.memoire.mystorage.entities.Typemodule;
 import com.memoire.mystorage.services.AnneeServiceBeanLocal;
 import com.memoire.mystorage.services.InscriptionServiceBeanLocal;
 import com.memoire.mystorage.services.PaiementServiceBeanLocal;
 import com.memoire.mystorage.services.ParticulierServiceBeanLocal;
-import com.memoire.mystorage.api.service.security.ProfilServiceBeanLocal;
+import com.memoire.mystorage.services.ProfilServiceBeanLocal;
 import com.memoire.mystorage.services.PromotionServiceBeanLocal;
 import com.memoire.mystorage.services.TypemoduleServiceBeanLocal;
 import com.memoire.mystorage.transaction.TransactionManager;
@@ -29,7 +29,6 @@ import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -60,6 +59,8 @@ import javax.transaction.UserTransaction;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultScheduleModel;
+import org.primefaces.model.LazyScheduleModel;
 import org.primefaces.model.ScheduleModel;
 
 /**
@@ -92,7 +93,6 @@ public class InscriptionBean implements Serializable {
     private List<Inscription> inscris;
     private Profil collaborer;
     private Date dateNaiss;
-    private String dateNaissance;
 
     @EJB
     private InscriptionServiceBeanLocal isbl;
@@ -144,11 +144,27 @@ public class InscriptionBean implements Serializable {
 
     @PostConstruct
     public void init() {
+        eventModel = new DefaultScheduleModel();
+
+        lazyEventModel = new LazyScheduleModel() {  
+          
+        };
     }
 
-   
+    /**
+     * *
+     * EFFECTUER LE CONTROLE AVANT AJOUT
+     *
+     * @return
+     */
+    /**
+     * Controle de contact , renvoie true si le contact est correct et false au
+     * cas contraire
+     *
+     * @return
+     */
     public boolean controleContact() {//true l'ajout peut etre effectué
-        String contact = particulier.getPersonnePattern().getTelephone().trim();
+        String contact = particulier.getTelephone().trim();
         char premierCarater;
         boolean controle = false;
         if ((contact.length() == 11) && contact.matches("\\d{2}\\-\\d{2}\\-\\d{2}\\-\\d{2}")) {
@@ -185,13 +201,13 @@ public class InscriptionBean implements Serializable {
         boolean ajouter = true;
         if (!particuliers.isEmpty()) {
             for (Particulier u : particuliers) {
-                if (particulier.getPersonnePattern().getTelephone().equals(u.getPersonnePattern().getTelephone())) {
+                if (particulier.getTelephone().equals(u.getTelephone())) {
                     ajouter = false;
                     FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
                             "ce contact est lié à un compte", "");
                     FacesContext.getCurrentInstance().addMessage("", mf);;
                 }
-                if (particulier.getPersonnePattern().getMail().equalsIgnoreCase(u.getPersonnePattern().getMail())) {
+                if (particulier.getEmail().equalsIgnoreCase(u.getEmail())) {
                     ajouter = true;
                     FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
                             "ce email est lié à un compte", "");
@@ -206,16 +222,16 @@ public class InscriptionBean implements Serializable {
         boolean ajouter = false;
         this.particuliers = this.psbl.getAll();
         Pattern rfc2822 = Pattern.compile("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
-        if (rfc2822.matcher(particulier.getPersonnePattern().getMail().trim()).matches()){
+        if (rfc2822.matcher(particulier.getEmail().trim()).matches()){
             if (!particuliers.isEmpty()) {
                 for (Particulier u : particuliers) {
-                    if (particulier.getPersonnePattern().getMail().equals(u.getPersonnePattern().getMail())) {
+                    if (particulier.getTelephone().equals(u.getTelephone())) {
                         ajouter = true;
                         FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
                                 "Ce contact est lié à un compte", "");
                         FacesContext.getCurrentInstance().addMessage("", mf);;
                     } else
-                    if (particulier.getPersonnePattern().getMail().equalsIgnoreCase(u.getPersonnePattern().getMail())) {
+                    if (particulier.getEmail().equalsIgnoreCase(u.getEmail())) {
                         ajouter = true;
                         FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
                                 "Cet email est lié à un compte", "");
@@ -236,7 +252,7 @@ public class InscriptionBean implements Serializable {
     public boolean controleVide() {
         System.out.println("je fais le controle du vide");
         boolean vide = false; // false ce n'est pas vide
-        if (particulier.getPersonnePattern().getNom().trim().equals("")) {
+        if (particulier.getNom().trim().equals("")) {
             vide = true;
             FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "le nom svp", "");
@@ -246,13 +262,13 @@ public class InscriptionBean implements Serializable {
 //            FacesContext.getCurrentInstance().
 //                    addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "test error", ""));
         }
-        if (particulier.getPersonnePattern().getMail().trim().equals("")) {
+        if (particulier.getEmail().trim().equals("")) {
             vide = true;
             FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "l'email svp", "");
             FacesContext.getCurrentInstance().addMessage("", mf);;
         }
-        if (particulier.getPersonnePattern().getTelephone().trim().equals("")) {
+        if (particulier.getTelephone().trim().equals("")) {
             vide = true;
             FacesMessage mf = new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "le contact svp", "");
@@ -277,8 +293,8 @@ public class InscriptionBean implements Serializable {
         int i = 0;
         this.controleList = this.psbl.getAll();
         while (i < this.controleList.size()) {
-            System.out.println("nom1" + particulier.getPersonnePattern().getNom().trim() + "nom2 " + controleList.get(i).getPersonnePattern().getNom());
-            if (this.particulier.getPersonnePattern().getNom().trim().toLowerCase().equals(controleList.get(i).getPersonnePattern().getNom().trim().toLowerCase())) {
+            System.out.println("nom1" + particulier.getNom().trim() + "nom2 " + controleList.get(i).getNom());
+            if (this.particulier.getNom().trim().toLowerCase().equals(controleList.get(i).getNom().trim().toLowerCase())) {
                 System.out.println("Ce nom existe déjà");
 //                Mtm.messageErrorPerso("Ce nom d'entreprise existe déjà dans la base");
                 ajouter = false;
@@ -310,9 +326,9 @@ public class InscriptionBean implements Serializable {
         try {
             tx.begin();
             collaborer = this.psbl3.getOneBy("nom", "collaborer");
+            particulier.setProfil(collaborer);
             this.psbl.saveOne(particulier);
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MMM/yyyy");
-            Date date = formatter.parse(dateNaissance);
+            this.particulier.setProfil(collaborer);
             System.out.println(this.particulier);
             this.inscription.setTypemodule(typemodule);
             this.inscription.setParticulier(particulier);
@@ -360,24 +376,25 @@ public class InscriptionBean implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         try {
             tx.begin();
-            collaborer = this.psbl3.getOneBy("nom", "utilisateur");
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-            Date date = formatter.parse(dateNaissance);
+            collaborer = this.psbl3.getOneBy("nom", "collaborer");
+            particulier.setProfil(collaborer);
+            this.psbl.saveOne(particulier);
+            this.particulier.setProfil(collaborer);
             this.inscription.setTypemodule(typemodule);
             this.inscription.setParticulier(particulier);
-            this.psbl.saveOne(particulier);
+            System.out.println(this.particulier);
             this.isbl.saveOne(inscription);
 //            String url = "par ce lien veuillez effectuez le paiement sécurisé" + " " + "/eformation/paiement.xhtml/";
 //            String test = "CAGECFI SA VOUS REMERCIE POUR VOTRE INSCRIPTION ET VOUS INVITE a VITE VOUS INSCRIRE" + url;
 //            SendMailByGlassfish.runTest(test, this.particulier.getEmail(), "MYSTORAGE", "Informations");
             
             //dossier(this.inscription.getParticulier().getNom());
-            /*envoyer(this.inscription.getParticulier().getEmail(), "Bonjour Monsieur/Madame "
+            envoyer(this.inscription.getParticulier().getEmail(), "Bonjour Monsieur/Madame "
                 +this.inscription.getParticulier().getNom()+
                 " , Votre inscription à été pris en compte."
                         + "Cordialement, ");
             envoyer("mystorageefficom@gmail.com", "Nouvelle inscription à valider ");
-            context.addMessage(null, new FacesMessage(Constante.INSCRIPTION_REUSSIT));*/
+            context.addMessage(null, new FacesMessage(Constante.INSCRIPTION_REUSSIT));
             tx.commit();
             this.inscription = new Inscription();
             this.particulier = new Particulier();
@@ -436,19 +453,19 @@ public class InscriptionBean implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         this.inscription = this.isbl.find(id);
         System.out.println(this.inscription);
-        this.inscription.getParticulier().setLogin(this.inscription.getParticulier().getPersonnePattern().getMail());
-        this.inscription.getParticulier().setPasswd(new Sha256Hash("admin").toHex());
+        this.inscription.getParticulier().setLogin(this.inscription.getParticulier().getEmail());
+        this.inscription.getParticulier().setPass(new Sha256Hash("admin").toHex());
         this.inscription.setEtat(true);
-        this.inscription.getParticulier().setProfilactif(true);
+        this.inscription.getParticulier().setActif(true);
         this.isbl.updateOne(inscription);
         this.psbl.updateOne(this.inscription.getParticulier());
         context.addMessage(null, new FacesMessage(Constante.MODIFICATION_REUSSIT));
         newPass = "Bonjour Monsieur/Madame "
-                +this.inscription.getParticulier().getPersonnePattern().getNom()+
+                +this.inscription.getParticulier().getNom()+
                 " , Votre compte à été valider. Voici vos paramètres de connexions :  Login : "
-                +this.inscription.getParticulier().getPersonnePattern().getMail()+ " Mot de passe: admin";
-        //envoyer(this.inscription.getParticulier().getEmail(), newPass);
-        dossier(this.inscription.getParticulier().getPersonnePattern().getMail());
+                +this.inscription.getParticulier().getEmail()+ " Mot de passe: admin";
+        envoyer(this.inscription.getParticulier().getEmail(), newPass);
+        dossier(this.inscription.getParticulier().getEmail());
 //        String log = "login" + "=" + "" + this.inscription.getParticulier().getEmail();
 //        String pass = "password" + "=" + "admin";
 //        String test = "CAGECFI SA VIENT DE VALIDER VOTRE INSCRIPTION.VOICI VOTRE" + " " + log + " " + "ET VOTRE" + pass + " " + "Cordialement";
@@ -502,7 +519,7 @@ public class InscriptionBean implements Serializable {
             ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
             String newFileName = servletContext.getRealPath("") + File.separator + "resources" + File.separator + "image"
                     + File.separator + image + event.getFile().getFileName();
-            InputStream inputStream = event.getFile().getInputStream();
+            InputStream inputStream = event.getFile().getInputstream();
             particulier.setPhoto("/resources/image/" + image + event.getFile().getFileName());
             ImageOutputStream out = new FileImageOutputStream(new File(newFileName));
             int read = 0;
@@ -940,14 +957,6 @@ public class InscriptionBean implements Serializable {
 
     public void setNewPass(String newPass) {
         this.newPass = newPass;
-    }
-
-    public String getDateNaissance() {
-        return dateNaissance;
-    }
-
-    public void setDateNaissance(String dateNaissance) {
-        this.dateNaissance = dateNaissance;
     }
 
     

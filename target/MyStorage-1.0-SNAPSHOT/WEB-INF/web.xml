@@ -4,6 +4,10 @@
         <welcome-file>stat.xhtml</welcome-file>
     </welcome-file-list>
     <context-param>
+        <param-name>facelets.SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
         <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
         <param-value>server</param-value>
     </context-param>
@@ -13,7 +17,7 @@
     </context-param>
     <context-param>
         <param-name>primefaces.THEME</param-name>
-        <param-value>avalon-lightblue-v4</param-value>
+        <param-value>avalon-#{guestPreferences.theme}</param-value>
     </context-param>
     <context-param>
         <param-name>primefaces.FONT_AWESOME</param-name>
@@ -22,6 +26,10 @@
     <context-param>
         <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
         <param-value>/WEB-INF/primefaces-avalon.taglib.xml</param-value>
+    </context-param>
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Production</param-value>
     </context-param>
     <listener>
         <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
@@ -105,44 +113,9 @@
         <dispatcher>INCLUDE</dispatcher>
         <dispatcher>ERROR</dispatcher>
     </filter-mapping>
-   <error-page>
-        <!-- Missing login -->
-        <error-code>401</error-code>
-        <location>/404.xhtml</location>
-    </error-page>
-    <error-page>
-        <!-- Forbidden directory listing -->
-        <error-code>403</error-code>
-        <location>/404.xhtml</location>
-    </error-page>
-    <error-page>
-        <!-- Missing resource -->
-        <error-code>404</error-code>
-        <location>/404.xhtml</location>
-    </error-page>
-    <error-page>
-        <!-- Uncaught exception -->
-        <error-code>500</error-code>
-        <location>/404.xhtml</location>
-    </error-page>
-    <error-page>
-        <!-- Unsupported servlet method -->
-        <error-code>503</error-code>
-        <location>/404.xhtml</location>
-    </error-page>
-    <error-page>
-        <exception-type>javax.faces.application.ViewExpiredException</exception-type>
-        <location>/error.xhtml</location>
-    </error-page>
-    <error-page>
-        <exception-type>java.io.IOException</exception-type>
-        <location>/error.xhtml</location>
-    </error-page>
-    <error-page>
-        <exception-type>java.lang.Throwable</exception-type>
-        <location>/error.xhtml</location>
-    </error-page>
-    <error-page>
-        <location>/error.xhtml</location>
-    </error-page>
+    <session-config>
+        <session-timeout>
+            -1
+        </session-timeout>
+    </session-config>
 </web-app>

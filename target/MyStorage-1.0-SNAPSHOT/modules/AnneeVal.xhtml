@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <p:tab title="Années antérieures" >
+        <h:form id="annee1">
+            <h:form id="afficheTabM1">
+                <p:growl id="gwl" showSummary="true" life="4000"/>
+                <center>
+                    <p:dataTable  value="#{AnneeBean.annexes}" var="missione" id="ajouTabM"
+                                  emptyMessage="Aucune année trouvée" paginator="true" rows="5"
+                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks}
+                                  {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                  rowsPerPageTemplate="2,5,10,15"
+                                  rowKey="#{missione.id}" selection="#{missione}" selectionMode="single" reflow="true" 
+                                  style="border-color:#00AEEF;width:80%;alignment-adjust:middle" >
+                        <f:facet name="header" >
+                            <h:outputText value="LISTE DES ANNEES CLOTUREES" />
+                        </f:facet>
+
+                        <p:column headerText="Libellé" filterBy="#{missione.libelle}" filterMatchMode="contains" >
+                            <h:outputText value="#{missione.libelle}" style="text-align:left"  class="TexAlLeft Container100 "/>
+                        </p:column>
+                         <p:column id="redemarrer" >
+                             <p:commandButton value="Réouvrir"  process="@this" actionListener="#{AnneeBean.Reouvrir(missione.id)}" update="ajouTabM" />
+                        </p:column>
+                    </p:dataTable>
+                    </center>
+                </h:form>
+            
+             
+
+        </h:form>
+            
+    </p:tab>
+
+</ui:composition>

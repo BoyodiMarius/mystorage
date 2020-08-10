@@ -18,7 +18,6 @@ import javax.persistence.Query;
  */
 @Local
 public interface mystorageDaoBeanLocal<T, PK extends java.io.Serializable> {
-
     T getOne(final PK id);
 
     Long count();
@@ -44,8 +43,6 @@ public interface mystorageDaoBeanLocal<T, PK extends java.io.Serializable> {
      * @return une liste de T elts triÃ© par sortProperty = sortValue
      */
     <E> List<T> getBy(String sortProperty, E sortValue);
-
-    <E, F> List<T> getBy(String sortProperty, String andSortProperty, String andAndSortProperty, E sortValue, F andSortValue, F andAndSortValue);
 
     /**
      *
@@ -109,7 +106,7 @@ public interface mystorageDaoBeanLocal<T, PK extends java.io.Serializable> {
     public boolean deleteRealOne(PK id);
 
     boolean deleteRealOne(final T t);
-
+    
     public T find(PK id);
-
+    
 }

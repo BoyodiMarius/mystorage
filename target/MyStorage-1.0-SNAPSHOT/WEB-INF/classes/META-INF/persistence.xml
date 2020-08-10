@@ -2,26 +2,18 @@
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
   <persistence-unit name="mystoragePU" transaction-type="JTA">
     <jta-data-source>jdbc/mystorage</jta-data-source>
-    <class>com.memoire.mystorage.api.entities.security.Fonctionnalite</class>
-    <class>com.memoire.mystorage.api.entities.security.FonctionnaliteModule</class>
-    <class>com.memoire.mystorage.api.entities.security.Logs</class>
-    <class>com.memoire.mystorage.api.entities.security.Module</class>
-    <class>com.memoire.mystorage.api.entities.security.PersonnePattern</class>
-    <class>com.memoire.mystorage.api.entities.security.Profil</class>
-    <class>com.memoire.mystorage.api.entities.security.ProfilRole</class>
-    <class>com.memoire.mystorage.api.entities.security.ProfilUtilisateur</class>
-    <class>com.memoire.mystorage.api.entities.security.Role</class>
-    <class>com.memoire.mystorage.api.entities.security.RoleFonctionnalite</class>
-    <class>com.memoire.mystorage.api.entities.security.Sequence</class>
-    <class>com.memoire.mystorage.api.entities.security.Utilisateur</class>
     <class>com.memoire.mystorage.entities.Annee</class>
     <class>com.memoire.mystorage.entities.Inscription</class>
     <class>com.memoire.mystorage.entities.Paiement</class>
     <class>com.memoire.mystorage.entities.Particulier</class>
     <class>com.memoire.mystorage.entities.Personnel</class>
+    <class>com.memoire.mystorage.entities.Profil</class>
+    <class>com.memoire.mystorage.entities.ProfilRole</class>
     <class>com.memoire.mystorage.entities.Promotion</class>
+    <class>com.memoire.mystorage.entities.Role</class>
     <class>com.memoire.mystorage.entities.Typemodule</class>
-    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <class>com.memoire.mystorage.entities.Utilisateur</class>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
     </properties>

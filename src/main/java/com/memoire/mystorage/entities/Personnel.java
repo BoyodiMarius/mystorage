@@ -5,7 +5,6 @@
  */
 package com.memoire.mystorage.entities;
 
-import com.memoire.mystorage.api.entities.security.Utilisateur;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;

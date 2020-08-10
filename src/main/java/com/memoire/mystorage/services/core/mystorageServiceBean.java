@@ -5,6 +5,8 @@
  */
 package com.memoire.mystorage.services.core;
 
+
+
 import com.memoire.mystorage.dao.core.mystorageDaoBeanLocal;
 import java.util.Collection;
 import java.util.Iterator;
@@ -17,18 +19,18 @@ import java.util.List;
  * @param <T>
  * @param <PK>
  */
-public abstract class mystorageServiceBean<T, PK extends java.io.Serializable> implements mystorageServiceBeanLocal<T, PK> {
-
+public abstract class mystorageServiceBean<T, PK extends java.io.Serializable> implements mystorageServiceBeanLocal<T, PK>{
+    
     protected abstract mystorageDaoBeanLocal<T, PK> getDao();
 
     public mystorageServiceBean() {
     }
-
+    
     @Override
     public synchronized T getOne(PK id) {
         return getDao().getOne(id);
     }
-
+    
     @Override
     public synchronized T find(PK id) {
         return getDao().find(id);
@@ -83,11 +85,6 @@ public abstract class mystorageServiceBean<T, PK extends java.io.Serializable> i
     @Override
     public synchronized <E, F> List<T> getBy(String sortProperty, String andSortProperty, E sortValue, F andSortValue) {
         return this.getDao().getBy(sortProperty, sortValue);
-    }
-
-    @Override
-    public synchronized <E, F> List<T> getBy(String sortProperty, String andSortProperty, String andAndSortProperty, E sortValue, F andSortValue, F andAndSortValue) {
-        return this.getDao().getBy(sortProperty, andSortProperty, andAndSortProperty, sortValue, andSortValue, andAndSortValue);
     }
 
     @Override
@@ -181,5 +178,5 @@ public abstract class mystorageServiceBean<T, PK extends java.io.Serializable> i
     public boolean deleteRealOne(PK id) {
         return this.getDao().deleteRealOne(id);
     }
-
+    
 }

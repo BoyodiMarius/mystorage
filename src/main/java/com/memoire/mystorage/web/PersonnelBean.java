@@ -5,15 +5,16 @@
  */
 package com.memoire.mystorage.web;
 
-import com.memoire.mystorage.api.entities.security.Profil;
-import com.memoire.mystorage.api.service.security.ProfilServiceBeanLocal;
+
 import com.memoire.mystorage.dao.PersonnelDaoBeanLocal;
 import com.memoire.mystorage.dao.PromotionDaoBeanLocal;
 import com.memoire.mystorage.entities.Annee;
 import com.memoire.mystorage.entities.Personnel;
+import com.memoire.mystorage.entities.Profil;
 import com.memoire.mystorage.entities.Promotion;
 import com.memoire.mystorage.services.AnneeServiceBeanLocal;
 import com.memoire.mystorage.services.PersonnelServiceBeanLocal;
+import com.memoire.mystorage.services.ProfilServiceBeanLocal;
 import com.memoire.mystorage.services.PromotionServiceBeanLocal;
 import com.memoire.mystorage.transaction.TransactionManager;
 import com.memoire.mystorage.utils.constantes.Constante;
@@ -85,16 +86,17 @@ public class PersonnelBean implements Serializable {
         try {
             tx.begin();
             if (this.personnel.getId() == null) {
-                this.personnel.setLogin(this.personnel.getPersonnePattern().getMail());
-                this.personnel.setPasswd(new Sha256Hash("admin").toHex());
-                this.personnel.setProfilactif(true);
+                this.personnel.setLogin(this.personnel.getEmail());
+                this.personnel.setPass(new Sha256Hash("admin").toHex());
+                this.personnel.setActif(true);
                 Gerer = this.psbl.getOneBy("nom", "Gerer");
+                personnel.setProfil(Gerer);
 
                 this.prsbl.saveOne(personnel);
-                String log = "login" + "" + this.personnel.getPersonnePattern().getMail();
+                String log = "login" + "" + this.personnel.getEmail();
                 String pass = "password" + "=" + "admin";
                 String test = "CAGECFI ACADEMY vient par ce fait vous soumettre vos informations de connexion. Votre " + " " + log + " " + " et votre " + pass;
-                // SendMailByGlassfish.runTest(test, this.personnel.getEmail(), "CAGECFI ACADEMY", "Informations");
+               // SendMailByGlassfish.runTest(test, this.personnel.getEmail(), "CAGECFI ACADEMY", "Informations");
                 context.addMessage(null, new FacesMessage(Constante.ENREGISTREMENT_REUSSIT));
 
             } else {
@@ -128,8 +130,7 @@ public class PersonnelBean implements Serializable {
         ca.add(Calendar.YEAR, -20);
         return ca.getTime();
     }
-
-    public Date max1() {
+     public Date max1() {
         Calendar ca = Calendar.getInstance();
         ca.add(Calendar.YEAR, 0);
         return ca.getTime();
@@ -268,5 +269,7 @@ public class PersonnelBean implements Serializable {
     public void setPdbl1(PersonnelDaoBeanLocal pdbl1) {
         this.pdbl1 = pdbl1;
     }
+
+   
 
 }
