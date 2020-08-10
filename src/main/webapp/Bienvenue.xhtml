@@ -98,8 +98,8 @@
                                     <td style="width:50%">
                                         <center>
                                         <h:form id="login">
-                                            <p:growl id="message" showSummary="true" life="4000"/>
                                             <p:fieldset >
+                                                <p:growl id="message" life="4000" showSummary="true" />
                                                 <div class="card login-panel ui-fluid">
                                                     <div class="login-panel-content" >
                                                         <div class="ui-g">
@@ -113,7 +113,7 @@
                                                                 <h:panelGroup>
                                                                     <label class="login-label" style="color: #000;" >Login</label>
                                                                     <div class="login-input">
-                                                                        <p:inputText id="username" style="border-radius:30px;width:50%" value="#{loginBean.username}" placeholder="Votre Login"/>                        
+                                                                        <p:inputText id="username" value="#{loginBean.username}" placeholder="Votre Login"/>                        
                                                                     </div>
                                                                 </h:panelGroup>
                                                             </div>
@@ -121,20 +121,18 @@
                                                                 <h:panelGroup>
                                                                     <label class="login-label" style="color: #000;">Mot de Passe</label>
                                                                     <div class="login-input">
-                                                                    <p:password id="password" style="border-radius:30px;width:50%" value="#{loginBean.password}" placeholder="Mot de passe"/>
+                                                                        <p:password id="password" value="#{loginBean.password}" placeholder="Mot de passe"/>
                                                                     </div>
                                                                 </h:panelGroup>
                                                             </div>
                                                             <div class="ui-g-12 ui-sm-6 ui-md-6">
                                                                 <h:panelGrid columns="2" >
-                                                                   
                                                                     <p:commandButton  process="@form"  actionListener="#{loginBean.login()}" value="Se connecter" icon="fa fa-user" iconPos="left"  />
                                                                     <p:commandButton update="message"  value="Authentification RSA" styleClass="GreenButton" icon="fa fa-pencil" iconPos="left"   />
-                                                                  <p:commandLink value="Mot de passe oublié" process="@form" onclick="PF('dialogOublie').show()"  /><br></br>
-                                                        
                                                                 </h:panelGrid>                                       
                                                             </div>             
-                                                           </div>
+                                                            <p:commandLink value="Mot de passe oublié" process="@form" onclick="PF('dialogOublie').show()"  /><br></br>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </p:fieldset>
@@ -187,68 +185,53 @@
                             <table style="width: 100%">
                                 <td style="width: 50%">
                                     <center>
-                                        <h:panelGrid  columns="2" style="margin-bottom:"  >
-                             
-                                            <p:outputLabel value="Nom:"   for="nom" style="font-family: initial;font-size: large;font-style: inherit; color: #000" />
-                                            <p:inputText id="nom" required="true" value="#{InscriptionBean.particulier.nom}" placeholder="Renseigner le nom" style="border-radius: 90px" />
-                                            <p:outputLabel value="Prénoms:" for="prenom"  style="font-family: initial;font-size: large;font-style: inherit; color: #000" />
-                                            <p:inputText id="prenom" required="true"  value="#{InscriptionBean.particulier.prenom}" placeholder="Renseigner le prénom" style="border-radius: 90px" />
-                                               
-                                        <p:outputLabel value="Date de naissance:" for="date_naissance" style="font-family: initial;font-size: large;font-style: inherit; color: #000;border-radius: 50px" />
-                                        <p:inputMask id="date_naissance" mask="99/99/9999" required="true"  placeholder="jj/mm/dddd" value="#{InscriptionBean.dateNaissance}" style="border-radius: 50px" />
-
-                                                                                   </h:panelGrid>
-                                    </center>
-                                </td >
-                                <td style="width: 50%">
-                               
-                                         <h:panelGrid  columns="2"  >
-                                             <p:outputLabel value="Email:" for="mail" style="font-family: initial;font-size: large;font-style: inherit; color: #000;border-radius: 30px"/>
-                                            <p:inputText id="mail" required="true" placeholder="Renseigner l'email" value="#{InscriptionBean.particulier.email}" style="border-radius: 50px" />
-
-
-                                            <p:outputLabel value="Téléphone:" for="tel" style="font-family: initial;font-size: large;font-style: inherit; color: #000;border-radius: 50px" />
-                                            <p:inputMask mask="99 99 99 99 99" required="true"  id="tel" placeholder="Renseigner le numéro de téléphone"
-                                                         requiredMessage="saisir le numéro de téléphone" value="#{InscriptionBean.particulier.telephone}" style="border-radius: 50px"/>
-                                          <p:outputLabel value="Type d'abonnements:" for="typeforma"   style="font-family: initial;font-size: large;font-style: inherit; color: #000"/>
-                                        
+                                        <h:panelGrid  columns="2"  >
+                                            <p:outputLabel value="Type d'abonnements:" for="typeforma"   style="font-family: initial;font-size: large;font-style: inherit; color: #000"/>
                                             <p:selectOneMenu  id="typeforma" value="#{InscriptionBean.typemodule}"
                                                               filter="true" filterMatchMode="startsWith"
                                                               converter="omnifaces.SelectItemsIndexConverter" required="true" requiredMessage="Renseignez le type d'abonnements " 
-                                                              style="font-family: initial;font-size: large;font-style: inherit; color: #000;border-radius: 25px;width:90%" >
+                                                              style="font-family: initial;font-size: large;font-style: inherit; color: #000" >
                                                 <f:selectItem itemLabel="Choisir le type d'abonnement" noSelectionOption="true"  />
                                                 <f:selectItems value="#{InscriptionBean.typesmodules}" var="typ" itemLabel="#{typ.libelle}" itemValue="#{typ}" />
                                             </p:selectOneMenu>
-                                                                
                                             <p:outputLabel value="Civilité :" for="sexe" style="font-family: initial;font-size: large;font-style: inherit; color: #000;"/>
-                                            <p:selectOneButton id="sexe" required="true" value="#{InscriptionBean.particulier.sexe}" requiredMessage="Veuillez choisir votre civilité" style="color: #000;width:90%;border-radius: 30px">
+                                            <p:selectOneMenu id="sexe" required="true" value="#{InscriptionBean.particulier.sexe}" requiredMessage="Veuillez choisir votre civilité" style="color: #000" >
+
+                                                <f:selectItem itemLabel="Choisir la civilité" noSelectionOption="true"/>
                                                 <f:selectItem itemLabel="Monsieur" itemValue="Monsieur" />
                                                 <f:selectItem itemLabel="Madame" itemValue="Madame"/>
-                                            </p:selectOneButton>
-                                         </h:panelGrid>
+                                            </p:selectOneMenu>
+
+                                            <p:outputLabel value="Nom:"   for="nom" style="font-family: initial;font-size: large;font-style: inherit; color: #000" />
+                                            <p:inputText id="nom" required="true" value="#{InscriptionBean.particulier.nom}" placeholder="Renseigner le nom" />
+
+                                            <p:outputLabel value="Prénoms:" for="prenom"  style="font-family: initial;font-size: large;font-style: inherit; color: #000" />
+                                            <p:inputText id="prenom" required="true"  value="#{InscriptionBean.particulier.prenom}" placeholder="Renseigner le prénom" />
+                                        </h:panelGrid>
+                                    </center>
+                                </td >
+                                <td style="width: 50%">
+                                    
+                                         <h:panelGrid  columns="2"  >
+                                            <p:outputLabel value="Date de naissance:" for="date_naissance" style="font-family: initial;font-size: large;font-style: inherit; color: #000" />
+                                            <p:calendar id="date_naissance" maxdate="#{PersonnelBean.max()}" navigator="true" required="true" requiredMessage="Choisir une Date valide" pattern="dd/MM/yyyy"
+                                                        placeholder="Renseigner la date de naissance"  title="date_naissance" value="#{InscriptionBean.particulier.datenaiss}"  >
+                                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                                            </p:calendar>
+
+                                            <p:outputLabel value="Email:" for="mail" style="font-family: initial;font-size: large;font-style: inherit; color: #000"/>
+                                            <p:inputText id="mail" required="true" placeholder="Renseigner l'email" value="#{InscriptionBean.particulier.email}" />
+
+                                            <p:outputLabel value="Téléphone:" for="tel" style="font-family: initial;font-size: large;font-style: inherit; color: #000" />
+                                            <p:inputMask mask="99 99 99 99 99" required="true"  id="tel" placeholder="Renseigner le numéro de téléphone"
+                                                         requiredMessage="saisir le numéro de téléphone" value="#{InscriptionBean.particulier.telephone}" />
+                                        </h:panelGrid>
                                     
                                 </td>
                             </table>
-                            <br></br>
-                            <br></br>
-                            <br></br>
-                            <br></br>
                             <h:panelGrid  columns="2"  >
-                                <p:commandButton class="Fs16 GreenButton" 
-                                                 update="@(.formulaire1)" 
-                                                 icon="ui-icon-check fa fa-check Fs14 White" 
-                                                 id="ajouter" value="Valider"
-                                                 process="@form"
-                                                 actionListener="#{InscriptionBean.saveAcceuil()}" 
-                                                 style="display:inline-block;margin-top:1px;right:7%"/>
-                                
-                                <p:commandButton  class="Fs16 OrangeButton" 
-                                                  update="@(.formulaire1)" 
-                                                  icon="ui-icon-close fa fa-close Fs14 White" 
-                                                  id="cancel" value="Annuler" 
-                                                  actionListener="#{InscriptionBean.cancel(actionEvent)}" 
-                                                  process="@form" 
-                                                  style="display:inline-block;margin-top:4px;left:7%" />
+                                <p:commandButton class="Fs16 GreenButton" update="@(.formulaire1)"  icon="ui-icon-check fa fa-check Fs14 White"  id="ajouter" value="Valider"   process="@form" actionListener="#{InscriptionBean.saveAcceuil()}" style="display:inline-block;margin-top:1px;right:7%"/>
+                                <p:commandButton  class="Fs16 OrangeButton" update="@(.formulaire1)" icon="ui-icon-close fa fa-close Fs14 White" id="cancel" value="Annuler" actionListener="#{InscriptionBean.cancel(actionEvent)}" process="@form" style="display:inline-block;margin-top:5px;left:7%" />
                                             
                             </h:panelGrid>
                         </center>
@@ -322,12 +305,7 @@
             <!-- Javascript Library Files -->
             </h:form>
             
-                          <p:dialog   widgetVar="typeAjout"  positionType="absolute" 
-                                      fitViewport="true" responsive="true" minimizable="true" 
-                                      maximizable="true"  dynamic="true" closable="true" 
-                                      resizable="true" showEffect="slide" hideEffect="clip"
-                                      id="editP" modal="true" minHeight="150"
-                                      minWidth="150" width="800" position="center">    
+                          <p:dialog   widgetVar="typeAjout"  positionType="absolute" fitViewport="true" responsive="true" minimizable="true" maximizable="true"  dynamic="true" closable="true" resizable="true" showEffect="slide" hideEffect="clip" id="editP" modal="true" minHeight="150" minWidth="150" width="800" position="center">    
                     <h:form id="form">
                         <p:growl id="growl" showSummary="true" life="4000"/>
                         <center>

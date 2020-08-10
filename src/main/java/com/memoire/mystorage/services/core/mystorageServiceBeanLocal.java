@@ -17,11 +17,10 @@ import javax.ejb.Local;
  * @param <PK>
  */
 @Local
-public interface mystorageServiceBeanLocal<T, PK extends java.io.Serializable> {
-
+public interface mystorageServiceBeanLocal<T, PK extends java.io.Serializable>{
     T getOne(PK id);
-
-    T find(PK id);
+    
+T find(PK id);
 
     Long count();
 
@@ -80,8 +79,6 @@ public interface mystorageServiceBeanLocal<T, PK extends java.io.Serializable> {
      * andSortProperty
      */
     <E, F> List<T> getBy(String sortProperty, String andSortProperty, E sortValue, F andSortValue);
-
-    <E, F> List<T> getBy(String sortProperty, String andSortProperty, String andAndSortProperty, E sortValue, F andSortValue, F andAndSortValue);
 
     /**
      *

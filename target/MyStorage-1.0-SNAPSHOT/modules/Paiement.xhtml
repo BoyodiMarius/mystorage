@@ -1,0 +1,123 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <p:tab title="Paiement" >
+        <h:form id="paiement">
+            <center><h1></h1></center>
+            <br/>
+            <br/>
+            <h:outputText/>
+            <p:commandButton value="Imprimer la liste des paiements" icon="fa fa-list-alt" iconPos="left" style="alignment-adjust:auto;font-family: cursive;" actionListener="#{afficherEtatManagedBean.posseder()}" oncomplete="PF('modal6').show()"/>
+            <p:dialog dynamic="true"  positionType="absolute" fitViewport="true" responsive="true" minimizable="true" maximizable="true"  resizable="true"   header="PAIEMENTS" id="md5" showEffect="slide" hideEffect="clip" widgetVar="modal6" modal="true" width="900">
+                <table width="100%">
+                    <tr>
+                        <td height="560px" width="100%">
+                            <p:media id="imgpdf6" cache="false" value="/servlets/report/PDF" width="100%" height="600px" player="pdf"/>
+                        </td>
+                    </tr>
+                </table>
+            </p:dialog> 
+            <h:form id="ajoutPaie">
+                <p:commandButton  value="Nouveau paiement"  onclick="PF('paiementAjout').show();" process="@form" style="alignment-adjust:auto; font-family: cursive;"
+                                  icon="fa fa-plus" iconPos="left"/> 
+                <p></p>
+                <p:dialog  responsive="true" minimizable="true" maximizable="true"  widgetVar="paiementAjout" closable="true" dynamic="true" showEffect="slide" hideEffect="clip" resizable="true" id="editP" modal="true" minHeight="150" minWidth="150" width="1200" position="center">    
+                    <center>  
+                        <p:fieldset  legend="Enrégistrement du paiement de l'inscription"  style=" margin-left:10px ; color:#C8D9E2; margin-bottom:20px;width:70%;border-radius:1%"  widgetVar="evaluationAjout" toggleable="true" >
+                            <h:form id="form" enctype="multipart/form-data">
+                                <p:growl id="growl" showSummary="true" life="4000"/>
+
+                               
+                                    <h:panelGrid id="wi"  columns="1" columnClasses="label, value" cellpadding="5" cellspacing="5"  style="background-color: #F3F5F7;border-radius:10px ; width:60% ; margin-bottom:3%;alignment-adjust: auto;padding-left:3%;padding-bottom:5%  ">     
+                                        <h:outputText/>
+
+                                        <h:inputHidden value="#{PaiementBean.paiement.id}"/>
+                                        <p:outputLabel value="Mode de paiement:" for="modepaiement" style="font-family: initial;font-size: large;font-style: inherit;margin-left:5%;margin-right:5%"/>
+                                        <p:selectOneMenu id="modepaiement" value="#{PaiementBean.paiement.modepaiement}" 
+                                                         filter="true" filterMatchMode="startsWith"
+                                                         converter="omnifaces.SelectItemsIndexConverter" required="true" requiredMessage="Veuillez effectuer votre choix"  style=" width:73%;margin-left:5%;margin-right:5%">  
+                                            <f:selectItem itemLabel="Choisisser votre mode de paiement" noSelectionOption="true"/>
+                                            <f:selectItem itemLabel="Visa ou Master Card" itemValue="Visa ou Master Card" />
+                                            <f:selectItem itemLabel="E-Chèques" itemValue="E-Chèques" />
+                                        </p:selectOneMenu>
+                                        <p:outputLabel value="Type de frais:" for="typfrais" style="font-family: initial;font-size: large;font-style: inherit;margin-left:5%;margin-right:5%"/>
+                                        <p:selectOneMenu id="typfrais" value="#{PaiementBean.paiement.typefrais}" 
+                                                         filter="true" filterMatchMode="startsWith"
+                                                         converter="omnifaces.SelectItemsIndexConverter" required="true" requiredMessage="Veuillez effectuer votre choix"  style=" width:73%;margin-left:5%;margin-right:5%">  
+                                            <f:selectItem itemLabel="Choisisser le type de frais" noSelectionOption="true"/>
+                                            <f:selectItem itemLabel="Frais d'inscription" itemValue="Frais d'inscription" />
+                                            <f:selectItem itemLabel="Frais de formation" itemValue="Frais de formation" />
+                                        </p:selectOneMenu>
+                                        <p:outputLabel for="mail" value="Email" style="font-family: initial;font-size: large;font-style: inherit;margin-left:5%;margin-right:5%" />
+                                        <p:inputText id="mail" value="#{PaiementBean.mail}"  required="true"  placeholder="Renseigner l'email de votre inscription"  style=" width:80%;margin-left:5%;margin-right:5%" />
+                                        <p:outputLabel value="Montant:" for="montant" style="font-family: initial;font-size: large;font-style: inherit;margin-left:5%;margin-right:5%"/>
+                                        <p:inputText id="montant" placeholder="Renseigner le montant de la transaction" required="true" requiredMessage="veuillez entrer votre montant" value="#{PaiementBean.paiement.montantpaiement}" style=" width:80%;margin-left:5%;margin-right:5%"/>.
+                                    </h:panelGrid>
+                                <p:commandButton class="Fs16 GreenButton"  icon="ui-icon-check fa fa-check Fs14 White" id="ajouter" value="Valider"  process="@form" actionListener="#{PaiementBean.save2(email)}" style="display:inline-block;margin-top:1px;margin-bottom:2% " onclick="PF('paiementAjout').hide();"/>    
+                                <p:commandButton class="Fs16 OrangeButton"  icon="ui-icon-close fa fa-close Fs14 White" id="ajouter1" value="Annuler"  process="@form" actionListener="#{PaiementBean.cancel(actionEvent)}" style="display:inline-block;margin-top:1px;margin-left:3%" onclick="PF('paiementAjout').hide;"/>    
+
+
+                            </h:form>
+
+                        </p:fieldset>
+                    </center>
+                </p:dialog>
+            </h:form>
+        </h:form>
+        <h:form id="afficheTabM">
+            <p:growl id="gwl" showSummary="true" life="4000"/>
+            <p:contextMenu for="ajouTabM"  >
+                <p:menuitem  style="color: #00AEEF"   value="modifier" process="@form" update=":formule:tabe:paiement:ajoutPaie:form:wi"  action="#{PaiementBean.getObject(missione.id)}"  title="Editer" onclick="PF('paiementAjout').show();" id="Editer"/>
+            </p:contextMenu>
+            <p:dataTable  value="#{PaiementBean.paiements}" var="missione" id="ajouTabM"
+                          emptyMessage="Aucun paiement trouvé" paginator="true" rows="10"
+                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks}
+                          {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                          rowsPerPageTemplate="2,5,10,15"
+                          rowKey="#{missione.id}" selection="#{missione}" selectionMode="single" reflow="true" 
+                          style="border-color: #00AEEF"  >
+                <f:facet name="header" >
+                    <h:outputText value="LISTE DES PAIEMENTS"/>
+                </f:facet>
+
+                <p:column headerText="Réference transaction" filterBy="#{missione.libellepaiement}" filterMatchMode="contains"  >
+                    <h:outputText value="#{missione.libellepaiement}"/>
+                </p:column>
+                <p:column headerText="Nom du particulier" filterBy="#{missione.inscription.particulier.nom}" filterMatchMode="contains">
+                    <h:outputText value="#{missione.inscription.particulier.nom}"/>
+                </p:column>
+                <p:column headerText="Prénoms" filterBy="#{missione.inscription.particulier.prenom}" filterMatchMode="contains" >
+                    <h:outputText value="#{missione.inscription.particulier.prenom}">
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Type de frais" filterBy="#{missione.typefrais}" filterMatchMode="contains" >
+                    <h:outputText value="#{missione.typefrais}"/>
+                </p:column>
+                <p:column headerText="Email" filterBy="#{missione.inscription.particulier.email}" filterMatchMode="contains" >
+                    <h:outputText value="#{issione.inscription.particulier.email}">
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Montant paiement" filterBy="#{missione.montantpaiement}" filterMatchMode="exact" >
+                    <h:outputText value="#{missione.montantpaiement}"/>
+                </p:column>
+                <p:column>
+                    <p:commandButton process="@form" value="Editer Recu" actionListener="#{afficherEtatManagedBean.facture(missione.id)}" oncomplete="PF('modal').show()" icon="fa fa-pencil" iconPos="left"/>
+                    <p:dialog header="PAIEMENTS" id="md2" showEffect="slide" hideEffect="clip" widgetVar="modal" modal="true" width="900">
+                        <table width="100%">
+                            <tr>
+                                <td height="560px" width="100%">
+                                    <p:media id="imgpdf2" cache="false" value="/servlets/report/PDF" width="100%" height="600px" player="pdf"/>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </p:dialog> 
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </p:tab>
+
+</ui:composition>

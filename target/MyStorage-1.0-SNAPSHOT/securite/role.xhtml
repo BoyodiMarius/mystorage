@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <p:tab title="Associer rôles">
+        <h:form id="pdialogProfilForm">
+            <p:panel style="border-color: #00AEEF">
+                <p:messages id="messages" showDetail="true" closable="true" />
+                <p:panelGrid columns="2" style="border:0px none; background-color:transparent;">                  
+                    <p:outputLabel value="Profils" for="profils" styleClass="labelfont"/> 
+                    <p:selectOneMenu id="profils" value="#{roleBean.selectProfil}" 
+                                     converter="omnifaces.SelectItemsIndexConverter" required="true">  
+                        <f:selectItem itemLabel="Choisir un Profil"  noSelectionOption="true"/>
+                        <f:selectItems value="#{roleBean.profils}" var="profil"
+                                       itemLabel="#{profil.nom}" itemValue="#{profil}"/>
+                        <p:ajax event="change" process="@this" listener="#{roleBean.setProfilRole()}" update="roleGrid"/>
+                    </p:selectOneMenu>
+                </p:panelGrid>
+                <br/>
+                <p:selectManyCheckbox id="roleGrid" value="#{roleBean.selectRoles}"
+                                      layout="grid" columns="4" 
+                                      converter="omnifaces.SelectItemsIndexConverter" >
+                    <f:selectItems value="#{roleBean.roles}" var="role" itemLabel="#{role.nom}" itemValue="#{role}" />
+                </p:selectManyCheckbox>
+                <br/>
+                <center>
+                    <p:commandButton value="Modifier" process="@form"  action="#{roleBean.modifierRole()}"/>  
+                </center>
+            </p:panel>
+
+        </h:form>
+    </p:tab> 
+</ui:composition>

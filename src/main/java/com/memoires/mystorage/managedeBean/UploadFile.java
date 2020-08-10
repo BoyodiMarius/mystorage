@@ -24,7 +24,7 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.file.UploadedFile;
+import org.primefaces.model.UploadedFile;
 
 /**
  *
@@ -59,7 +59,7 @@ public class UploadFile implements Serializable{
         ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         source1 = servletContext.getRealPath("");
         source = servletContext.getRealPath("") + File.separator  + File.separator + fileName;
-        copyFileLocal(fileName, fileUploadEvent.getFile().getInputStream());
+        copyFileLocal(fileName, fileUploadEvent.getFile().getInputstream());
         transfert(fileName, source);
         delete(source);
        

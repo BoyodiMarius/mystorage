@@ -7,9 +7,12 @@ package com.memoire.mystorage.services.impl;
 
 
 import com.memoire.mystorage.dao.PersonnelDaoBeanLocal;
+import com.memoire.mystorage.dao.UtilisateurDaoBeanlocal;
 import com.memoire.mystorage.dao.core.mystorageDaoBeanLocal;
 import com.memoire.mystorage.entities.Personnel;
+import com.memoire.mystorage.entities.Utilisateur;
 import com.memoire.mystorage.services.PersonnelServiceBeanLocal;
+import com.memoire.mystorage.services.UtilisateurServiceBeanLocal;
 import com.memoire.mystorage.services.core.mystorageServiceBean;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
