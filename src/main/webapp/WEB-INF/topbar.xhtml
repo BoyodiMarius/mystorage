@@ -24,7 +24,7 @@
                     <li class="profile-item">
                         <a href="#">                            
                             <p:graphicImage name="images/login/icon-login.svg" library="avalon-layout" styleClass="profile-image" style="border: 0 none"/>
-                            <span class="topbar-item-name">#{loginBean.identite()}</span>
+                            <span class="topbar-item-name">#{loginBean.currentPersonnel().personnePattern.nom}#{loginBean.espace}#{loginBean.currentPersonnel().personnePattern.prenom}</span>
                             <span class="topbar-item-role">#{loginBean.profilUtilisateur()}</span>
                         </a>
 
@@ -85,7 +85,7 @@
                         </li>
                     </ul>
                 </li>
-            
+
 
             </ul>
         </div>

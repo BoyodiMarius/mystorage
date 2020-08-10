@@ -1,0 +1,48 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Comptes</ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12 ui-lg-12">
+                <div class="card">
+                    <p:fieldset legend="Gestion des comptes utilisateurs" rendered="#{usersBean.visible}">
+                        <p:growl id="message" life="4000" showSummary="true"/>
+                        <h:form id="userForm" styleClass="personne">
+                            <p:panel style="border-color: #171b1f;">
+                                <p:dataTable reflow="true" var="user" id="userTab" widgetVar="situationTable" value="#{usersBean.list}"
+                                             emptyMessage="Utilisateur non trouvé"
+                                             style="border-color: #00AEEF"  
+                                             rows="3" paginator="true" paginatorPosition="top">
+                                    <f:facet name="header">
+                                        <p:outputPanel>
+                                            <h:outputText style="visibility: hidden" value="Rechercher toutes les valeurs :"/>
+                                            <h:outputText style="visibility: hidden" value="Rechercher toutes les valeurs :"/>
+                                            <h:outputText value="Rechercher toutes les valeurs :" />
+                                            <p:inputText id="globalFilter" onkeyup="PF('situationTable').filter()" style="width:150px" placeholder="entrer la valeur"/>
+                                        </p:outputPanel>
+                                    </f:facet>
+                                    <p:column filterBy="#{user.login}" filterMatchMode="startsWith" headerText="Login">
+                                        <h:outputText value="#{user.login}" />
+                                    </p:column>
+                                    <p:column  headerText="Nom"  filterBy="#{user.nom}" filterMatchMode="startsWith">
+                                        <h:outputText value="#{user.nom}" />
+                                    </p:column>
+                                    <p:column  headerText="Prenom"  filterBy="#{user.prenom}" filterMatchMode="startsWith">
+                                        <h:outputText value="#{user.prenom}" />
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+                        </h:form>
+                    </p:fieldset>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

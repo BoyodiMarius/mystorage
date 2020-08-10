@@ -7,7 +7,6 @@ package com.memoire.mystorage.dao;
 
 import com.memoire.mystorage.dao.core.mystorageDaoBeanLocal;
 import com.memoire.mystorage.entities.Particulier;
-import com.memoire.mystorage.entities.Utilisateur;
 import javax.ejb.Local;
 
 /**

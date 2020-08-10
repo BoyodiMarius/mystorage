@@ -18,7 +18,8 @@ import javax.persistence.Query;
  * @param <T> type de sort value
  * @param <PK> type de sort value
  */
-public abstract class mystorageDaoBean<T , PK extends java.io.Serializable> implements mystorageDaoBeanLocal<T, PK>{
+public abstract class mystorageDaoBean<T, PK extends java.io.Serializable> implements mystorageDaoBeanLocal<T, PK> {
+
     @PersistenceContext(unitName = "mystoragePU")
     protected EntityManager em;
     protected Class<T> type;
@@ -32,8 +33,8 @@ public abstract class mystorageDaoBean<T , PK extends java.io.Serializable> impl
     public mystorageDaoBean(Class<T> type) {
         this.type = type;
     }
-    
-     /**
+
+    /**
      *
      * @param id type de sort value
      * @return type de sort value
@@ -50,7 +51,7 @@ public abstract class mystorageDaoBean<T , PK extends java.io.Serializable> impl
     @Override
     public Long count() {
         return (Long) em.createQuery("SELECT COUNT(t) FROM "
-                + type.getSimpleName()+ " t").getSingleResult();
+                + type.getSimpleName() + " t").getSingleResult();
     }
 
     /**
@@ -72,8 +73,8 @@ public abstract class mystorageDaoBean<T , PK extends java.io.Serializable> impl
     @Override
     public List<T> getAll(String sortProperty, boolean sortAsc) {
         return (List<T>) em.createQuery("SELECT t FROM " + type.getSimpleName()
-                + "ORDER BY t." + sortProperty
-                + ((sortAsc) ? " ASC" : " DESC")).getResultList();
+                + " t ORDER BY t." + sortProperty
+                + ((sortAsc) ? " ASC " : " DESC ")).getResultList();
     }
 
     /**
@@ -184,6 +185,25 @@ public abstract class mystorageDaoBean<T , PK extends java.io.Serializable> impl
         }
     }
 
+    @Override
+    public <E, F> List<T> getBy(String sortProperty, String andSortProperty, String andAndSortProperty, E sortValue, F andSortValue, F andAndSortValue) {
+        try {
+            String jpql = "SELECT t FROM " + type.getSimpleName()
+                    + " t WHERE t." + sortProperty + " =:e "
+                    + "AND t." + andSortProperty + " =:f "
+                    + "AND t." + andAndSortProperty + " =:g "
+                    + " ORDER BY t." + sortProperty + " ASC";
+            Query query = em.createQuery(jpql);
+            query.setParameter("e", sortValue);
+            query.setParameter("f", andSortValue);
+            query.setParameter("g", andAndSortValue);
+            return query.getResultList();
+        } catch (NoResultException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    }
+
     /**
      *
      * @param <E> type de sort value
@@ -221,12 +241,21 @@ public abstract class mystorageDaoBean<T , PK extends java.io.Serializable> impl
 
     @Override
     public T updateOne(final T t) {
-        return (T) em.merge(t);
+        return em.merge(t);
     }
 
     @Override
     public boolean deleteOne(final PK id) {
-        em.remove(find(id));
+        T t = em.find(type, id);
+        if (t == null) {
+            return false;
+        } else {
+            Query requette = em.createQuery("UPDATE " + type.getSimpleName()
+                    + " t SET t.supprimer=1 "
+                    + "WHERE t.id =:id");
+            requette.setParameter("id", id);
+            requette.executeUpdate();
+        }
         return true;
     }
 
@@ -313,8 +342,8 @@ public abstract class mystorageDaoBean<T , PK extends java.io.Serializable> impl
     public void setType(Class<T> type) {
         this.type = type;
     }
-    
-     @Override
+
+    @Override
     public T find(PK id) {
         if (id == null) {
             return null;
@@ -323,7 +352,4 @@ public abstract class mystorageDaoBean<T , PK extends java.io.Serializable> impl
         }
     }
 
-    
-    
-    
 }

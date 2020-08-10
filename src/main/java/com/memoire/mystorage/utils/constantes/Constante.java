@@ -6,11 +6,7 @@
 package com.memoire.mystorage.utils.constantes;
 
 
-import com.memoire.mystorage.entities.Utilisateur;
-import com.memoire.mystorage.shiro.EntityRealm;
-import java.io.IOException;
 import java.io.Serializable;
-import org.omnifaces.util.Faces;
 
 /**
  *
@@ -55,14 +51,5 @@ public abstract class Constante implements Serializable {
 
     public Constante() {
     }
-public static void bloqueLien() {
-        Utilisateur user = EntityRealm.getUser();
-        try {
-            if (user == null) {
-                Faces.redirect("access-denied.xhtml");
-            }
-        } catch (IOException ex) {
-            System.out.println("Sa n'a pas marché!!!!!!!");
-        }
-    }
+
 }

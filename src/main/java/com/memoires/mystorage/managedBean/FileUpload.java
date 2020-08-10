@@ -27,7 +27,7 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
 import org.primefaces.model.chart.MeterGaugeChartModel;
 import org.primefaces.model.chart.PieChartModel;
 
@@ -116,7 +116,7 @@ public class FileUpload implements Serializable {
         ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         source1 = servletContext.getRealPath("");
         source = servletContext.getRealPath("") + File.separator + File.separator + fileName;
-        copyFileLocal(fileName, fileUploadEvent.getFile().getInputstream());
+        copyFileLocal(fileName, fileUploadEvent.getFile().getInputStream());
         transfert(fileName, source);
         delete(source);
 

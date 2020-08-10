@@ -77,7 +77,7 @@ public class TypemoduleBean implements Serializable {
             String image = String.valueOf((int) (Math.random() * 10000000));
             ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
             String newFileName = servletContext.getRealPath("") + File.separator + "resources" + File.separator + "images"+ File.separator + image + event.getFile().getFileName();
-            InputStream inputStream = event.getFile().getInputstream();
+            InputStream inputStream = event.getFile().getInputStream();
            typemodule.setPhoto("/resources/images/" + image + event.getFile().getFileName());
             ImageOutputStream out = new FileImageOutputStream(new File(newFileName));
             int read = 0;

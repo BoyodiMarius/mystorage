@@ -10,8 +10,9 @@
 package com.memoire.mystorage.utils.converter;
 
 
-import com.memoire.mystorage.entities.Utilisateur;
-import com.memoire.mystorage.services.UtilisateurServiceBeanLocal;
+
+import com.memoire.mystorage.api.entities.security.Utilisateur;
+import com.memoire.mystorage.api.service.security.UtilisateurServiceBeanLocal;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -49,7 +50,7 @@ public class EmailValidator implements Validator, ClientValidator {
 
         List<Utilisateur> utilisateurs =this.usbl.getAll();
         for (Utilisateur utilisateur : utilisateurs) {
-            if (value.toString().equals(utilisateur.getEmail())) {
+            if (value.toString().equals(utilisateur.getPersonnePattern().getMail())) {
                 throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ereur de validation, l'Email saisi est déja pris",
                         value + " n'est pas un email valide;"));
             }
