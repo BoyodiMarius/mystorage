@@ -51,7 +51,7 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>6.1</version>
+            <version>8.0</version>
         </dependency>    
         <dependency>
             <groupId>log4j</groupId>
@@ -103,7 +103,7 @@
             <version>7.0</version>
             <scope>provided</scope>
         </dependency>
-             <dependency>  
+        <dependency>  
             <groupId>commons-net</groupId>  
             <artifactId>commons-net</artifactId>  
             <version>2.0</version>  
@@ -118,6 +118,13 @@
             <artifactId>mail</artifactId>
             <version>1.4.3</version>
         </dependency>
+        <!--Conversion en lettre-->
+        <dependency>
+            <groupId>com.ibm.icu</groupId>
+            <artifactId>icu4j</artifactId>
+            <version>4.8</version>
+            <type>jar</type>
+        </dependency>  
     </dependencies>
     
     <repositories>
@@ -139,7 +146,11 @@
             <name>oss Repository for Maven</name>
             <url>http://oss.sonatype.org/content/groups/staging</url>
         </repository>
-     
+        <repository>
+            <id>apache2-https</id>
+            <name>Apache 2 https</name>
+            <url>https://repo.maven.apache.org/maven2/</url>
+        </repository>
     </repositories>
     <build>
         <plugins>

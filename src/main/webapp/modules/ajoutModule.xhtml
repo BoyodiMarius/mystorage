@@ -1,0 +1,73 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Modules</ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12 ui-lg-12">
+                <div class="card card-w-title">
+                    <p:fieldset styleClass="fiedlset" legend="Gestion des Modules" rendered="#{fonctionnaliteBean.visible}">
+                        <h:form id="userForm" styleClass="userForm">
+                            <p:panel styleClass="modulePanel" id="profilPanel" header="" style="border-color: #171b1f;"> 
+                                <p:growl id="message" life="4000" showSummary="true"/>
+                                <p:panelGrid columnClasses="ui-grid-col-7,ui-grid-col-5" columns="2" layout="grid" styleClass="ui-panelgrid-blank form-group"> 
+                                    <p:panelGrid columnClasses="ui-grid-col-12" columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                                        <p:dataTable paginatorAlwaysVisible="false" var="modules" id="modulesTab" widgetVar="modulesTable" value="#{modulesBean.moduleses}"
+                                                     emptyMessage="Profil non trouvé" reflow="true" globalFilterFunction="#{modulesBean.globalFilterFunction}"
+                                                     filteredValue="#{modulesBean.modulesesFilter}" 
+                                                     rows="5" scrollable="true"  paginator="true" paginatorPosition="top" 
+                                                     rowsPerPageTemplate="2,5,10,15">
+                                            <f:facet name="header">
+                                                <p:outputPanel>
+                                                    <h:outputText value="Rechercher toutes les valeurs : " />
+                                                    <p:inputText id="globalFilter" onkeyup="PF('modulesTable').filter()" style="width:150px" placeholder="entrer la valeur"/>
+                                                </p:outputPanel>
+                                            </f:facet>
+                                            <p:column filterMatchMode="startsWith" id="libModules"  headerText="Libellé">
+                                                <h:outputText value="#{modules.libelle}" />
+                                            </p:column>
+                                            <p:column  id="descModules" headerText="Description" filterMatchMode="startsWith">
+                                                <h:outputText value="#{modules.description}" />
+                                            </p:column>
+                                            <p:column width="10%" rendered="#{loginBean.modifierModule}">
+                                                <p:commandButton  update="@(.modulePanel)"  icon="fa fa-fw fa-edit" title="Editer" actionListener="#{modulesBean.getObject(modules.id)}" process="@this">
+                                                    <f:setPropertyActionListener value="#{modules}" target="#{modulesBean.modules}" />
+                                                </p:commandButton>
+                                            </p:column>
+                                        </p:dataTable>
+                                    </p:panelGrid>
+                                    <p:panelGrid columnClasses="ui-grid-col-12" columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group"> 
+                                        <p:panelGrid columnClasses="ui-grid-col-12" columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group"> 
+                                            <p:outputPanel>
+                                                <p:outputLabel style="color: #457fca;font-weight: bold" class="ui-inputgroup-addon ui-md-2" for="nomModule" value="Libelle :"/>
+                                                <p:inputText requiredMessage="Saisir le nom du profil" id="nomModule" value="#{modulesBean.modules.libelle}" required="true" placeholder="Libellé"/>
+                                            </p:outputPanel>
+                                            <p:outputPanel>
+                                                <p:outputLabel style="color: #457fca;font-weight: bold" class="ui-inputgroup-addon ui-md-2" for="desModule" value="Description :"/>
+                                                <p:inputText id="desModule" requiredMessage="Saisir la description du profil" value="#{modulesBean.modules.description}" required="true" placeholder="Description"/>
+                                            </p:outputPanel>
+                                        </p:panelGrid>
+                                        <p:panelGrid columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3" columns="4" layout="grid" styleClass="ui-panelgrid-blank form-group"> 
+                                            <h:inputHidden/>
+                                            <p:commandButton process="@this" update="@(.modulePanel)" action="#{modulesBean.cancel()}" value="Annuler" icon="fa fa-ban"></p:commandButton>
+                                            <p:commandButton rendered="#{loginBean.ajouterModule}" process="@form" update="@(.modulePanel)" action ="#{modulesBean.save()}" value="Valider" icon="fa fa-save">
+                                                <p:confirm header="Confirmation" message="#{loginBean.message()}" icon="ui-icon-danger"/>  
+                                            </p:commandButton>
+                                            <h:inputHidden/>
+                                        </p:panelGrid>
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                            </p:panel>
+                        </h:form>
+                    </p:fieldset>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

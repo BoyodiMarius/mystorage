@@ -27,7 +27,7 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
 import org.primefaces.model.chart.MeterGaugeChartModel;
 import org.primefaces.model.chart.PieChartModel;
 
@@ -116,7 +116,7 @@ public class FileUpload implements Serializable {
         ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         source1 = servletContext.getRealPath("");
         source = servletContext.getRealPath("") + File.separator + File.separator + fileName;
-        copyFileLocal(fileName, fileUploadEvent.getFile().getInputstream());
+        copyFileLocal(fileName, fileUploadEvent.getFile().getInputStream());
         transfert(fileName, source);
         delete(source);
 
@@ -333,6 +333,61 @@ public class FileUpload implements Serializable {
             }
         }
     }
+    
+     public void listeFileByFolder(String folderName, String typeFile) {
+        System.out.println("Liste");
+        liste = new ArrayList();
+        // get an ftpClient object    
+        FTPClient ftpClient = new FTPClient();
+        FileInputStream inputStream = null;
+
+        try {
+            // pass directory path on server to connect    
+            ftpClient.connect("localhost"); 
+            //ftpClient.connect("192.168.43.248");
+
+            // pass username and password, returned true if authentication is    
+            // successful    
+            boolean login = ftpClient.login("mystorage", "123456");
+            ftpClient.setFileTransferMode(FTPClient.BINARY_FILE_TYPE);
+            if (login) {
+                FTPFile[] files1 = ftpClient.listFiles("/MYSTORAGEDOCUMENTS/"+folderName+"/"+typeFile);
+                //long size = 0;
+                for (int i = 0; i < files1.length; i++) {
+                    if (!files1[i].isDirectory()){
+                        fic = new FichierInformation();
+                        fic.setNom(files1[i].getName());
+                        fic.setSize(files1[i].getSize());
+                        fic.setDateCreation(dateToString(files1[i].getTimestamp().getTime()));
+                        liste.add(fic);
+                    }
+                   
+                    //String n= files1[i].getName();
+                    //listeDossier.add(n);
+                }
+
+                // logout the user, returned true if logout successfully    
+                boolean logout = ftpClient.logout();
+                if (logout) {
+                    System.out.println("Connection close...");
+                }
+            } else {
+                System.out.println("Connection fail...");
+            }
+
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                ftpClient.disconnect();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     public void delete(String source) {
         try {

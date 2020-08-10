@@ -1,0 +1,118 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Utilisateurs</ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12 ui-lg-12">
+                <div class="card card-w-title">
+                    <p:fieldset styleClass="fiedlset" legend="Gestion des Utilisateurs" rendered="#{fonctionnaliteBean.visible}">
+                        <h:form id="userForm" styleClass="userForm">
+                            <p:panel styleClass="utilisateurPanel" id="utilisateurPanel" header="" style="border-color: #171b1f;"> 
+                                <p:growl id="message" life="4000" showSummary="true"/>
+                                <p:panelGrid columnClasses="ui-grid-col-12" columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group"> 
+                                    <p:commandButton update="@(.users)" action="#{utilisateurBean.cancel()}" oncomplete="PF('user').show()" icon="fa fa-plus" value="Nouveau utilisateur" style="width:auto;margin-bottom:10px;"/>
+                                    <p:panelGrid columnClasses="ui-grid-col-12" columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group">
+                                        <p:dataTable reflow="true" var="prouse" widgetVar="uj" id="userTab" value="#{utilisateurBean.profilUtilisateurs}"
+                                                     emptyMessage="Utilisateur non trouvé" paginatorAlwaysVisible="false" globalFilterFunction="#{utilisateurBean.globalFilterFunction}"
+                                                     style="border-color: #00AEEF" filterBy="#{utilisateurBean.profilUtilisateurFilter}" 
+                                                     rows="5" paginator="true" paginatorPosition="top" 
+                                                     rowsPerPageTemplate="2,5,10,15" sortBy="#{prouse.id}">           
+                                            <f:facet name="header">
+                                                <p:outputPanel>
+                                                    <h:outputText value="Rechercher toutes les valeurs :" />
+                                                    <p:inputText id="globalFilter" onkeyup="PF('uj').filter()" style="width:150px" placeholder="entrer la valeur"/>
+                                                </p:outputPanel>
+                                            </f:facet>
+                                            <p:column headerText="Profil" sortBy="#{prouse.profil.libelle}" filterMatchMode="startsWith">
+                                                <h:outputText value="#{prouse.profil.libelle}" />
+                                            </p:column>
+                                            <p:column headerText="Nom" sortBy="#{prouse.utilisateurProfil.personnePattern.nom}" filterMatchMode="startsWith">
+                                                <h:outputText value="#{prouse.utilisateurProfil.personnePattern.nom}" />
+                                            </p:column>
+                                            <p:column  headerText="Prenom" sortBy="#{prouse.utilisateurProfil.personnePattern.prenom}" filterMatchMode="startsWith">
+                                                <h:outputText value="#{prouse.utilisateurProfil.personnePattern.prenom}" />
+                                            </p:column>
+                                            <p:column  headerText="Adresse mail" sortBy="#{prouse.utilisateurProfil.personnePattern.mail}" filterMatchMode="startsWith">
+                                                <h:outputText value="#{prouse.utilisateurProfil.personnePattern.mail}" />
+                                            </p:column>
+                                            <p:column  headerText="Téléphone" sortBy="#{prouse.utilisateurProfil.personnePattern.telephone}" filterMatchMode="startsWith">
+                                                <h:outputText value="#{prouse.utilisateurProfil.personnePattern.telephone}" />
+                                            </p:column>
+                                            <p:column width="8%" rendered="#{loginBean.modifierUtilisateur}">
+                                                <p:commandButton oncomplete="PF('user').show()"  update="@(.users)"  icon="fa fa-fw fa-edit" title="Editer" actionListener="#{utilisateurBean.getUsers(prouse.id)}" process="@this">
+                                                    <f:setPropertyActionListener value="#{prouse}" target="#{utilisateurBean.profilUtilisateur}" />
+                                                </p:commandButton>
+                                            </p:column>
+                                        </p:dataTable>   
+                                    </p:panelGrid>                                  
+                                </p:panelGrid>
+                            </p:panel>
+
+                        </h:form>
+                    </p:fieldset>
+                </div>
+            </div>
+        </div>
+        <p:dialog header="Utilisateurs " widgetVar="user" modal="true" positionType="fixed" blockScroll="true" dynamic="true" resizable="false" responsive="true">
+            <div class="ui-g ui-fluid">
+                <div class="card card-w-title">
+                    <h:form>
+                        <p:outputPanel styleClass="users" id="carDetail">
+                            <p:growl life="4000" showSummary="true"/>
+                            <p:panelGrid columnClasses="ui-grid-col-12" columns="1" layout="grid" styleClass="ui-panelgrid-blank form-group"> 
+                                <p:panelGrid columnClasses="ui-grid-col-6,ui-grid-col-6" columns="2" layout="grid" styleClass="ui-panelgrid-blank form-group"> 
+                                    <p:outputPanel>
+                                        <p:outputLabel style="color: #457fca;font-weight: bold" class="ui-inputgroup-addon ui-md-2" for="nom" value="Nom :"/>
+                                        <p:inputText requiredMessage="Veillez saisir le nom" id="nom" value="#{utilisateurBean.personnePattern.nom}" required="true" placeholder="Nom"/>
+                                    </p:outputPanel>
+                                    <p:outputPanel>
+                                        <p:outputLabel style="color: #457fca;font-weight: bold" class="ui-inputgroup-addon ui-md-2" for="prenom" value="Prénom :"/>
+                                        <p:inputText id="prenom" requiredMessage="Veillez saisir le prénom" value="#{utilisateurBean.personnePattern.prenom}" required="true" placeholder="Prenom"/>
+                                    </p:outputPanel>
+                                    <p:outputPanel>
+                                        <p:outputLabel style="color: #457fca;font-weight: bold" class="ui-inputgroup-addon ui-md-2" for="sexe" value="Sexe :"/>
+                                        <p:selectOneRadio id="sexe" layout="responsive" columns="2" value="#{utilisateurBean.personnePattern.sexe}" required="true" requiredMessage="Veillez choisir le sexe">
+                                            <f:selectItem itemLabel="Monsieur" itemValue="Monsieur" />
+                                            <f:selectItem itemLabel="Madame" itemValue="Madame" />
+                                        </p:selectOneRadio>
+                                    </p:outputPanel>
+                                    <p:outputPanel>
+                                        <p:outputLabel style="color: #457fca;font-weight: bold" class="ui-inputgroup-addon ui-md-2" for="mail" value="Mail :"/>
+                                        <p:inputText id="mail" style="text-transform: lowercase" value="#{utilisateurBean.personnePattern.mail}" requiredMessage="Veillez saisir l'adresse mail" required="true" placeholder="Adresse mail">
+                                            <p:keyFilter regEx="/[a-z0-9_\.\-@]/i"/>
+                                        </p:inputText>
+                                    </p:outputPanel>
+                                    <p:outputPanel>
+                                        <p:outputLabel style="color: #457fca;font-weight: bold" class="ui-inputgroup-addon ui-md-2" for="telephone" value="Téléphone :"/>
+                                        <p:inputText id="telephone" requiredMessage="Veillez saisir le numéro de téléphone" value="#{utilisateurBean.personnePattern.telephone}" required="true" placeholder="Téléphone"/>
+                                    </p:outputPanel>
+                                    <p:outputPanel>
+                                        <p:outputLabel style="color: #457fca;font-weight: bold" class="ui-inputgroup-addon ui-md-2" for="profil" value="Profil :"/>
+                                        <p:selectOneMenu required="true" id="profil" filter="true" value="#{utilisateurBean.profil}" converter="omnifaces.SelectItemsIndexConverter"
+                                                         filterMatchMode="startsWith" >
+                                            <f:selectItem noSelectionOption="true" itemLabel="Selectionner le profil"/>
+                                            <f:selectItems value="#{utilisateurBean.profils}" var="pro" itemLabel="#{pro.libelle}" itemValue="#{pro}"/>
+                                        </p:selectOneMenu>                                                                                   
+                                    </p:outputPanel>
+                                </p:panelGrid>
+                                <p:panelGrid columnClasses="ui-grid-col-6,ui-grid-col-6" columns="4" layout="grid" styleClass="ui-panelgrid-blank form-group"> 
+                                    <p:commandButton process="@this" update="@(.users)" action="#{utilisateurBean.cancel()}" value="Annuler" icon="fa fa-ban"></p:commandButton>
+                                    <p:commandButton rendered="#{loginBean.ajouterUtilisateur}" process="@all" update="@(.utilisateurPanel,.users)" action ="#{utilisateurBean.save()}" value="Valider" icon="fa fa-save">
+                                        <p:confirm header="Confirmation" message="#{loginBean.message()}" icon="ui-icon-danger"/>  
+                                    </p:commandButton>
+                                </p:panelGrid>
+                            </p:panelGrid>
+                        </p:outputPanel>
+                    </h:form>
+                </div>
+            </div>
+        </p:dialog>
+    </ui:define>
+
+</ui:composition>

@@ -3,17 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mystorageManagedeBean;
+package com.memoires.mystorage.managedBean;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.net.SocketException;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -149,7 +146,7 @@ public class TestMBean implements Serializable {
         ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         source1 = servletContext.getRealPath("");
         source = servletContext.getRealPath("") + File.separator  + File.separator + fileName;
-        copyFile(fileName, fileUploadEvent.getFile().getInputstream());
+        copyFile(fileName, fileUploadEvent.getFile().getInputStream());
        
     }
 

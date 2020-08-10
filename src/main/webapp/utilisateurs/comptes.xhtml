@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Comptes</ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12 ui-lg-12">
+                <div class="card">
+                    <p:fieldset legend="Gestion des comptes utilisateurs" rendered="#{compteBean.visible}">
+                        <p:growl id="message" life="4000" showSummary="true"/>
+                        <h:form id="userForm" styleClass="personne">
+                            <div class="ui-g-12 ui-lg-6">
+                                <p:panel header="Comptes Inactifs" style="border-color: #171b1f;">
+                                    <p:dataTable paginatorAlwaysVisible="false" reflow="true"  value="#{compteBean.utilisateurInactif()}" widgetVar="usersInactifs" var="user" id="compteTab"
+                                                 emptyMessage="Personnel non trouvé" paginator="true" rows="5" globalFilterFunction="#{compteBean.globalFilterFunction}"
+                                                 rowsPerPageTemplate="5,10,15" style="border-color: #00AEEF" filteredValue="#{compteBean.utilisateursFilter}">
+                                        <f:facet name="header">
+                                            <p:outputPanel>
+                                                <h:outputText value="Rechercher toutes les valeurs :" />
+                                                <p:inputText id="globalFilter" onkeyup="PF('usersInactifs').filter()" style="width:150px" placeholder="entrer la valeur"/>
+                                            </p:outputPanel>
+                                        </f:facet>
+                                        <p:column  headerText="Nom et Prénoms" sortBy="#{user.personnePattern.nom} #{user.personnePattern.prenom}" filterMatchMode="startsWith">
+                                            <h:outputText value="#{user.personnePattern.nom} #{user.personnePattern.prenom}"/>
+                                        </p:column>
+                                        <p:column  headerText="Login" sortBy="#{user.login}" filterMatchMode="startsWith">
+                                            <h:outputText value="#{user.login}"/>
+                                        </p:column>
+                                        <p:column width="10%">
+                                            <center>
+                                                <p:commandButton rendered="#{loginBean.activerCompte}" icon="fa fa-lock" process="@this" update="message,userForm:compteTab1,userForm:compteTab" title="Activer" action="#{compteBean.activerUtilisateur(user.id)}">
+                                                    <p:confirm header="Confirmation" message="#{loginBean.message()}" icon="ui-icon-danger"/>  
+                                                </p:commandButton>
+                                            </center>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>
+                            </div>
+                            <div class="ui-g-12 ui-lg-6">
+                                <p:panel header="Comptes Actifs" style="border-color: #171b1f;">
+
+                                    <p:dataTable paginatorAlwaysVisible="false" reflow="true"  value="#{compteBean.utilisateurActif()}" widgetVar="usersActifs" var="user" id="compteTab1"
+                                                 emptyMessage="Personnel non trouvé" paginator="true" rows="5" globalFilterFunction="#{compteBean.globalFilterFunction}"
+                                                 rowsPerPageTemplate="5,10,15" style="border-color: #00AEEF" filteredValue="#{compteBean.utilisateursFilter}">
+                                        <f:facet name="header">
+                                            <p:outputPanel>
+                                                <h:outputText value="Rechercher toutes les valeurs :" />
+                                                <p:inputText id="globalFilter" onkeyup="PF('usersActifs').filter()" style="width:150px" placeholder="entrer la valeur"/>
+                                            </p:outputPanel>
+                                        </f:facet>
+                                        <p:column  headerText="Nom et Prénoms" sortBy="#{user.personnePattern.nom} #{user.personnePattern.prenom}" filterMatchMode="startsWith">
+                                            <h:outputText value="#{user.personnePattern.nom} #{user.personnePattern.prenom}"/>
+                                        </p:column>
+                                        <p:column  headerText="Login" sortBy="#{user.login}" filterMatchMode="startsWith">
+                                            <h:outputText value="#{user.login}"/>
+                                        </p:column>
+                                        <p:column width="10%">
+                                            <center>
+                                                <p:commandButton rendered="#{loginBean.desactiverCompte}" icon="fa fa-unlock" title="Désactiver" process="@this" update="message,userForm:compteTab1,userForm:compteTab" action="#{compteBean.desactiverUtilisateur(user.id)}">
+                                                    <p:confirm header="Confirmation" message="#{loginBean.message()}" icon="ui-icon-danger"/>  
+                                                </p:commandButton>
+                                            </center>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>   
+                            </div>
+                        </h:form>
+                    </p:fieldset>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

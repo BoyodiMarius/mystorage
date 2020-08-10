@@ -1,0 +1,98 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Dashboard</ui:define>
+
+    <ui:define name="content">
+        <p:fieldset legend="TABLEAU DE BORD" rendered="#{tableauSecBean.visible}">
+            <div class="ui-g dashboard">            
+                <div class="ui-g-12 ui-md-6 ui-lg-3">
+                    <div class="ui-g card overview-box overview-box-1">
+                        <div class="ui-g-4 overview-box-icon">
+                            <p:graphicImage name="images/icon-paper.png" library="verona-layout" />
+                        </div>
+                        <div class="ui-g-8">
+                            <span class="overview-box-count">#{tableauSecBean.modules()}</span>
+                            <span class="overview-box-name">MODULES APPLICATIFS</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-g-12 ui-md-6 ui-lg-3">
+                    <div class="ui-g card overview-box overview-box-2">
+                        <div class="ui-g-4 overview-box-icon">
+                            <p:graphicImage name="images/icon-mail.png" library="verona-layout" />
+                        </div>
+                        <div class="ui-g-8">
+                            <span class="overview-box-count">#{tableauSecBean.fonctionnalite()}</span>
+                            <span class="overview-box-name">FNCTIONNALITES</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-g-12 ui-md-6 ui-lg-3">
+                    <div class="ui-g card overview-box overview-box-3">
+                        <div class="ui-g-4 overview-box-icon">
+                            <p:graphicImage name="images/icon-location.png" library="verona-layout" />
+                        </div>
+                        <div class="ui-g-8">
+                            <span class="overview-box-count">#{tableauSecBean.users()}</span>
+                            <span class="overview-box-name">UTILISATEURS</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-g-12 ui-md-6 ui-lg-3">
+                    <div class="ui-g card overview-box overview-box-4">
+                        <div class="ui-g-4 overview-box-icon">
+                            <p:graphicImage name="images/icon-orders.png" library="verona-layout" />
+                        </div>
+                        <div class="ui-g-8">
+                            <span class="overview-box-count">#{tableauSecBean.profil()}</span>
+                            <span class="overview-box-name">PROFILS</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-g-12 ui-lg-12">
+                    <div class="card">
+                        <p:fieldset legend="La liste de tous les utilisateurs">
+                            <h:form styleClass="personne">
+                                <p:panel style="border-color: #171b1f;">
+                                    <p:dataTable reflow="true" var="use" widgetVar="uj" id="userTab" value="#{tableauSecBean.utilisateurs}"
+                                                 emptyMessage="Utilisateur non trouvé"
+                                                 style="border-color: #00AEEF" globalFilterFunction="#{tableauSecBean.globalFilterFunction}"
+                                                 rows="5" paginator="true" paginatorPosition="top" filteredValue="#{tableauSecBean.utilisateursFilter}" 
+                                                 rowsPerPageTemplate="2,5,10,15" sortBy="#{use.id}">           
+                                        <f:facet name="header">
+                                            <p:outputPanel>
+                                                <h:outputText value="Rechercher toutes les valeurs :" />
+                                                <p:inputText id="globalFilter" onkeyup="PF('uj').filter()" style="width:150px" placeholder="entrer la valeur"/>
+                                            </p:outputPanel>
+                                        </f:facet>
+                                        <p:column headerText="Nom" sortBy="#{use.personnePattern.nom}" filterMatchMode="startsWith">
+                                            <h:outputText value="#{use.personnePattern.nom}" />
+                                        </p:column>
+                                        <p:column  headerText="Prenom" sortBy="#{use.personnePattern.prenom}" filterMatchMode="startsWith">
+                                            <h:outputText value="#{use.personnePattern.prenom}" />
+                                        </p:column>
+                                        <p:column  headerText="Sexe" sortBy="#{use.personnePattern.sexe}" filterMatchMode="startsWith">
+                                            <h:outputText value="#{use.personnePattern.sexe}"/>
+                                        </p:column>
+                                        <p:column  headerText="Adresse mail" sortBy="#{use.personnePattern.mail}" filterMatchMode="startsWith">
+                                            <h:outputText value="#{use.personnePattern.mail}" />
+                                        </p:column>
+                                        <p:column  headerText="Téléphone" sortBy="#{use.personnePattern.telephone}" filterMatchMode="startsWith">
+                                            <h:outputText value="#{use.personnePattern.telephone}" />
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>
+                            </h:form>
+                        </p:fieldset>
+                    </div>
+                </div>
+            </div>
+        </p:fieldset>
+    </ui:define>
+
+</ui:composition>

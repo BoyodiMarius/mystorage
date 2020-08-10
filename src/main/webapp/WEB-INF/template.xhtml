@@ -19,27 +19,35 @@
     </h:head>
 
     <h:body>
-        
+
         <div class="layout-wrapper #{guestPreferences.menuLayout}">
             <ui:include src="./topbar.xhtml" />
             <ui:include src="./menu.xhtml" />
-            
+
             <div class="layout-main">
                 <ui:insert name="content"/>
             </div>
-            
+            <p:confirmDialog global="true">
+                <center>
+                    <h:form>
+                        <p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                        <p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                    </h:form>
+
+                </center>
+            </p:confirmDialog>
             <ui:include src="./footer.xhtml" />
         </div>
-        
-        <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
-           <f:facet name="start">
-               <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>
-           </f:facet>
 
-           <f:facet name="complete">
-               <h:outputText value="" />
-           </f:facet>
-       </p:ajaxStatus>
+        <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+            <f:facet name="start">
+                <i class="fa fa-circle-o-notch fa-spin ajax-loader" aria-hidden="true"></i>
+            </f:facet>
+
+            <f:facet name="complete">
+                <h:outputText value="" />
+            </f:facet>
+        </p:ajaxStatus>
 
         <h:outputStylesheet name="css/nanoscroller.css" library="avalon-layout" />
         <h:outputStylesheet name="css/animate.css" library="avalon-layout" />
