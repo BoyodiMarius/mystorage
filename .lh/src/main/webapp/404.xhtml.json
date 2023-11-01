@@ -1,0 +1,18 @@
+{
+    "sourceFile": "src/main/webapp/404.xhtml",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1698875609018,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1698875609018,
+            "name": "Commit-0",
+            "content": "<!DOCTYPE html>\n<html xmlns=\"http://www.w3.org/1999/xhtml\"\n      xmlns:h=\"http://java.sun.com/jsf/html\"\n      xmlns:f=\"http://java.sun.com/jsf/core\"\n      xmlns:p=\"http://primefaces.org/ui\">\n\n    <h:head>\n        <f:facet name=\"first\">\n            <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />\n            <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n            <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\"/>\n            <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" />\n        </f:facet>\n        <title>PrimeFaces Avalon</title>\n    </h:head>\n\n    <h:body styleClass=\"exception-body notfound\">\n        <div class=\"exception-text\">\n            <div class=\"notfound-box\">\n                <span>404</span>\n            </div>\n            <span class=\"notfound-text\">Page Not Found</span>\n        </div>\n        <div class=\"exception-panel\">\n            <div class=\"exception-image\">\n                <p:graphicImage name=\"images/exception/icon-error.png\" library=\"avalon-layout\" />\n            </div>\n            <div class=\"exception-panel-content\">\n                <div class=\"information-text\">\n                    <span><strong>That wasn’t supposed to happen...</strong></span>\n                    <p>Better get back home and forget about that</p>\n                </div>\n                <p:button value=\"Go To Dashboard\" outcome=\"/dashboard\" />\n            </div>\n        </div>\n\n        <h:outputStylesheet name=\"css/layout-#{guestPreferences.theme}.css\" library=\"avalon-layout\" />\n    </h:body>\n\n</html>"
+        }
+    ]
+}
